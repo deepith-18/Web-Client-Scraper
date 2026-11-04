@@ -1,0 +1,203 @@
+# ProspectIQ — Complete Run & Deployment Guide
+
+This guide provides step-by-step instructions to configure, run, test, and deploy **ProspectIQ** locally, with Docker Compose, and prepares the repository for phase-wise Git version control.
+
+---
+
+## 1. Prerequisites
+
+Ensure the following tools are installed on your machine:
+
+| Tool | Recommended Version | Verification Command |
+| :--- | :--- | :--- |
+| **Python** | 3.11 or 3.12 | `python --version` |
+| **Node.js** | 20 LTS or 22 LTS | `node --version` |
+| **npm** | 10+ | `npm --version` |
+| **Git** | 2.30+ | `git --version` |
+| **Docker** *(Optional)* | 24+ with Compose v2 | `docker compose version` |
+
+---
+
+## 2. Option A: Local Development Setup (Quickest)
+
+### Step 1: Environment Configuration
+
+Copy the example environment file:
+
+```bash
+# On Linux / macOS / Git Bash:
+cp .env.example .env
+
+# On Windows PowerShell:
+Copy-Item .env.example .env
+```
+
+The default `.env` is configured to use local SQLite (`prospectiq.db`) for immediate out-of-the-box development without requiring a separate PostgreSQL service.
+
+---
+
+### Step 2: Backend Setup & Database Seeding
+
+Open a terminal in the root workspace directory (`c:\Scraper`):
+
+```bash
+# 1. Create a Python virtual environment (if not already created)
+python -m venv backend/.venv
+
+# 2. Activate the virtual environment
+# Windows PowerShell:
+backend\.venv\Scripts\Activate.ps1
+# Windows Command Prompt:
+backend\.venv\Scripts\activate.bat
+# Linux / macOS:
+source backend/.venv/bin/activate
+
+# 3. Install backend dependencies
+pip install -r backend/requirements.txt
+
+# 4. Initialize database schema & seed initial verified leads
+python -m backend.app.core.seed
+```
+
+> **What happens during seed?**
+> - All tables are automatically created in the database.
+> - Default admin user is created: `admin@prospectiq.io` (password: `prospect123!`).
+> - Authorized sources (OpenStreetMap Overpass Engine, Google Places API, Public Web Crawler) are registered.
+> - Sample qualified leads across **Bengaluru, India** (Indiranagar, Koramangala, Jayanagar) and **International metros** (Austin TX, London UK, Sydney AU) are seeded with complete technical audit scores and contact cards.
+
+---
+
+### Step 3: Run FastAPI Backend Server
+
+```bash
+# Start FastAPI with hot reload on port 8000
+python -m uvicorn backend.app.main:app --reload --port 8000
+```
+
+- **Interactive Swagger Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Alternative ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- **API Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
+
+---
+
+### Step 4: Frontend Setup & Dashboard Launch
+
+Open a second terminal in the workspace root:
+
+```bash
+# 1. Navigate to frontend directory
+cd frontend
+
+# 2. Install dependencies (if not already installed)
+npm install
+
+# 3. Start the Next.js development server
+npm run dev
+```
+
+- **ProspectIQ Dashboard**: [http://localhost:3000](http://localhost:3000)
+- **Discovery Launcher**: [http://localhost:3000/discover](http://localhost:3000/discover)
+
+---
+
+## 3. Option B: Docker Compose Deployment
+
+To run the entire production-grade stack (PostgreSQL 16 + FastAPI + Next.js):
+
+```bash
+# 1. Build and run containers in background
+docker compose up -d --build
+
+# 2. Check container status
+docker compose ps
+
+# 3. View live application logs
+docker compose logs -f
+
+# 4. Seed the PostgreSQL database inside container
+docker compose exec backend python -m backend.app.core.seed
+
+# 5. Stop containers when finished
+docker compose down
+```
+
+---
+
+## 4. Running the Automated Test Suite
+
+ProspectIQ includes automated unit tests covering security, password hashing, JWT generation, SSRF defense, and the lead scoring matrix:
+
+```bash
+# Run all unit tests with pytest:
+backend\.venv\Scripts\pytest backend/tests
+
+# Run specifically the SSRF shield security tests:
+backend\.venv\Scripts\pytest backend/tests/test_ssrf.py -v
+
+# Run lead scoring engine tests:
+backend\.venv\Scripts\pytest backend/tests/test_scoring.py -v
+
+# Run authentication and password hashing tests:
+backend\.venv\Scripts\pytest backend/tests/test_auth.py -v
+```
+
+---
+
+## 5. Verifying Frontend Production Build
+
+Before pushing to GitHub, ensure the Next.js frontend passes all TypeScript type checks and compiles cleanly:
+
+```bash
+cd frontend
+npm run build
+```
+
+Expected output:
+```
+✓ Compiled successfully
+✓ Generating static pages (5/5)
+✓ Finalizing page optimization
+```
+
+---
+
+## 6. Phase-wise Git Commit & Pushing Guide
+
+Since you are pushing phase-by-phase to GitHub, follow these git workflow steps:
+
+### Initial Repository Initialization
+
+```bash
+# 1. Initialize git repository (if not already done)
+git init
+
+# 2. Verify .gitignore is in place so .venv and node_modules are ignored
+git status
+
+# 3. Stage Phase 1 files
+git add .
+
+# 4. Commit Phase 1
+git commit -m "feat(phase-1): complete project setup, database schema, auth, and frontend dashboard layout"
+
+# 5. Add tag for Phase 1 milestone
+git tag -a v0.1.0-phase1 -m "Phase 1: Project Setup, Database, Auth & Layout"
+
+# 6. Link to your GitHub remote repository (replace with your GitHub repo URL)
+git remote add origin https://github.com/YOUR_USERNAME/ProspectIQ.git
+
+# 7. Push to GitHub with tags
+git branch -M main
+git push -u origin main --tags
+```
+
+### For Future Phases (e.g. Phase 2)
+
+```bash
+# When Phase 2 is completed:
+git add .
+git commit -m "feat(phase-2): business discovery engine and Overpass OSM integration"
+git tag -a v0.2.0-phase2 -m "Phase 2: Business Discovery Integrations"
+git push origin main --tags
+```
+
