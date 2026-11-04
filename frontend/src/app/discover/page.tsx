@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { fetchSources, fetchDiscoveryJobs, createDiscoveryJob } from "@/lib/api-client";
+import { fetchSources, fetchDiscoveryJobs, createDiscoveryJob, fetchJobLogs, cancelDiscoveryJob } from "@/lib/api-client";
 import { LeadSource, ScrapingJob } from "@/types";
 import {
   Compass,
@@ -19,6 +19,9 @@ import {
   Clock,
   AlertTriangle,
   XCircle,
+  FileText,
+  X,
+  ExternalLink,
 } from "lucide-react";
 
 const targetCategories = [
@@ -59,6 +62,10 @@ export default function DiscoverPage() {
   const [selectedSourceType, setSelectedSourceType] = useState("open_osm");
   const [searchKeywords, setSearchKeywords] = useState("");
 
+  // Logs modal state
+  const [activeJobLogs, setActiveJobLogs] = useState<{ job: ScrapingJob; logs: any[] } | null>(null);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
   const loadData = async () => {
     try {
       setLoading(true);
@@ -78,6 +85,30 @@ export default function DiscoverPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Poll for active jobs
+  useEffect(() => {
+    const hasActive = jobs.some((j) => j.status === "running" || j.status === "pending");
+    if (!hasActive) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const updatedJobs = await fetchDiscoveryJobs();
+        setJobs(updatedJobs);
+
+        // If logs modal open for a running job, refresh its logs
+        if (activeJobLogs && (activeJobLogs.job.status === "running" || activeJobLogs.job.status === "pending")) {
+          const freshLogs = await fetchJobLogs(activeJobLogs.job.id);
+          const currentJob = updatedJobs.find((j) => j.id === activeJobLogs.job.id) || activeJobLogs.job;
+          setActiveJobLogs({ job: currentJob, logs: freshLogs });
+        }
+      } catch (e) {
+        console.error("Error polling discovery jobs", e);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [jobs, activeJobLogs]);
 
   const handlePresetSelect = (preset: { city: string; country: string }) => {
     setTargetCity(preset.city);
@@ -112,6 +143,28 @@ export default function DiscoverPage() {
     }
   };
 
+  const handleCancel = async (jobId: string) => {
+    try {
+      await cancelDiscoveryJob(jobId);
+      const updated = await fetchDiscoveryJobs();
+      setJobs(updated);
+    } catch (err) {
+      console.error("Error cancelling job", err);
+    }
+  };
+
+  const handleOpenLogs = async (job: ScrapingJob) => {
+    setLoadingLogs(true);
+    try {
+      const logs = await fetchJobLogs(job.id);
+      setActiveJobLogs({ job, logs });
+    } catch (err) {
+      console.error("Error fetching logs", err);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -140,7 +193,7 @@ export default function DiscoverPage() {
           </div>
           <button
             onClick={loadData}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-xs"
           >
             <RotateCw className="h-3.5 w-3.5" />
             <span>Refresh Jobs</span>
@@ -331,11 +384,14 @@ export default function DiscoverPage() {
 
         {/* Discovery Jobs History */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-200">
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight">Recent Discovery Jobs</h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Live processing states, qualified business discovery metrics, and activity logs
-            </p>
+          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-slate-900 tracking-tight">Recent Discovery Jobs</h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Live processing states, qualified business discovery metrics, and activity logs
+              </p>
+            </div>
+            <span className="text-xs text-slate-400 font-medium">Auto-refreshes while jobs run</span>
           </div>
 
           <div className="divide-y divide-slate-100">
@@ -355,9 +411,11 @@ export default function DiscoverPage() {
                             job.status === "completed"
                               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                               : job.status === "running"
-                              ? "bg-blue-50 text-blue-700 border-blue-200"
+                              ? "bg-blue-50 text-blue-700 border-blue-200 animate-pulse"
                               : job.status === "failed"
                               ? "bg-rose-50 text-rose-700 border-rose-200"
+                              : job.status === "cancelled"
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
                               : "bg-slate-100 text-slate-600 border-slate-200"
                           }`}
                         >
@@ -369,11 +427,11 @@ export default function DiscoverPage() {
                           {job.target_category} in {job.target_city}, {job.target_country}
                         </span>
                         <span>•</span>
-                        <span>Created {new Date(job.created_at).toLocaleDateString()}</span>
+                        <span>Created {new Date(job.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
                       <div className="text-right">
                         <p className="text-xs font-bold text-slate-900">{job.records_found} Discovered</p>
                         <p className="text-[11px] text-emerald-600 font-medium">
@@ -382,11 +440,48 @@ export default function DiscoverPage() {
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="w-28 bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                      <div className="w-24 bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
                         <div
-                          className="bg-blue-600 h-full transition-all"
+                          className={`h-full transition-all ${
+                            job.status === "completed"
+                              ? "bg-emerald-500"
+                              : job.status === "failed"
+                              ? "bg-rose-500"
+                              : "bg-blue-600"
+                          }`}
                           style={{ width: `${job.progress_pct}%` }}
                         ></div>
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleOpenLogs(job)}
+                          className="px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+                          title="View Execution Logs"
+                        >
+                          <FileText className="h-3.5 w-3.5 text-slate-500" />
+                          <span>Logs</span>
+                        </button>
+
+                        {job.status === "completed" && job.records_qualified > 0 && (
+                          <Link
+                            href={`/?search=${encodeURIComponent(job.target_city)}`}
+                            className="px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 border border-blue-200 rounded-lg transition-colors flex items-center gap-1"
+                          >
+                            <span>View Leads</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                        )}
+
+                        {(job.status === "running" || job.status === "pending") && (
+                          <button
+                            onClick={() => handleCancel(job.id)}
+                            className="px-2.5 py-1.5 text-xs font-medium text-rose-600 hover:text-rose-800 bg-rose-50 border border-rose-200 rounded-lg transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -396,7 +491,65 @@ export default function DiscoverPage() {
           </div>
         </div>
       </main>
+
+      {/* Real-time Job Logs Modal */}
+      {activeJobLogs && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">
+                  Execution Logs: {activeJobLogs.job.job_name}
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Status: <span className="font-semibold uppercase">{activeJobLogs.job.status}</span> • Progress: {activeJobLogs.job.progress_pct}%
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveJobLogs(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="p-5 overflow-y-auto space-y-2 flex-1 font-mono text-xs bg-slate-950 text-slate-200">
+              {activeJobLogs.logs.length === 0 ? (
+                <div className="text-slate-500 italic py-4 text-center">No logs generated yet.</div>
+              ) : (
+                activeJobLogs.logs.map((log: any) => (
+                  <div key={log.id} className="flex items-start gap-2.5 leading-relaxed">
+                    <span className="text-slate-500 shrink-0 text-[10px]">
+                      {new Date(log.timestamp).toLocaleTimeString()}
+                    </span>
+                    <span
+                      className={`text-[9px] font-bold uppercase px-1 rounded shrink-0 ${
+                        log.level === "ERROR"
+                          ? "bg-rose-900 text-rose-300"
+                          : log.level === "WARN"
+                          ? "bg-amber-900 text-amber-300"
+                          : "bg-blue-900 text-blue-300"
+                      }`}
+                    >
+                      {log.level}
+                    </span>
+                    <span className="text-slate-300 break-words">{log.message}</span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+              <button
+                onClick={() => setActiveJobLogs(null)}
+                className="px-4 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
-

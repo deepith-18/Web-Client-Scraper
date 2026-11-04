@@ -77,28 +77,24 @@ ProspectIQ is designed to acquire clients globally:
 
 ---
 
-## 🚀 Quick Start (Local Development)
+## 🚀 Quick Start (Single-Command Launchers)
 
-### 1. Backend Setup
+Launch the full stack in just two terminals without manual virtual environment or dependency configuration:
 
-```bash
-# 1. Activate Python virtual environment
-backend\.venv\Scripts\activate
-
-# 2. Seed database with admin user & initial verified prospects
-python -m backend.app.core.seed
-
-# 3. Start FastAPI server
-python -m uvicorn backend.app.main:app --reload --port 8000
+### Terminal 1 — Backend API Server
+```powershell
+.\run-backend.ps1
 ```
-- API Docs: `http://localhost:8000/docs`
+*(Or double-click `run-backend.bat`)*
+- Automatically creates `.env`, initializes Python virtual environment, installs dependencies, seeds database with sample prospects, and starts FastAPI.
+- Swagger API Docs: `http://localhost:8000/docs`
 
-### 2. Frontend Setup
-
-```bash
-cd frontend
-npm run dev
+### Terminal 2 — Next.js Dashboard UI
+```powershell
+.\run-frontend.ps1
 ```
+*(Or double-click `run-frontend.bat`)*
+- Automatically installs frontend packages and starts Next.js with hot reload.
 - Dashboard UI: `http://localhost:3000`
 - Discovery Engine: `http://localhost:3000/discover`
 
@@ -127,8 +123,21 @@ npm run build
   - Next.js 14 SaaS dashboard (Sidebar, Header, KPIs, Filterable Leads Table, Modal, Discovery page)
   - Unit tests (`10/10 passed`) & Clean frontend build (`0 errors`)
   - Documentation (`SYSTEM_DESIGN.md`, `HOW_TO_RUN.md`, `README.md`, `.gitignore`)
-- [ ] **Phase 2: Business Discovery Integrations** (OSM Overpass API & Background Worker)
-- [ ] **Phase 3: Contact Extraction & Verification** (DNS/MX records & E.164 normalization)
+- [x] **Phase 2: Business Discovery Integrations**
+  - OpenStreetMap Nominatim geocoding & Overpass API geospatial query engine
+  - Multi-category mapping (Restaurants, Dental Clinics, Gyms, Interior Designers, Coaching Centres, Real Estate, Travel, Salons, Manufacturers)
+  - FastAPI asynchronous background worker with state transitions (`pending` → `running` → `completed` / `cancelled`)
+  - Real-time event streaming into `ScrapingJobLog` with frontend log viewer modal
+  - Intelligent deduplication and suppression filtering
+  - Live progress polling and cancellation controls in Next.js UI
+  - Discovery test suite with mock Nominatim/Overpass pipelines (`14/14 tests passed`)
+- [x] **Phase 3: Contact Extraction & Verification**
+  - Multi-tier email verification: RFC 5322 syntax regex, disposable domain blocklist, and authoritative DNS/MX record inspection via `dnspython`
+  - Global telephone parsing and validation via Google `phonenumbers` (E.164 formatting, country ISO detection, carrier line typing)
+  - SSL certificate and cipher inspection (issuer, expiration days, HTTPS reachability)
+  - SSRF-shielded website contact crawler discovering hidden emails, phones, contact pages (`/contact`, `/about-us`), and verified social footprints (LinkedIn, Instagram, Facebook)
+  - Interactive Lead Modal verification triggers and provenance tracking
+  - Verification test suite with mock MX resolutions and HTML contact parsers (`19/19 tests passed`)
 - [ ] **Phase 4: Website Opportunity Analyzer** (Live HTTP/SSL & mobile diagnostics)
 - [ ] **Phase 5: Lead Scoring Engine** (Configurable 0–100 weighted matrix)
 - [ ] **Phase 6: CRM & Outreach Management** (Pitch generator & manual approval queue)

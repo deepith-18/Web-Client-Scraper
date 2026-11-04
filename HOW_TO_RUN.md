@@ -18,7 +18,40 @@ Ensure the following tools are installed on your machine:
 
 ---
 
-## 2. Option A: Local Development Setup (Quickest)
+## 2. Option A: One-Command Startup (Easiest & Recommended)
+
+You can launch both the backend and frontend using dedicated one-click launcher scripts. Simply open two terminals:
+
+### Terminal 1 — Backend (FastAPI + Database + Seeding):
+```powershell
+.\run-backend.ps1
+```
+*(Or double-click `run-backend.bat` in File Explorer)*
+
+> **What this single command does automatically:**
+> 1. Detects and creates `.env` from `.env.example` if not found.
+> 2. Sets up Python virtual environment and installs dependencies.
+> 3. Creates database tables and seeds verified sample leads across Bengaluru and global markets.
+> 4. Starts the FastAPI server on [http://localhost:8000](http://localhost:8000) with hot-reload enabled.
+> 5. Swagger Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+### Terminal 2 — Frontend (Next.js Dashboard):
+```powershell
+.\run-frontend.ps1
+```
+*(Or double-click `run-frontend.bat` in File Explorer)*
+
+> **What this single command does automatically:**
+> 1. Installs frontend packages if `node_modules` is missing.
+> 2. Starts the Next.js development server on [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 3. Option B: Manual Step-by-Step Setup
+
+If you prefer to run each step manually:
 
 ### Step 1: Environment Configuration
 

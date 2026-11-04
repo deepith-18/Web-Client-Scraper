@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Business } from "@/types";
 import { formatScoreTier } from "@/lib/utils";
+import { verifyBusiness, extractWebsiteContacts } from "@/lib/api-client";
 import {
   X,
   Globe,
@@ -16,12 +17,17 @@ import {
   Send,
   Building,
   Check,
+  Search,
+  RotateCw,
+  ExternalLink,
+  Share2,
 } from "lucide-react";
 
 interface LeadModalProps {
   business: Business | null;
   onClose: () => void;
   onStatusUpdate: (businessId: string, newStatus: string) => Promise<void>;
+  onRefresh?: () => void;
 }
 
 const crmStatuses = [
@@ -39,8 +45,11 @@ const crmStatuses = [
   { value: "do_not_contact", label: "Do Not Contact" },
 ];
 
-export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps) {
+export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: LeadModalProps) {
   const [updating, setUpdating] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [extracting, setExtracting] = useState(false);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   if (!business) return null;
 
@@ -55,6 +64,34 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
       await onStatusUpdate(business.id, e.target.value);
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleRunVerification = async () => {
+    setVerifying(true);
+    setActionMessage(null);
+    try {
+      await verifyBusiness(business.id);
+      setActionMessage("Verification complete! DNS/MX, E.164 phone formats, and SSL validated.");
+      if (onRefresh) onRefresh();
+    } catch (err: any) {
+      setActionMessage(`Verification error: ${err.message}`);
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleExtractContacts = async () => {
+    setExtracting(true);
+    setActionMessage(null);
+    try {
+      const res = await extractWebsiteContacts(business.id);
+      setActionMessage(`Scanned website pages. Discovered ${res.new_contacts_added} new contact points!`);
+      if (onRefresh) onRefresh();
+    } catch (err: any) {
+      setActionMessage(`Extraction error: ${err.message}`);
+    } finally {
+      setExtracting(false);
     }
   };
 
@@ -94,13 +131,23 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
 
         {/* Content Body */}
         <div className="p-6 space-y-6">
-          {/* CRM Status & Pipeline Bar */}
-          <div className="flex items-center justify-between p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+          {/* Action Notification Banner */}
+          {actionMessage && (
+            <div className="p-3 bg-blue-50 border border-blue-200 text-blue-800 text-xs rounded-lg flex items-center justify-between">
+              <span>{actionMessage}</span>
+              <button onClick={() => setActionMessage(null)} className="text-blue-500 hover:text-blue-700">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* CRM Status & Verification Quick Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-blue-50/50 rounded-xl border border-blue-100 gap-3">
             <div>
               <p className="text-xs font-semibold text-blue-900">CRM Pipeline Stage</p>
               <p className="text-xs text-blue-700">Update current outreach state</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <select
                 value={business.crm_status}
                 disabled={updating}
@@ -113,6 +160,28 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
                   </option>
                 ))}
               </select>
+
+              <button
+                onClick={handleRunVerification}
+                disabled={verifying}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                title="Verify DNS/MX records and E.164 phone formats"
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <span>{verifying ? "Verifying..." : "Verify Lead"}</span>
+              </button>
+
+              {business.official_website && (
+                <button
+                  onClick={handleExtractContacts}
+                  disabled={extracting}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                  title="Crawl official website for emails, phones, and contact page"
+                >
+                  <Search className="h-3.5 w-3.5" />
+                  <span>{extracting ? "Scanning Site..." : "Scan Contacts"}</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -136,9 +205,10 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
                           href={business.official_website}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-blue-600 hover:underline"
+                          className="text-blue-600 hover:underline flex items-center gap-1"
                         >
-                          {business.official_website}
+                          <span>{business.official_website}</span>
+                          <ExternalLink className="h-3 w-3" />
                         </a>
                       ) : (
                         <span className="text-rose-600">No Website Detected (+30 pts)</span>
@@ -147,6 +217,31 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
                   </div>
                 </div>
               </div>
+
+              {/* Contact Page URL if found */}
+              {business.contact_page_url && (
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-white border border-slate-200 text-slate-600">
+                      <ExternalLink className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-medium text-slate-400">Contact / About Page</p>
+                      <a
+                        href={business.contact_page_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-semibold text-blue-600 hover:underline truncate max-w-[200px] block"
+                      >
+                        {business.contact_page_url}
+                      </a>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                    Discovered
+                  </span>
+                </div>
+              )}
 
               {/* Contacts list */}
               {business.contacts && business.contacts.length > 0 ? (
@@ -165,16 +260,21 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
                       </div>
                       <div>
                         <p className="text-[11px] font-medium text-slate-400 capitalize">
-                          {contact.contact_type} ({contact.verification_status})
+                          {contact.contact_type} ({contact.verification_status.replace(/_/g, " ")})
                         </p>
                         <p className="text-xs font-semibold text-slate-800">
-                          {contact.raw_value}
+                          {contact.normalized_value || contact.raw_value}
                         </p>
                       </div>
                     </div>
                     {contact.verification_status === "mx_confirmed" && (
                       <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        <Check className="h-3 w-3" /> MX Valid
+                        <Check className="h-3 w-3" /> MX Confirmed
+                      </span>
+                    )}
+                    {contact.verification_status === "valid_syntax" && (
+                      <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                        Valid Syntax
                       </span>
                     )}
                   </div>
@@ -186,6 +286,30 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
               )}
             </div>
           </div>
+
+          {/* Social Profiles */}
+          {business.social_links && Object.keys(business.social_links).length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Share2 className="h-3.5 w-3.5 text-slate-400" />
+                <span>Verified Social Footprints</span>
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(business.social_links).map(([net, link]) => (
+                  <a
+                    key={net}
+                    href={link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 border border-slate-200 transition-colors capitalize flex items-center gap-1"
+                  >
+                    <span>{net}</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Website Audit Breakdown */}
           <div>
@@ -281,4 +405,3 @@ export function LeadModal({ business, onClose, onStatusUpdate }: LeadModalProps)
     </div>
   );
 }
-

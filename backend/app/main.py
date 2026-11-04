@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.core.database import engine, Base
-from backend.app.api.v1 import auth, businesses, discovery, analytics, crm
+from backend.app.api.v1 import auth, businesses, discovery, analytics, crm, verification
 
 # Create database tables automatically if not using manual alembic
 Base.metadata.create_all(bind=engine)
@@ -28,6 +28,7 @@ app.include_router(businesses.router, prefix=settings.API_V1_STR)
 app.include_router(discovery.router, prefix=settings.API_V1_STR)
 app.include_router(analytics.router, prefix=settings.API_V1_STR)
 app.include_router(crm.router, prefix=settings.API_V1_STR)
+app.include_router(verification.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def root():

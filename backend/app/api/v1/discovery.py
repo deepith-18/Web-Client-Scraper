@@ -4,7 +4,8 @@ from typing import List, Optional
 from datetime import datetime
 from backend.app.core.database import get_db
 from backend.app.models.job import ScrapingJob, ScrapingJobLog, LeadSource
-from backend.app.schemas.job import ScrapingJobResponse, ScrapingJobCreate, LeadSourceResponse
+from backend.app.schemas.job import ScrapingJobResponse, ScrapingJobCreate, LeadSourceResponse, ScrapingJobLogResponse
+from backend.app.services.discovery_engine import run_discovery_background_task
 
 router = APIRouter(prefix="/discovery", tags=["Discovery"])
 
@@ -23,8 +24,15 @@ def get_job(job_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Discovery job not found")
     return job
 
+@router.get("/jobs/{job_id}/logs", response_model=List[ScrapingJobLogResponse])
+def get_job_logs(job_id: str, db: Session = Depends(get_db)):
+    job = db.query(ScrapingJob).filter(ScrapingJob.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Discovery job not found")
+    return db.query(ScrapingJobLog).filter(ScrapingJobLog.job_id == job_id).order_by(ScrapingJobLog.timestamp.asc()).all()
+
 @router.post("/jobs", response_model=ScrapingJobResponse)
-def create_discovery_job(job_in: ScrapingJobCreate, db: Session = Depends(get_db)):
+def create_discovery_job(job_in: ScrapingJobCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     # Find matching source
     source = db.query(LeadSource).filter(LeadSource.source_type == job_in.source_type).first()
     if not source:
@@ -52,11 +60,14 @@ def create_discovery_job(job_in: ScrapingJobCreate, db: Session = Depends(get_db
     log = ScrapingJobLog(
         job_id=new_job.id,
         level="INFO",
-        message=f"Job queued for {new_job.target_category} in {new_job.target_city}, {new_job.target_country} via {source.name if source else 'Default Source'}."
+        message=f"Job queued for '{new_job.target_category}' in {new_job.target_city}, {new_job.target_country} via {source.name if source else 'Default Source'}."
     )
     db.add(log)
     db.commit()
     db.refresh(new_job)
+
+    # Trigger background worker execution
+    background_tasks.add_task(run_discovery_background_task, new_job.id)
 
     return new_job
 
@@ -78,4 +89,3 @@ def cancel_job(job_id: str, db: Session = Depends(get_db)):
     db.add(log)
     db.commit()
     return {"message": "Job successfully cancelled", "job_id": job_id}
-
