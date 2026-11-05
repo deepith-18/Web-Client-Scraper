@@ -1,9 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Business } from "@/types";
 import { formatScoreTier } from "@/lib/utils";
-import { verifyBusiness, extractWebsiteContacts } from "@/lib/api-client";
+import {
+  verifyBusiness,
+  extractWebsiteContacts,
+  runWebsiteAudit,
+  calculateBusinessScore,
+  generateOutreachPitch,
+  fetchBusinessNotes,
+  addBusinessNote,
+  createBusinessTask,
+} from "@/lib/api-client";
 import {
   X,
   Globe,
@@ -21,6 +30,10 @@ import {
   RotateCw,
   ExternalLink,
   Share2,
+  Activity,
+  Layers,
+  Code2,
+  FileText,
 } from "lucide-react";
 
 interface LeadModalProps {
@@ -49,7 +62,24 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
   const [updating, setUpdating] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [auditing, setAuditing] = useState(false);
+  const [scoring, setScoring] = useState(false);
+  const [generatingPitch, setGeneratingPitch] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  // CRM Notes & Tasks
+  const [notes, setNotes] = useState<any[]>([]);
+  const [newNote, setNewNote] = useState("");
+  const [savingNote, setSavingNote] = useState(false);
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDue, setTaskDue] = useState("");
+  const [savingTask, setSavingTask] = useState(false);
+
+  useEffect(() => {
+    if (business?.id) {
+      fetchBusinessNotes(business.id).then(setNotes).catch(() => {});
+    }
+  }, [business?.id]);
 
   if (!business) return null;
 
@@ -57,6 +87,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
   const totalScore = scoreObj?.total_opportunity_score ?? 0;
   const scoreBadge = formatScoreTier(totalScore);
   const audit = business.website_audits?.[0];
+  const auditEvidence = (scoreObj?.score_breakdown as any)?.evidence || (audit?.raw_audit_report as any)?.evidence || {};
 
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setUpdating(true);
@@ -92,6 +123,79 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
       setActionMessage(`Extraction error: ${err.message}`);
     } finally {
       setExtracting(false);
+    }
+  };
+
+  const handleRunAudit = async () => {
+    setAuditing(true);
+    setActionMessage(null);
+    try {
+      const res = await runWebsiteAudit(business.id);
+      setActionMessage(`Audit complete! Identified ${res.audit.opportunities_identified.length} technical opportunities. Lead Score: ${res.opportunity_score} pts.`);
+      if (onRefresh) onRefresh();
+    } catch (err: any) {
+      setActionMessage(`Audit error: ${err.message}`);
+    } finally {
+      setAuditing(false);
+    }
+  };
+
+  const handleRunScoring = async () => {
+    setScoring(true);
+    setActionMessage(null);
+    try {
+      const res = await calculateBusinessScore(business.id);
+      setActionMessage(`Lead opportunity score recalculated: ${res.total_opportunity_score} / 100 (${res.priority_tier.toUpperCase()})`);
+      if (onRefresh) onRefresh();
+    } catch (err: any) {
+      setActionMessage(`Scoring error: ${err.message}`);
+    } finally {
+      setScoring(false);
+    }
+  };
+
+  const handleGeneratePitch = async () => {
+    setGeneratingPitch(true);
+    setActionMessage(null);
+    try {
+      await generateOutreachPitch(business.id);
+      setActionMessage("Evidence-backed proposal draft created! View under Outreach Manager.");
+    } catch (err: any) {
+      setActionMessage(`Pitch error: ${err.message}`);
+    } finally {
+      setGeneratingPitch(false);
+    }
+  };
+
+  const handleAddNote = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNote.trim()) return;
+    setSavingNote(true);
+    try {
+      const res = await addBusinessNote(business.id, newNote.trim());
+      setNotes((prev) => [res, ...prev]);
+      setNewNote("");
+      setActionMessage("CRM Note saved.");
+    } catch (err: any) {
+      setActionMessage(`Failed to add note: ${err.message}`);
+    } finally {
+      setSavingNote(false);
+    }
+  };
+
+  const handleCreateTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!taskTitle.trim() || !taskDue) return;
+    setSavingTask(true);
+    try {
+      await createBusinessTask(business.id, taskTitle.trim(), new Date(taskDue).toISOString());
+      setActionMessage(`Follow-up scheduled for ${taskDue}.`);
+      setTaskTitle("");
+      setTaskDue("");
+    } catch (err: any) {
+      setActionMessage(`Failed to schedule: ${err.message}`);
+    } finally {
+      setSavingTask(false);
     }
   };
 
@@ -141,13 +245,13 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
             </div>
           )}
 
-          {/* CRM Status & Verification Quick Actions */}
+          {/* CRM Status & Action Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-blue-50/50 rounded-xl border border-blue-100 gap-3">
             <div>
               <p className="text-xs font-semibold text-blue-900">CRM Pipeline Stage</p>
               <p className="text-xs text-blue-700">Update current outreach state</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <select
                 value={business.crm_status}
                 disabled={updating}
@@ -172,16 +276,48 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
               </button>
 
               {business.official_website && (
-                <button
-                  onClick={handleExtractContacts}
-                  disabled={extracting}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
-                  title="Crawl official website for emails, phones, and contact page"
-                >
-                  <Search className="h-3.5 w-3.5" />
-                  <span>{extracting ? "Scanning Site..." : "Scan Contacts"}</span>
-                </button>
+                <>
+                  <button
+                    onClick={handleExtractContacts}
+                    disabled={extracting}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                    title="Crawl official website for emails, phones, and contact page"
+                  >
+                    <Search className="h-3.5 w-3.5" />
+                    <span>{extracting ? "Scanning..." : "Scan Contacts"}</span>
+                  </button>
+
+                  <button
+                    onClick={handleRunAudit}
+                    disabled={auditing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                    title="Run deep technical website opportunity audit"
+                  >
+                    <Activity className="h-3.5 w-3.5" />
+                    <span>{auditing ? "Auditing..." : "Audit Website"}</span>
+                  </button>
+                </>
               )}
+
+              <button
+                onClick={handleRunScoring}
+                disabled={scoring}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                title="Evaluate lead opportunity score using multi-factor engine"
+              >
+                <Layers className="h-3.5 w-3.5" />
+                <span>{scoring ? "Scoring..." : "Score Lead"}</span>
+              </button>
+
+              <button
+                onClick={handleGeneratePitch}
+                disabled={generatingPitch || business.is_suppressed}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                title="Generate tailored proposal draft based on audit findings"
+              >
+                <Send className="h-3.5 w-3.5" />
+                <span>{generatingPitch ? "Drafting..." : "Draft Proposal"}</span>
+              </button>
             </div>
           </div>
 
@@ -370,25 +506,192 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
               </div>
             </div>
 
-            {/* Opportunities List */}
-            {audit?.opportunities_identified && audit.opportunities_identified.length > 0 && (
-              <div className="mt-3 p-3 bg-amber-50/60 border border-amber-200 rounded-lg">
-                <p className="text-xs font-semibold text-amber-900 mb-1.5 flex items-center gap-1.5">
-                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
-                  Identified Freelance Pitch Angles:
+            {/* Detected Technology Stack */}
+            {audit?.technologies_detected && audit.technologies_detected.length > 0 && (
+              <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <p className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <Code2 className="h-3.5 w-3.5 text-blue-600" />
+                  <span>Detected Technology Stack:</span>
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {audit.opportunities_identified.map((opp) => (
+                  {audit.technologies_detected.map((tech) => (
                     <span
-                      key={opp}
-                      className="text-[11px] font-medium bg-amber-100/80 text-amber-800 px-2 py-0.5 rounded border border-amber-300/60"
+                      key={tech}
+                      className="text-[11px] font-medium bg-white text-slate-700 px-2 py-0.5 rounded border border-slate-200"
                     >
-                      • {opp.replace(/_/g, " ")}
+                      {tech}
                     </span>
                   ))}
                 </div>
               </div>
             )}
+
+            {/* Opportunities List with Concrete Evidence */}
+            {audit?.opportunities_identified && audit.opportunities_identified.length > 0 && (
+              <div className="mt-3 p-3 bg-amber-50/60 border border-amber-200 rounded-lg">
+                <p className="text-xs font-semibold text-amber-900 mb-2 flex items-center gap-1.5">
+                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
+                  <span>Evidence-Backed Freelance Pitch Angles:</span>
+                </p>
+                <div className="space-y-1.5">
+                  {audit.opportunities_identified.map((opp) => {
+                    const evidenceText = auditEvidence[opp] || `Identified deficiency: ${opp.replace(/_/g, " ")}`;
+                    return (
+                      <div
+                        key={opp}
+                        className="text-xs font-medium bg-amber-100/70 text-amber-900 p-2 rounded-md border border-amber-200/80 flex items-start gap-2"
+                      >
+                        <span className="font-bold shrink-0 text-amber-800">
+                          • {opp.replace(/_/g, " ").toUpperCase()}:
+                        </span>
+                        <span className="text-amber-950 font-normal">{evidenceText}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Lead Scoring Intelligence Breakdown */}
+          <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <Layers className="h-4 w-4 text-amber-600" />
+                <span>Opportunity Scoring Intelligence</span>
+              </h3>
+              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${scoreBadge.badgeClass}`}>
+                {totalScore} / 100 PTS • {scoreBadge.label}
+              </span>
+            </div>
+
+            {/* Recommended Pitch Recommendation */}
+            {(scoreObj?.score_breakdown as any)?.recommended_pitch && (
+              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-lg">
+                <p className="text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <span>Strategic Freelance Pitch Angle:</span>
+                </p>
+                <p className="text-xs text-blue-950 font-medium">
+                  {(scoreObj?.score_breakdown as any)?.recommended_pitch}
+                </p>
+              </div>
+            )}
+
+            {/* Factor Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">No Website</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.no_website_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Site Offline/Error</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.website_unavailable_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Mobile Deficiencies</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.mobile_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Missing Form/CTA</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.missing_contact_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Performance/Speed</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.performance_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Missing Info</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.missing_info_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Identity Corroborated</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.authenticity_score || 0} pts</span>
+              </div>
+              <div className="p-2 bg-white rounded border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-medium block">Public Email Found</span>
+                <span className="font-bold text-slate-800">+{scoreObj?.email_available_score || 0} pts</span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-slate-400 italic">
+              Notice: Opportunity scores measure empirical technical need for freelance web services, completely distinct from data verification. They do not constitute guaranteed purchasing intent.
+            </p>
+          </div>
+
+          {/* CRM Notes & Task Reminders */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Notes Section */}
+            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <FileText className="h-4 w-4 text-blue-600" />
+                <span>CRM Communication Notes</span>
+              </h3>
+
+              <form onSubmit={handleAddNote} className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Add a call outcome or discovery note..."
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  disabled={savingNote || !newNote.trim()}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold disabled:opacity-50"
+                >
+                  {savingNote ? "Saving..." : "Save"}
+                </button>
+              </form>
+
+              <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
+                {notes.length === 0 ? (
+                  <p className="text-slate-400 text-[11px] italic">No notes logged yet.</p>
+                ) : (
+                  notes.map((n) => (
+                    <div key={n.id} className="p-2 bg-white rounded border border-slate-200/80 text-[11px]">
+                      <p className="text-slate-800">{n.content}</p>
+                      <span className="text-[10px] text-slate-400 mt-0.5 block">
+                        {n.created_at ? new Date(n.created_at).toLocaleDateString() : ""}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Follow-Up Task Section */}
+            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <Calendar className="h-4 w-4 text-indigo-600" />
+                <span>Schedule Follow-Up Task</span>
+              </h3>
+
+              <form onSubmit={handleCreateTask} className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="Task title (e.g. Call founder for feedback)"
+                  value={taskTitle}
+                  onChange={(e) => setTaskTitle(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="date"
+                    value={taskDue}
+                    onChange={(e) => setTaskDue(e.target.value)}
+                    className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={savingTask || !taskTitle.trim() || !taskDue}
+                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold disabled:opacity-50"
+                  >
+                    {savingTask ? "Saving..." : "Schedule"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
 

@@ -17,9 +17,48 @@ export interface LeadScore {
   mobile_score: number;
   missing_contact_score: number;
   performance_score: number;
+  missing_info_score?: number;
   authenticity_score: number;
   email_available_score: number;
   score_breakdown?: Record<string, any>;
+}
+
+export interface ScoringWeightsConfig {
+  no_website: number;
+  website_unavailable: number;
+  poor_mobile: number;
+  missing_contact: number;
+  missing_info: number;
+  performance_issues: number;
+  identity_corroborated: number;
+  email_available: number;
+}
+
+export interface PresetProfile {
+  id: string;
+  name: string;
+  description: string;
+  weights: ScoringWeightsConfig;
+}
+
+export interface ScoreFactorDetail {
+  factor_name: string;
+  points_awarded: number;
+  max_possible: number;
+  reason: string;
+  evidence?: string;
+}
+
+export interface ScoreBreakdownDetail {
+  business_id: string;
+  business_name: string;
+  total_opportunity_score: number;
+  priority_tier: string;
+  verification_confidence: string;
+  factors: ScoreFactorDetail[];
+  disclaimer: string;
+  recommended_pitch_angle: string;
+  calculated_at: string;
 }
 
 export interface WebsiteAudit {
@@ -33,6 +72,8 @@ export interface WebsiteAudit {
   load_time_ms?: number;
   opportunities_identified: string[];
   technologies_detected: string[];
+  raw_audit_report?: Record<string, any>;
+  evidence?: Record<string, string>;
 }
 
 export interface Business {

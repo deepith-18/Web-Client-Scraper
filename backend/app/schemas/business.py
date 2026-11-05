@@ -21,13 +21,14 @@ class LeadScoreResponse(BaseModel):
     id: str
     total_opportunity_score: int
     priority_tier: str
-    no_website_score: int
-    website_unavailable_score: int
-    mobile_score: int
-    missing_contact_score: int
-    performance_score: int
-    authenticity_score: int
-    email_available_score: int
+    no_website_score: int = 0
+    website_unavailable_score: int = 0
+    mobile_score: int = 0
+    missing_contact_score: int = 0
+    performance_score: int = 0
+    missing_info_score: int = 0
+    authenticity_score: int = 0
+    email_available_score: int = 0
     score_breakdown: Optional[Dict[str, Any]] = None
 
     class Config:

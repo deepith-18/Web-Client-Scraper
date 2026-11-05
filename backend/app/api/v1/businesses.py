@@ -4,7 +4,10 @@ from typing import List, Optional
 from backend.app.core.database import get_db
 from backend.app.models.business import Business
 from backend.app.models.score import LeadScore
+from backend.app.models.crm import SuppressionRecord
 from backend.app.schemas.business import BusinessResponse, BusinessCreate, BusinessUpdate
+from backend.app.services.scoring_engine import ScoringEngine
+from backend.app.services.discovery_engine import normalize_domain
 
 router = APIRouter(prefix="/businesses", tags=["Businesses"])
 
@@ -50,6 +53,63 @@ def get_businesses(
 
     businesses = query.order_by(Business.created_at.desc()).offset(skip).limit(limit).all()
     return businesses
+
+@router.post("", response_model=BusinessResponse, status_code=201)
+def create_manual_business(biz_in: BusinessCreate, db: Session = Depends(get_db)):
+    """Create a manual lead with duplicate detection and automatic initial scoring."""
+    norm_domain = normalize_domain(biz_in.official_website) if biz_in.official_website else None
+
+    # Check suppression
+    is_suppressed = False
+    if norm_domain:
+        if db.query(SuppressionRecord).filter(SuppressionRecord.value == norm_domain).first():
+            is_suppressed = True
+
+    # Duplicate check by normalized domain or name + city
+    if norm_domain:
+        dup = db.query(Business).filter(Business.normalized_domain == norm_domain).first()
+        if dup:
+            raise HTTPException(status_code=409, detail=f"Duplicate detected: A business with domain '{norm_domain}' already exists ({dup.name}).")
+
+    name_city_dup = db.query(Business).filter(
+        Business.name.ilike(biz_in.name),
+        Business.city.ilike(biz_in.city)
+    ).first()
+    if name_city_dup:
+        raise HTTPException(status_code=409, detail=f"Duplicate detected: '{biz_in.name}' in '{biz_in.city}' already exists.")
+
+    biz = Business(
+        name=biz_in.name,
+        legal_name=biz_in.legal_name,
+        category=biz_in.category,
+        sub_category=biz_in.sub_category,
+        description=biz_in.description,
+        address_line1=biz_in.address_line1,
+        address_line2=biz_in.address_line2,
+        city=biz_in.city,
+        state_province=biz_in.state_province,
+        postal_code=biz_in.postal_code,
+        country=biz_in.country or "India",
+        latitude=biz_in.latitude,
+        longitude=biz_in.longitude,
+        official_website=biz_in.official_website,
+        normalized_domain=norm_domain,
+        contact_page_url=biz_in.contact_page_url,
+        crm_status="new" if not is_suppressed else "do_not_contact",
+        is_suppressed=is_suppressed
+    )
+    db.add(biz)
+    db.commit()
+    db.refresh(biz)
+
+    # Calculate initial lead score
+    try:
+        ScoringEngine.score_business(db, biz.id)
+        db.refresh(biz)
+    except Exception:
+        pass
+
+    return biz
 
 @router.get("/{business_id}", response_model=BusinessResponse)
 def get_business(business_id: str, db: Session = Depends(get_db)):

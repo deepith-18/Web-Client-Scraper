@@ -19,14 +19,14 @@ import {
 const navigationItems = [
   { name: "Overview", href: "/", icon: LayoutDashboard },
   { name: "Discover Businesses", href: "/discover", icon: Compass, badge: "Live" },
-  { name: "Lead Explorer", href: "/#leads", icon: Search },
-  { name: "Website Audits", href: "/#audits", icon: Activity },
-  { name: "Verification Centre", href: "/#verification", icon: ShieldCheck },
-  { name: "Lead Scoring", href: "/#scoring", icon: Layers },
-  { name: "CRM Pipeline", href: "/#pipeline", icon: FileCheck2 },
-  { name: "Outreach Manager", href: "/#outreach", icon: Send },
-  { name: "Analytics", href: "/#analytics", icon: BarChart3 },
-  { name: "Settings", href: "/#settings", icon: Settings },
+  { name: "Lead Explorer", href: "/leads", icon: Search },
+  { name: "Website Audits", href: "/audits", icon: Activity },
+  { name: "Verification Centre", href: "/verification", icon: ShieldCheck },
+  { name: "Lead Scoring", href: "/scoring", icon: Layers, badge: "Engine" },
+  { name: "CRM Pipeline", href: "/pipeline", icon: FileCheck2 },
+  { name: "Outreach Manager", href: "/outreach", icon: Send },
+  { name: "Analytics", href: "/analytics", icon: BarChart3 },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function Sidebar() {

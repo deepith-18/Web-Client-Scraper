@@ -46,6 +46,11 @@ class FollowUpCreate(BaseModel):
     title: str
     due_date: datetime
 
+class FollowUpUpdate(BaseModel):
+    title: Optional[str] = None
+    due_date: Optional[datetime] = None
+    is_completed: Optional[bool] = None
+
 class FollowUpResponse(BaseModel):
     id: str
     business_id: str

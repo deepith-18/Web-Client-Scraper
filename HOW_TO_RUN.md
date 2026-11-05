@@ -158,38 +158,31 @@ docker compose down
 
 ## 4. Running the Automated Test Suite
 
-ProspectIQ includes automated unit tests covering security, password hashing, JWT generation, SSRF defense, and the lead scoring matrix:
+ProspectIQ includes automated unit and integration tests covering security, password hashing, JWT generation, SSRF defense, lead scoring, discovery pipelines, deep contact verification, website opportunity analysis, and CRM pipeline workflows:
 
 ```bash
-# Run all unit tests with pytest:
-backend\.venv\Scripts\pytest backend/tests
+# Run all 37 tests across the entire backend suite:
+backend\.venv\Scripts\pytest -v
 
-# Run specifically the SSRF shield security tests:
-backend\.venv\Scripts\pytest backend/tests/test_ssrf.py -v
-
-# Run lead scoring engine tests:
+# Or run individual modules:
+backend\.venv\Scripts\pytest backend/tests/test_crm.py -v
 backend\.venv\Scripts\pytest backend/tests/test_scoring.py -v
-
-# Run authentication and password hashing tests:
+backend\.venv\Scripts\pytest backend/tests/test_analyzer.py -v
+backend\.venv\Scripts\pytest backend/tests/test_verification.py -v
+backend\.venv\Scripts\pytest backend/tests/test_discovery.py -v
+backend\.venv\Scripts\pytest backend/tests/test_ssrf.py -v
 backend\.venv\Scripts\pytest backend/tests/test_auth.py -v
 ```
 
 ---
 
-## 5. Verifying Frontend Production Build
+## 5. Verifying Frontend Production Build & Types
 
-Before pushing to GitHub, ensure the Next.js frontend passes all TypeScript type checks and compiles cleanly:
+Before pushing to GitHub, ensure the Next.js frontend passes all TypeScript type checks:
 
 ```bash
-cd frontend
-npm run build
-```
-
-Expected output:
-```
-✓ Compiled successfully
-✓ Generating static pages (5/5)
-✓ Finalizing page optimization
+# Verify TypeScript compilation (0 errors across all routes)
+frontend\node_modules\.bin\tsc.cmd --noEmit --project frontend/tsconfig.json
 ```
 
 ---
@@ -198,39 +191,20 @@ Expected output:
 
 Since you are pushing phase-by-phase to GitHub, follow these git workflow steps:
 
-### Initial Repository Initialization
-
 ```bash
-# 1. Initialize git repository (if not already done)
-git init
-
-# 2. Verify .gitignore is in place so .venv and node_modules are ignored
+# 1. Check current repository status
 git status
 
-# 3. Stage Phase 1 files
+# 2. Stage all modifications
 git add .
 
-# 4. Commit Phase 1
-git commit -m "feat(phase-1): complete project setup, database schema, auth, and frontend dashboard layout"
+# 3. Commit Phase 6 & Phase 7 milestones
+git commit -m "feat(crm-pipeline-hardening): complete Phase 6 CRM pipeline, outreach queue, manual lead registration, and Phase 7 production hardening"
 
-# 5. Add tag for Phase 1 milestone
-git tag -a v0.1.0-phase1 -m "Phase 1: Project Setup, Database, Auth & Layout"
+# 4. Optional: Create milestone tags
+git tag -a v1.0.0-full -m "ProspectIQ Production Release (Phases 1-7)"
 
-# 6. Link to your GitHub remote repository (replace with your GitHub repo URL)
-git remote add origin https://github.com/YOUR_USERNAME/ProspectIQ.git
-
-# 7. Push to GitHub with tags
-git branch -M main
-git push -u origin main --tags
-```
-
-### For Future Phases (e.g. Phase 2)
-
-```bash
-# When Phase 2 is completed:
-git add .
-git commit -m "feat(phase-2): business discovery engine and Overpass OSM integration"
-git tag -a v0.2.0-phase2 -m "Phase 2: Business Discovery Integrations"
+# 5. Push to your GitHub repository
 git push origin main --tags
 ```
 
