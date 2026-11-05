@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text, Integer
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from backend.app.core.database import Base
@@ -29,6 +29,8 @@ class OutreachRecord(Base):
     subject = Column(String(255), nullable=True)
     generated_pitch = Column(Text, nullable=False)
     sent_pitch = Column(Text, nullable=True)
+    stage_step = Column(Integer, default=1, nullable=False)  # 1: Initial, 2: Follow-up 1, 3: Follow-up 2
+    template_id = Column(String(36), nullable=True)
     status = Column(String(50), default="draft", nullable=False)  # draft, approved, sent, replied, declined
     manual_approval_granted = Column(Boolean, default=False, nullable=False)
     
@@ -60,4 +62,19 @@ class SuppressionRecord(Base):
     suppression_type = Column(String(50), nullable=False)  # domain, email, phone, business_name
     reason = Column(String(255), nullable=True)
     requested_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+class OutreachTemplate(Base):
+    __tablename__ = "outreach_templates"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    name = Column(String(100), nullable=False)
+    channel = Column(String(50), default="email", nullable=False)  # email, linkedin, phone
+    stage_step = Column(Integer, default=1, nullable=False)  # 1: Initial, 2: Follow-up 1, 3: Follow-up 2
+    delay_days = Column(Integer, default=0, nullable=False)  # Days to wait before sending
+    subject_template = Column(String(255), nullable=False)
+    body_template = Column(Text, nullable=False)
+    is_default = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
 

@@ -157,3 +157,67 @@ export interface LeadSource {
   is_authorized: boolean;
 }
 
+export interface OutreachRecord {
+  id: string;
+  business_id: string;
+  channel: string;
+  recipient?: string;
+  subject?: string;
+  generated_pitch: string;
+  sent_pitch?: string;
+  stage_step: number;
+  template_id?: string;
+  status: "draft" | "approved" | "sent" | "replied" | "declined";
+  manual_approval_granted: boolean;
+  sent_at?: string;
+  created_at: string;
+}
+
+export interface OutreachTemplate {
+  id: string;
+  name: string;
+  channel: string;
+  stage_step: number;
+  delay_days: number;
+  subject_template: string;
+  body_template: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OutreachRenderResponse {
+  subject: string;
+  body: string;
+  recipient?: string;
+  channel: string;
+  tokens_substituted: string[];
+}
+
+export interface FollowUpTask {
+  id: string;
+  business_id: string;
+  title: string;
+  due_date: string;
+  is_completed: boolean;
+  completed_at?: string;
+  created_at: string;
+}
+
+export interface LeadNote {
+  id: string;
+  business_id: string;
+  user_id?: string;
+  content: string;
+  created_at: string;
+}
+
+export interface SuppressionRecord {
+  id: string;
+  value: string;
+  suppression_type: string;
+  reason?: string;
+  requested_at: string;
+}
+
+

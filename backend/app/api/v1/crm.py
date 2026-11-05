@@ -6,12 +6,14 @@ from backend.app.core.database import get_db
 from backend.app.models.business import Business
 from backend.app.models.audit import WebsiteAudit
 from backend.app.models.contact import BusinessContact
-from backend.app.models.crm import LeadNote, OutreachRecord, SuppressionRecord, FollowUpTask
+from backend.app.models.crm import LeadNote, OutreachRecord, SuppressionRecord, FollowUpTask, OutreachTemplate
 from backend.app.schemas.crm import (
     LeadNoteCreate, LeadNoteResponse,
     OutreachCreate, OutreachUpdate, OutreachResponse,
     SuppressionCreate, SuppressionResponse,
-    FollowUpCreate, FollowUpUpdate, FollowUpResponse
+    FollowUpCreate, FollowUpUpdate, FollowUpResponse,
+    OutreachTemplateCreate, OutreachTemplateUpdate, OutreachTemplateResponse,
+    OutreachRenderRequest, OutreachRenderResponse, OutreachSequenceCreate
 )
 from backend.app.services.outreach_generator import OutreachGenerator
 
@@ -76,14 +78,24 @@ def get_outreach_records(skip: int = 0, limit: int = 50, db: Session = Depends(g
     return db.query(OutreachRecord).order_by(OutreachRecord.created_at.desc()).offset(skip).limit(limit).all()
 
 @router.post("/outreach/generate/{business_id}", response_model=OutreachResponse)
-def generate_business_outreach(business_id: str, db: Session = Depends(get_db)):
-    """Generates an evidence-backed email proposal draft based on audit findings."""
+def generate_business_outreach(
+    business_id: str,
+    template_id: Optional[str] = Query(None),
+    freelancer_name: str = Query("Deepith"),
+    freelancer_portfolio: str = Query("https://portfolio.dev"),
+    db: Session = Depends(get_db)
+):
+    """Generates an evidence-backed proposal draft based on audit findings and template selection."""
     biz = db.query(Business).filter(Business.id == business_id).first()
     if not biz:
         raise HTTPException(status_code=404, detail="Business not found")
 
     if biz.is_suppressed:
         raise HTTPException(status_code=400, detail="Cannot generate outreach for suppressed / do-not-contact business")
+
+    tpl = None
+    if template_id and not hasattr(template_id, "default"):
+        tpl = db.query(OutreachTemplate).filter(OutreachTemplate.id == template_id).first()
 
     audit = db.query(WebsiteAudit).filter(WebsiteAudit.business_id == business_id).order_by(WebsiteAudit.audited_at.desc()).first()
     email_contact = db.query(BusinessContact).filter(
@@ -92,14 +104,23 @@ def generate_business_outreach(business_id: str, db: Session = Depends(get_db)):
     ).first()
 
     recipient = email_contact.normalized_value if email_contact else None
-    pitch_data = OutreachGenerator.generate_pitch(biz, audit=audit, recipient_email=recipient)
+    pitch_data = OutreachGenerator.generate_pitch(
+        biz,
+        audit=audit,
+        recipient_email=recipient,
+        template=tpl,
+        freelancer_name=freelancer_name,
+        freelancer_portfolio=freelancer_portfolio
+    )
 
     outreach = OutreachRecord(
         business_id=biz.id,
-        channel="email",
+        channel=pitch_data.get("channel", "email"),
         recipient=recipient,
         subject=pitch_data["subject"],
         generated_pitch=pitch_data["body"],
+        stage_step=pitch_data.get("stage_step", 1),
+        template_id=tpl.id if tpl else None,
         status="draft",
         manual_approval_granted=False
     )
@@ -260,3 +281,196 @@ def delete_task(task_id: str, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     return {"message": "Task deleted successfully"}
+
+# -------------------------------------------------------------
+# Template Studio & Outreach Sequences (Phase 8)
+# -------------------------------------------------------------
+
+@router.get("/templates", response_model=List[OutreachTemplateResponse])
+def get_templates(channel: Optional[str] = None, db: Session = Depends(get_db)):
+    """Retrieve all available outreach pitch templates, auto-seeding defaults if empty."""
+    OutreachGenerator.ensure_default_templates(db)
+    query = db.query(OutreachTemplate)
+    if channel and not hasattr(channel, "default"):
+        query = query.filter(OutreachTemplate.channel == channel)
+    return query.order_by(OutreachTemplate.stage_step.asc(), OutreachTemplate.name.asc()).all()
+
+@router.post("/templates", response_model=OutreachTemplateResponse)
+def create_template(tpl_in: OutreachTemplateCreate, db: Session = Depends(get_db)):
+    """Create a new custom outreach sequence template."""
+    new_tpl = OutreachTemplate(
+        name=tpl_in.name,
+        channel=tpl_in.channel,
+        stage_step=tpl_in.stage_step,
+        delay_days=tpl_in.delay_days,
+        subject_template=tpl_in.subject_template,
+        body_template=tpl_in.body_template,
+        is_default=tpl_in.is_default
+    )
+    db.add(new_tpl)
+    db.commit()
+    db.refresh(new_tpl)
+    return new_tpl
+
+@router.get("/templates/{template_id}", response_model=OutreachTemplateResponse)
+def get_template(template_id: str, db: Session = Depends(get_db)):
+    tpl = db.query(OutreachTemplate).filter(OutreachTemplate.id == template_id).first()
+    if not tpl:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return tpl
+
+@router.put("/templates/{template_id}", response_model=OutreachTemplateResponse)
+def update_template(template_id: str, updates: OutreachTemplateUpdate, db: Session = Depends(get_db)):
+    tpl = db.query(OutreachTemplate).filter(OutreachTemplate.id == template_id).first()
+    if not tpl:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    if updates.name is not None:
+        tpl.name = updates.name
+    if updates.channel is not None:
+        tpl.channel = updates.channel
+    if updates.stage_step is not None:
+        tpl.stage_step = updates.stage_step
+    if updates.delay_days is not None:
+        tpl.delay_days = updates.delay_days
+    if updates.subject_template is not None:
+        tpl.subject_template = updates.subject_template
+    if updates.body_template is not None:
+        tpl.body_template = updates.body_template
+    if updates.is_default is not None:
+        tpl.is_default = updates.is_default
+
+    db.commit()
+    db.refresh(tpl)
+    return tpl
+
+@router.delete("/templates/{template_id}")
+def delete_template(template_id: str, db: Session = Depends(get_db)):
+    tpl = db.query(OutreachTemplate).filter(OutreachTemplate.id == template_id).first()
+    if not tpl:
+        raise HTTPException(status_code=404, detail="Template not found")
+    db.delete(tpl)
+    db.commit()
+    return {"message": "Template deleted successfully"}
+
+@router.post("/outreach/render", response_model=OutreachRenderResponse)
+def render_outreach_preview(req: OutreachRenderRequest, db: Session = Depends(get_db)):
+    """Renders a dynamic outreach pitch preview for a lead without saving it."""
+    biz = db.query(Business).filter(Business.id == req.business_id).first()
+    if not biz:
+        raise HTTPException(status_code=404, detail="Business not found")
+
+    audit = db.query(WebsiteAudit).filter(WebsiteAudit.business_id == req.business_id).order_by(WebsiteAudit.audited_at.desc()).first()
+    email_contact = db.query(BusinessContact).filter(
+        BusinessContact.business_id == req.business_id,
+        BusinessContact.contact_type == "email"
+    ).first()
+
+    variables = OutreachGenerator.get_template_variables(
+        business=biz,
+        audit=audit,
+        freelancer_name=req.freelancer_name or "Deepith",
+        freelancer_portfolio=req.freelancer_portfolio or "https://portfolio.dev"
+    )
+
+    subject_tpl = req.custom_subject_template
+    body_tpl = req.custom_body_template
+    channel = "email"
+
+    if req.template_id:
+        tpl = db.query(OutreachTemplate).filter(OutreachTemplate.id == req.template_id).first()
+        if tpl:
+            subject_tpl = tpl.subject_template
+            body_tpl = tpl.body_template
+            channel = tpl.channel
+
+    if not subject_tpl or not body_tpl:
+        pitch = OutreachGenerator.generate_pitch(
+            biz,
+            audit=audit,
+            recipient_email=email_contact.normalized_value if email_contact else None,
+            freelancer_name=req.freelancer_name or "Deepith",
+            freelancer_portfolio=req.freelancer_portfolio or "https://portfolio.dev"
+        )
+        return OutreachRenderResponse(
+            subject=pitch["subject"],
+            body=pitch["body"],
+            recipient=email_contact.normalized_value if email_contact else None,
+            channel=pitch.get("channel", "email"),
+            tokens_substituted=pitch.get("tokens_substituted", [])
+        )
+
+    sub, body, tokens = OutreachGenerator.render_template(subject_tpl, body_tpl, variables)
+    return OutreachRenderResponse(
+        subject=sub,
+        body=body,
+        recipient=email_contact.normalized_value if email_contact else None,
+        channel=channel,
+        tokens_substituted=tokens
+    )
+
+@router.post("/outreach/create-sequence", response_model=List[OutreachResponse])
+def create_outreach_sequence(seq: OutreachSequenceCreate, db: Session = Depends(get_db)):
+    """Creates a multi-touch outreach sequence (e.g. Touch 1, Touch 2, Touch 3) and calendar tasks."""
+    biz = db.query(Business).filter(Business.id == seq.business_id).first()
+    if not biz:
+        raise HTTPException(status_code=404, detail="Business not found")
+
+    if biz.is_suppressed:
+        raise HTTPException(status_code=400, detail="Cannot generate outreach for suppressed lead")
+
+    audit = db.query(WebsiteAudit).filter(WebsiteAudit.business_id == seq.business_id).order_by(WebsiteAudit.audited_at.desc()).first()
+    email_contact = db.query(BusinessContact).filter(
+        BusinessContact.business_id == seq.business_id,
+        BusinessContact.contact_type == "email"
+    ).first()
+
+    recipient = seq.recipient or (email_contact.normalized_value if email_contact else None)
+    created_records = []
+
+    for tpl_id in seq.template_ids:
+        tpl = db.query(OutreachTemplate).filter(OutreachTemplate.id == tpl_id).first()
+        if not tpl:
+            continue
+
+        pitch_data = OutreachGenerator.generate_pitch(
+            biz,
+            audit=audit,
+            recipient_email=recipient,
+            template=tpl,
+            freelancer_name=seq.freelancer_name or "Deepith",
+            freelancer_portfolio=seq.freelancer_portfolio or "https://portfolio.dev"
+        )
+
+        rec = OutreachRecord(
+            business_id=biz.id,
+            channel=tpl.channel,
+            recipient=recipient,
+            subject=pitch_data["subject"],
+            generated_pitch=pitch_data["body"],
+            stage_step=tpl.stage_step,
+            template_id=tpl.id,
+            status="draft",
+            manual_approval_granted=False
+        )
+        db.add(rec)
+        created_records.append(rec)
+
+        # If delay_days > 0, automatically schedule a follow-up task reminder
+        if tpl.delay_days > 0:
+            from datetime import timedelta
+            due_at = datetime.utcnow() + timedelta(days=tpl.delay_days)
+            task = FollowUpTask(
+                business_id=biz.id,
+                title=f"Sequence Touch {tpl.stage_step}: {tpl.name} for {biz.name}",
+                due_date=due_at,
+                is_completed=False
+            )
+            db.add(task)
+
+    db.commit()
+    for r in created_records:
+        db.refresh(r)
+
+    return created_records
+

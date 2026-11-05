@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Business } from "@/types";
+import { Business, OutreachTemplate } from "@/types";
 import { formatScoreTier } from "@/lib/utils";
 import {
   verifyBusiness,
@@ -12,6 +12,7 @@ import {
   fetchBusinessNotes,
   addBusinessNote,
   createBusinessTask,
+  fetchOutreachTemplates,
 } from "@/lib/api-client";
 import {
   X,
@@ -74,10 +75,18 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDue, setTaskDue] = useState("");
   const [savingTask, setSavingTask] = useState(false);
+  const [availableTemplates, setAvailableTemplates] = useState<OutreachTemplate[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
 
   useEffect(() => {
     if (business?.id) {
       fetchBusinessNotes(business.id).then(setNotes).catch(() => {});
+      fetchOutreachTemplates()
+        .then((tpls) => {
+          setAvailableTemplates(tpls);
+          if (tpls.length > 0) setSelectedTemplateId(tpls[0].id);
+        })
+        .catch(() => {});
     }
   }, [business?.id]);
 
@@ -158,8 +167,8 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
     setGeneratingPitch(true);
     setActionMessage(null);
     try {
-      await generateOutreachPitch(business.id);
-      setActionMessage("Evidence-backed proposal draft created! View under Outreach Manager.");
+      await generateOutreachPitch(business.id, selectedTemplateId || undefined);
+      setActionMessage("Evidence-backed proposal draft created! View and manage under Outreach Studio.");
     } catch (err: any) {
       setActionMessage(`Pitch error: ${err.message}`);
     } finally {
@@ -309,6 +318,21 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                 <span>{scoring ? "Scoring..." : "Score Lead"}</span>
               </button>
 
+              {availableTemplates.length > 0 && (
+                <select
+                  value={selectedTemplateId}
+                  onChange={(e) => setSelectedTemplateId(e.target.value)}
+                  className="bg-white border border-blue-200 text-slate-800 text-[11px] font-medium rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 max-w-[140px] truncate"
+                  title="Choose outreach template strategy"
+                >
+                  {availableTemplates.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} (Step {t.stage_step})
+                    </option>
+                  ))}
+                </select>
+              )}
+
               <button
                 onClick={handleGeneratePitch}
                 disabled={generatingPitch || business.is_suppressed}
@@ -316,7 +340,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                 title="Generate tailored proposal draft based on audit findings"
               >
                 <Send className="h-3.5 w-3.5" />
-                <span>{generatingPitch ? "Drafting..." : "Draft Proposal"}</span>
+                <span>{generatingPitch ? "Drafting..." : "Draft Pitch"}</span>
               </button>
             </div>
           </div>

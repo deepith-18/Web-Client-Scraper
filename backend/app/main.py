@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
-from backend.app.core.database import engine, Base
+from backend.app.core.database import engine, Base, run_migrations
 from backend.app.api.v1 import auth, businesses, discovery, analytics, crm, verification, audits, scoring
 
 # Create database tables automatically if not using manual alembic
 Base.metadata.create_all(bind=engine)
+run_migrations()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

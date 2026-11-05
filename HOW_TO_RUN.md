@@ -161,10 +161,11 @@ docker compose down
 ProspectIQ includes automated unit and integration tests covering security, password hashing, JWT generation, SSRF defense, lead scoring, discovery pipelines, deep contact verification, website opportunity analysis, and CRM pipeline workflows:
 
 ```bash
-# Run all 37 tests across the entire backend suite:
+# Run all 41 tests across the entire backend suite:
 backend\.venv\Scripts\pytest -v
 
 # Or run individual modules:
+backend\.venv\Scripts\pytest backend/tests/test_outreach_studio.py -v
 backend\.venv\Scripts\pytest backend/tests/test_crm.py -v
 backend\.venv\Scripts\pytest backend/tests/test_scoring.py -v
 backend\.venv\Scripts\pytest backend/tests/test_analyzer.py -v
