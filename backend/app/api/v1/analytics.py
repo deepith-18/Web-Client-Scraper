@@ -6,7 +6,14 @@ from backend.app.models.business import Business
 from backend.app.models.contact import BusinessContact
 from backend.app.models.score import LeadScore
 from backend.app.models.audit import WebsiteAudit
-from backend.app.schemas.analytics import AnalyticsOverviewResponse, CategoryDistribution, OpportunityDistribution, CRMStatusDistribution
+from backend.app.schemas.analytics import (
+    AnalyticsOverviewResponse,
+    CategoryDistribution,
+    OpportunityDistribution,
+    CRMStatusDistribution,
+    CategoryAcceptanceRate,
+    AcceptanceAnalyticsResponse
+)
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
@@ -72,4 +79,69 @@ def get_analytics_overview(db: Session = Depends(get_db)):
         opportunity_distribution=opportunity_distribution,
         crm_distribution=crm_distribution
     )
+
+@router.get("/acceptance-rates", response_model=AcceptanceAnalyticsResponse)
+def get_acceptance_analytics(db: Session = Depends(get_db)):
+    """Computes caller acceptance vs rejection performance and conversion rate by business category."""
+    accepted_statuses = ["interested", "meeting_scheduled", "proposal_sent", "negotiation", "converted"]
+    rejected_statuses = ["not_interested", "do_not_contact"]
+
+    # Fetch all categories
+    categories = db.query(Business.category).distinct().all()
+    cat_breakdown: List[CategoryAcceptanceRate] = []
+
+    total_accepted_all = 0
+    total_rejected_all = 0
+    total_called_all = 0
+
+    best_cat = "N/A"
+    best_rate = -1.0
+
+    for (cat_name,) in categories:
+        if not cat_name:
+            continue
+
+        accepted_cnt = db.query(Business).filter(
+            Business.category == cat_name,
+            Business.crm_status.in_(accepted_statuses)
+        ).count()
+
+        rejected_cnt = db.query(Business).filter(
+            Business.category == cat_name,
+            Business.crm_status.in_(rejected_statuses)
+        ).count()
+
+        called_cnt = accepted_cnt + rejected_cnt
+        rate_pct = round((accepted_cnt / called_cnt * 100), 1) if called_cnt > 0 else 0.0
+
+        if called_cnt > 0 and rate_pct > best_rate:
+            best_rate = rate_pct
+            best_cat = cat_name
+
+        total_accepted_all += accepted_cnt
+        total_rejected_all += rejected_cnt
+        total_called_all += called_cnt
+
+        cat_breakdown.append(CategoryAcceptanceRate(
+            category=cat_name,
+            total_called=called_cnt,
+            accepted_count=accepted_cnt,
+            rejected_count=rejected_cnt,
+            acceptance_rate_pct=rate_pct
+        ))
+
+    # Sort breakdown by total called desc, then acceptance rate desc
+    cat_breakdown.sort(key=lambda x: (x.total_called, x.acceptance_rate_pct), reverse=True)
+
+    overall_rate = round((total_accepted_all / total_called_all * 100), 1) if total_called_all > 0 else 0.0
+
+    return AcceptanceAnalyticsResponse(
+        overall_calls=total_called_all,
+        total_accepted=total_accepted_all,
+        total_rejected=total_rejected_all,
+        overall_acceptance_rate_pct=overall_rate,
+        best_converting_category=best_cat if best_cat != "N/A" else (cat_breakdown[0].category if cat_breakdown else "None"),
+        category_breakdown=cat_breakdown
+    )
+
 

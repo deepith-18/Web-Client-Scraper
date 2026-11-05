@@ -17,20 +17,35 @@ def seed_database():
     db = SessionLocal()
 
     try:
-        # 1. Admin User
+        # 1. Admin & Caller Users
         admin = db.query(User).filter(User.email == "admin@prospectiq.io").first()
         if not admin:
             admin = User(
                 email="admin@prospectiq.io",
                 hashed_password=get_password_hash("prospect123!"),
-                full_name="Alex Rivera (Freelance Full-Stack)",
+                full_name="Deepith (Lead Developer & Admin)",
                 role="admin",
                 is_active=True
             )
             db.add(admin)
-            db.commit()
-            db.refresh(admin)
-            print("Created default user: admin@prospectiq.io (password: prospect123!)")
+            print("Created default admin user: admin@prospectiq.io (password: prospect123!)")
+        else:
+            admin.full_name = "Deepith (Lead Developer & Admin)"
+            admin.role = "admin"
+
+        caller = db.query(User).filter(User.email == "caller@prospectiq.io").first()
+        if not caller:
+            caller = User(
+                email="caller@prospectiq.io",
+                hashed_password=get_password_hash("caller123!"),
+                full_name="Team Caller (Telecaller / SDR)",
+                role="caller",
+                is_active=True
+            )
+            db.add(caller)
+            print("Created caller user: caller@prospectiq.io (password: caller123!)")
+
+        db.commit()
 
         # 2. Lead Sources
         sources = [

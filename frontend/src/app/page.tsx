@@ -5,8 +5,8 @@ import { Header } from "@/components/layout/header";
 import { MetricsCard } from "@/components/ui/metrics-card";
 import { LeadModal } from "@/components/ui/lead-modal";
 import { formatScoreTier } from "@/lib/utils";
-import { fetchAnalytics, fetchBusinesses, updateBusinessStatus } from "@/lib/api-client";
-import { Business, AnalyticsOverview } from "@/types";
+import { fetchAnalytics, fetchBusinesses, updateBusinessStatus, fetchAcceptanceAnalytics } from "@/lib/api-client";
+import { Business, AnalyticsOverview, AcceptanceAnalytics } from "@/types";
 import {
   Users,
   AlertCircle,
@@ -18,6 +18,11 @@ import {
   ChevronRight,
   Filter,
   Sparkles,
+  ThumbsUp,
+  PhoneCall,
+  Code2,
+  Award,
+  ArrowUpRight,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -29,16 +34,19 @@ export default function DashboardPage() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [selectedLead, setSelectedLead] = useState<Business | null>(null);
+  const [acceptanceStats, setAcceptanceStats] = useState<AcceptanceAnalytics | null>(null);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [analyticsData, bizData] = await Promise.all([
+      const [analyticsData, bizData, acceptData] = await Promise.all([
         fetchAnalytics().catch(() => null),
         fetchBusinesses().catch(() => []),
+        fetchAcceptanceAnalytics().catch(() => null),
       ]);
       setAnalytics(analyticsData);
       setBusinesses(bizData);
+      setAcceptanceStats(acceptData);
     } catch (err) {
       console.error("Error loading dashboard data", err);
     } finally {
@@ -101,6 +109,13 @@ export default function DashboardPage() {
     const set = new Set<string>();
     businesses.forEach((b) => set.add(b.category));
     return Array.from(set);
+  }, [businesses]);
+
+  // Clients accepted by caller, ready for Deepith
+  const acceptedClients = useMemo(() => {
+    return businesses.filter((b) =>
+      ["interested", "meeting_scheduled", "proposal_sent", "negotiation", "converted"].includes(b.crm_status)
+    );
   }, [businesses]);
 
   return (
@@ -168,6 +183,144 @@ export default function DashboardPage() {
             color="emerald"
           />
         </div>
+
+        {/* Deepith's Action Queue: Accepted Clients (Agreed to Website) */}
+        <div className="p-6 bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 text-white rounded-2xl border border-emerald-500/30 shadow-xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <h2 className="text-base font-bold tracking-tight text-white flex items-center gap-2">
+                  <span>Deepith's Priority Queue: Accepted Clients</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                    {acceptedClients.length} agreed
+                  </span>
+                </h2>
+              </div>
+              <p className="text-xs text-slate-300 mt-1">
+                Clients your teammate successfully called and confirmed. Ready for you to review audits, build wireframes, and send proposals.
+              </p>
+            </div>
+
+            <a
+              href="/calling"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto flex items-center gap-1.5"
+            >
+              <PhoneCall className="h-4 w-4" />
+              <span>Go to Caller Desk</span>
+            </a>
+          </div>
+
+          {acceptedClients.length === 0 ? (
+            <div className="p-8 text-center bg-white/5 rounded-xl border border-white/10 text-xs text-slate-300 space-y-1">
+              <p className="font-semibold text-white">No confirmed clients waiting yet.</p>
+              <p className="text-slate-400">
+                Have your teammate open the <a href="/calling" className="text-emerald-400 underline">Caller Desk</a> to call leads and mark agreed businesses as Accepted!
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {acceptedClients.slice(0, 6).map((client) => {
+                const phone = client.contacts?.find((c) => c.contact_type === "phone")?.raw_value;
+                const score = client.lead_scores?.[0]?.total_opportunity_score ?? 0;
+
+                return (
+                  <div
+                    key={client.id}
+                    className="p-4 bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl space-y-3 transition-colors backdrop-blur-xs flex flex-col justify-between"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-bold text-white text-sm truncate">{client.name}</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shrink-0">
+                          {score} PTS
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-300">
+                        {client.category} · {client.city}
+                      </p>
+
+                      {phone && (
+                        <p className="text-[11px] font-mono text-emerald-300 flex items-center gap-1">
+                          <PhoneCall className="h-3 w-3" />
+                          <span>{phone}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs">
+                      <span className="text-[11px] text-slate-400">
+                        {client.official_website ? "Redesign Prospect" : "Turnkey Website"}
+                      </span>
+                      <button
+                        onClick={() => setSelectedLead(client)}
+                        className="text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center gap-1"
+                      >
+                        <span>View Audit & Pitch</span>
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Acceptance Analytics: Which Business Type Accepts Most? */}
+        {acceptanceStats && (
+          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-indigo-600" />
+                  <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                    Which Business Type Accepts Most? (Acceptance Rate by Category)
+                  </h2>
+                </div>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Real-time conversion tracking showing which business types agree to websites the most.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-400">Top Converting:</span>
+                <span className="px-2.5 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-bold flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
+                  <span>{acceptanceStats.best_converting_category}</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+              {acceptanceStats.category_breakdown.slice(0, 4).map((cat) => (
+                <div key={cat.category} className="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-slate-900 truncate">{cat.category}</span>
+                    <span className="font-bold text-indigo-600 font-mono text-sm">{cat.acceptance_rate_pct}%</span>
+                  </div>
+
+                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.max(8, cat.acceptance_rate_pct)}%` }}
+                    ></div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-slate-400">
+                    <span className="text-emerald-700 font-medium">{cat.accepted_count} agreed</span>
+                    <span className="text-rose-600 font-medium">{cat.rejected_count} declined</span>
+                    <span>{cat.total_called} called</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Leads Management Section */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden" id="leads">

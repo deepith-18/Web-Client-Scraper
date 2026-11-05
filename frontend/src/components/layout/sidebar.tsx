@@ -14,17 +14,20 @@ import {
   Settings,
   Globe2,
   FileCheck2,
+  PhoneCall,
+  UserCheck,
 } from "lucide-react";
 
 const navigationItems = [
   { name: "Overview", href: "/", icon: LayoutDashboard },
+  { name: "Caller Desk", href: "/calling", icon: PhoneCall, badge: "Calls" },
   { name: "Discover Businesses", href: "/discover", icon: Compass, badge: "Live" },
   { name: "Lead Explorer", href: "/leads", icon: Search },
   { name: "Website Audits", href: "/audits", icon: Activity },
   { name: "Verification Centre", href: "/verification", icon: ShieldCheck },
   { name: "Lead Scoring", href: "/scoring", icon: Layers, badge: "Engine" },
   { name: "CRM Pipeline", href: "/pipeline", icon: FileCheck2 },
-  { name: "Outreach Manager", href: "/outreach", icon: Send },
+  { name: "Outreach Studio", href: "/outreach", icon: Send },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
@@ -101,15 +104,23 @@ export function Sidebar() {
       </nav>
 
       {/* User / Workspace Footer */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/60">
+      <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 space-y-2">
         <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs">
-            AR
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs">
+            DN
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-200 truncate">Alex Rivera</p>
-            <p className="text-[11px] text-slate-400 truncate">Freelance Web Studio</p>
+            <p className="text-xs font-semibold text-slate-200 truncate">Deepith</p>
+            <p className="text-[11px] text-blue-400 font-medium truncate">Lead Admin & Developer</p>
           </div>
+        </div>
+
+        <div className="p-2 rounded-lg bg-slate-900/40 border border-slate-800/60 flex items-center justify-between text-[11px]">
+          <span className="text-slate-400">Role View:</span>
+          <span className="text-emerald-400 font-semibold flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            Admin + SDR
+          </span>
         </div>
       </div>
     </aside>

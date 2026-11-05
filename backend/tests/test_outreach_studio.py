@@ -57,13 +57,13 @@ def test_dynamic_token_substitution():
     variables = OutreachGenerator.get_template_variables(
         business=biz,
         audit=audit,
-        freelancer_name="Alex Designer",
-        freelancer_portfolio="https://alex.design"
+        freelancer_name="Deepith",
+        freelancer_portfolio="https://portfolio.dev"
     )
 
     assert variables["business_name"] == "Indiranagar Specialty Clinic"
     assert variables["city"] == "Bengaluru"
-    assert variables["freelancer_name"] == "Alex Designer"
+    assert variables["freelancer_name"] == "Deepith"
     assert "Insecure Connection" in variables["deficiencies_list"]
     assert "Mobile Viewport" in variables["deficiencies_list"]
 
@@ -73,7 +73,7 @@ def test_dynamic_token_substitution():
     sub, body, substituted = OutreachGenerator.render_template(subject_tpl, body_tpl, variables)
     assert sub == "Custom Pitch for Indiranagar Specialty Clinic in Bengaluru"
     assert "Indiranagar Specialty Clinic" in body
-    assert "Alex Designer" in body
+    assert "Deepith" in body
     assert "Insecure Connection" in body
     assert "business_name" in substituted
     assert "city" in substituted

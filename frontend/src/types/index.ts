@@ -132,6 +132,23 @@ export interface AnalyticsOverview {
   crm_distribution: { status: string; count: number }[];
 }
 
+export interface CategoryAcceptanceRate {
+  category: string;
+  total_called: number;
+  accepted_count: number;
+  rejected_count: number;
+  acceptance_rate_pct: number;
+}
+
+export interface AcceptanceAnalytics {
+  overall_calls: number;
+  total_accepted: number;
+  total_rejected: number;
+  overall_acceptance_rate_pct: number;
+  best_converting_category: string;
+  category_breakdown: CategoryAcceptanceRate[];
+}
+
 export interface ScrapingJob {
   id: string;
   job_name: string;
