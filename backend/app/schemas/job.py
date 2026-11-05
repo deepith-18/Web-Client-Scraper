@@ -20,10 +20,14 @@ class ScrapingJobCreate(BaseModel):
     target_category: str
     search_keywords: Optional[str] = None
     source_type: Optional[str] = "open_osm"  # open_osm, google_places, public_directory, custom_import
+    user_id: Optional[str] = None
+    user_name: Optional[str] = None
 
 class ScrapingJobResponse(BaseModel):
     id: str
     job_name: str
+    user_id: Optional[str] = None
+    user_name: Optional[str] = None
     target_country: str
     target_city: str
     target_postal_code: Optional[str] = None
@@ -41,6 +45,25 @@ class ScrapingJobResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DiscoveryActivityAuditResponse(BaseModel):
+    id: str
+    job_name: str
+    user_id: Optional[str] = None
+    user_name: Optional[str] = None
+    target_city: str
+    target_country: str
+    target_category: str
+    search_keywords: Optional[str] = None
+    status: str
+    records_found: int
+    records_qualified: int
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
 
 class LeadSourceResponse(BaseModel):
     id: str

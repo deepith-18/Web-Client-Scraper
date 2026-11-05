@@ -197,5 +197,3 @@ def test_scoring_api_router():
         assert "average_opportunity_score" in summary
     finally:
         db.close()
-
-

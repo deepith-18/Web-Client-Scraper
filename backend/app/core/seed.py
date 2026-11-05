@@ -8,7 +8,7 @@ from backend.app.models.contact import BusinessContact
 from backend.app.models.verification import VerificationRecord
 from backend.app.models.audit import WebsiteAudit
 from backend.app.models.score import LeadScore
-from backend.app.models.crm import LeadNote, OutreachRecord, FollowUpTask, SuppressionRecord
+from backend.app.models.crm import LeadNote, OutreachRecord, FollowUpTask, SuppressionRecord, CallLog
 from backend.app.core.security import get_password_hash
 
 def seed_database():
@@ -331,7 +331,69 @@ def seed_database():
             db.add(outreach)
 
         db.commit()
+
+        # 4. Seed Initial Call Logs if empty
+        if db.query(CallLog).count() == 0:
+            b_coffee = db.query(Business).filter(Business.name == "Third Wave Coffee Indiranagar").first()
+            b_dental = db.query(Business).filter(Business.name == "Koramangala Dental Care").first()
+            b_ayur = db.query(Business).filter(Business.name == "Veda Ayurveda & Wellness").first()
+            b_gym = db.query(Business).filter(Business.name == "Apex Functional Fitness").first()
+
+            if b_coffee and caller:
+                db.add(CallLog(
+                    business_id=b_coffee.id,
+                    user_id=caller.id,
+                    caller_name=caller.full_name,
+                    phone_number="+91 80 4123 9988",
+                    outcome="agreed",
+                    duration_seconds=185,
+                    project_type="Turnkey Website Build",
+                    agreed_budget="₹35,000",
+                    notes="Spoke with operations manager Rohit. They want an online table reservation page and mobile menu."
+                ))
+
+            if b_dental and caller:
+                db.add(CallLog(
+                    business_id=b_dental.id,
+                    user_id=caller.id,
+                    caller_name=caller.full_name,
+                    phone_number="+91 80 2553 1122",
+                    outcome="agreed",
+                    duration_seconds=240,
+                    project_type="Appointment Booking Redesign",
+                    agreed_budget="₹28,000",
+                    notes="Dr. Priya agreed to a modernized website with WhatsApp direct chat and appointment scheduler."
+                ))
+
+            if b_ayur and caller:
+                db.add(CallLog(
+                    business_id=b_ayur.id,
+                    user_id=caller.id,
+                    caller_name=caller.full_name,
+                    phone_number="+91 80 2344 8877",
+                    outcome="callback_scheduled",
+                    duration_seconds=95,
+                    notes="Owner was with a patient. Requested a callback on Friday at 11:30 AM.",
+                    scheduled_callback_at=datetime.utcnow() + timedelta(days=2)
+                ))
+
+            if b_gym and caller:
+                db.add(CallLog(
+                    business_id=b_gym.id,
+                    user_id=caller.id,
+                    caller_name=caller.full_name,
+                    phone_number="+1 512 555 0199",
+                    outcome="declined",
+                    duration_seconds=70,
+                    decline_reason="Already has dedicated web agency handling their site.",
+                    notes="Polite decline. Keeping in archive."
+                ))
+
+            db.commit()
+            print("Seeded sample call logs for caller workspace.")
+
         print("Database successfully seeded with international & Bengaluru business leads!")
+
 
     except Exception as e:
         db.rollback()

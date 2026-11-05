@@ -1,23 +1,48 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
+from typing import Optional, List, Dict
 from datetime import datetime
 
 class UserBase(BaseModel):
     email: str
     full_name: Optional[str] = None
-    role: str = "developer"
+    role: str = "developer"  # admin, caller, sdr, developer
     is_active: bool = True
+    phone: Optional[str] = None
+    daily_call_target: int = 30
+    notes: Optional[str] = None
+    permissions: Optional[Dict[str, bool]] = None
 
 class UserCreate(UserBase):
     password: str
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+    phone: Optional[str] = None
+    daily_call_target: Optional[int] = None
+    notes: Optional[str] = None
+    permissions: Optional[Dict[str, bool]] = None
+    password: Optional[str] = None
+
+class PermissionUpdateRequest(BaseModel):
+    permissions: Dict[str, bool]
+
 
 class UserResponse(UserBase):
     id: str
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+class TeamMemberResponse(UserResponse):
+    total_calls: int = 0
+    accepted_deals: int = 0
+    declined_calls: int = 0
+    callbacks_scheduled: int = 0
+    assigned_leads: int = 0
+    conversion_rate: float = 0.0
 
 class Token(BaseModel):
     access_token: str
@@ -25,3 +50,4 @@ class Token(BaseModel):
 
 class TokenPayload(BaseModel):
     sub: Optional[str] = None
+

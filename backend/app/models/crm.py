@@ -77,4 +77,29 @@ class OutreachTemplate(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
+class CallLog(Base):
+    __tablename__ = "call_logs"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    business_id = Column(String(36), ForeignKey("businesses.id"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=True, index=True)
+
+    caller_name = Column(String(255), nullable=True)
+    phone_number = Column(String(50), nullable=False)
+    outcome = Column(String(50), nullable=False)  # agreed, declined, callback_scheduled, no_answer, gatekeeper, wrong_number
+    duration_seconds = Column(Integer, default=0, nullable=False)
+
+    project_type = Column(String(100), nullable=True)
+    agreed_budget = Column(String(100), nullable=True)
+    notes = Column(Text, nullable=True)
+    decline_reason = Column(String(255), nullable=True)
+    scheduled_callback_at = Column(DateTime, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    business = relationship("Business", back_populates="call_logs")
+    user = relationship("User")
+
+
 

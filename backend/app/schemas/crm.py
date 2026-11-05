@@ -132,3 +132,55 @@ class OutreachSequenceCreate(BaseModel):
     recipient: Optional[str] = None
     freelancer_name: Optional[str] = "Deepith"
     freelancer_portfolio: Optional[str] = "https://portfolio.dev"
+
+class CallLogBase(BaseModel):
+    business_id: str
+    phone_number: str
+    outcome: str  # agreed, declined, callback_scheduled, no_answer, gatekeeper, wrong_number
+    duration_seconds: int = 0
+    caller_name: Optional[str] = None
+    project_type: Optional[str] = None
+    agreed_budget: Optional[str] = None
+    notes: Optional[str] = None
+    decline_reason: Optional[str] = None
+    scheduled_callback_at: Optional[datetime] = None
+
+class CallLogCreate(CallLogBase):
+    user_id: Optional[str] = None
+    add_to_suppression: Optional[bool] = False
+
+class CallLogUpdate(BaseModel):
+    outcome: Optional[str] = None
+    duration_seconds: Optional[int] = None
+    caller_name: Optional[str] = None
+    project_type: Optional[str] = None
+    agreed_budget: Optional[str] = None
+    notes: Optional[str] = None
+    decline_reason: Optional[str] = None
+    scheduled_callback_at: Optional[datetime] = None
+
+class CallLogResponse(CallLogBase):
+    id: str
+    user_id: Optional[str] = None
+    business_name: Optional[str] = None
+    business_category: Optional[str] = None
+    business_city: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class CallLogStatsResponse(BaseModel):
+    total_calls_today: int
+    total_calls_all_time: int
+    total_agreed: int
+    total_declined: int
+    total_callbacks: int
+    acceptance_rate: float
+    top_converting_category: Optional[str] = None
+
+class LeadAssignRequest(BaseModel):
+    lead_ids: List[str]
+    user_id: Optional[str] = None  # None unassigns
+

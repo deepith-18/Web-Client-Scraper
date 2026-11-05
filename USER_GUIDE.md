@@ -1,26 +1,37 @@
 # ProspectIQ — Complete User Manual & Feature Guide
 
-## 1. Agency Architecture & Roles
+## 1. Agency Architecture & Separate Portals
 
-ProspectIQ is designed specifically for a **2-person freelance web agency**:
+ProspectIQ provides **two dedicated portals** accessible via the top switcher in the left sidebar:
+
+1. **Admin Control Portal (Deepith & Leadership)**:
+   - Complete executive oversight: Lead harvesting via OpenStreetMap, technical opportunity audits, scoring engine weight profiles, CRM pipeline, multi-touch outreach sequences, and agency analytics.
+   - **Startup Employee & Team Management (`/team`)**: Add new employees, track cold-caller daily targets, monitor win rates, and batch-assign scraped leads.
+   - **Deepith's Priority Action Queue**: Real-time view of every client who agreed to a website, ready for proposal delivery.
+
+2. **Caller / SDR Portal (Teammate & Cold Calling Employees)**:
+   - **Live Caller Desk (`/calling`)**: Focused outbound calling queue with click-to-dial (`tel:+91...`), dynamic talk-track cheat sheets, and instant disposition buttons (`ACCEPT · Client Agreed`, `REJECT · Declined`, `SCHEDULE CALLBACK`).
+   - **Call Logs & History (`/calling/history`)**: Full CRUD registry where callers can search, filter, edit notes, inspect complete client interaction timelines, and export CSV reports.
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │                   ProspectIQ Workflow                  │
 └────────────────────────────────────────────────────────┘
 
-  STEP 1: DISCOVERY & ENRICHMENT (Admin: Deepith)
+  STEP 1: DISCOVERY & ENRICHMENT (Admin Portal: Deepith)
   - You harvest real businesses on `/discover` across Bengaluru or any metro.
   - The engine verifies phone numbers and audits website deficiencies.
+  - You assign lead batches to your callers via `/team`.
             │
             ▼
-  STEP 2: CALLING & QUALIFICATION (Caller: Teammate)
+  STEP 2: CALLING & QUALIFICATION (Caller Portal: Teammate)
   - Teammate opens the Caller Desk (`/calling`).
   - Calls verified business numbers using click-to-dial (`tel:+91...`).
   - Clicks "ACCEPT · Client Agreed" or "REJECT · Declined" with reasons.
+  - Edits notes or checks interaction logs on `/calling/history`.
             │
             ▼
-  STEP 3: PROPOSAL & WEBSITE DELIVERY (Admin: Deepith)
+  STEP 3: PROPOSAL & WEBSITE DELIVERY (Admin Portal: Deepith)
   - Accepted clients appear directly on your Overview dashboard (`/`).
   - You review their technical website audit, wireframe proposal, and close the deal!
 ```
@@ -68,17 +79,52 @@ ProspectIQ is designed specifically for a **2-person freelance web agency**:
     - Select agreed project type (*Turnkey Website Build*, *Mobile Redesign*, *E-Commerce*, *Custom Solution*).
     - Select budget range (*₹15,000–₹25,000*, *₹25,000–₹50,000*, *₹50,000+*).
     - Enter client notes (decision maker's name, preferred timeline, specific requests).
-    - Clicking **"Confirm & Send to Deepith"** marks status as `interested`, tags the lead as Accepted, and moves it to Deepith's priority dashboard queue.
+    - Clicking **"Confirm & Send to Deepith"** marks status as `interested`, tags the lead as Accepted, creates a formal Call Log, and moves it to Deepith's priority dashboard queue.
   - **`REJECT · Declined` Button (Rose Red)**:
     - Opens the Decline dialog.
     - Select decline reason (*Already has agency*, *No budget*, *Not interested*, *Wrong number*, *Do Not Call*).
     - Optional checkbox: *Add to Global Do-Not-Contact list* (permanently blocks future scraping/calling).
   - **`Callback` Button (Clock Icon)**:
     - Schedules a specific follow-up date and time and creates a reminder in the calendar tasks system.
+  - **`Call Logs & CRUD History` Button**:
+    - Direct jump to `/calling/history` for complete audit trails and log editing.
 
 ---
 
-### Page 3: Discover Businesses (`/discover`)
+### Page 3: Call Logs & Interaction History (`/calling/history`)
+- **What It Denotes**: Complete, immutable and editable CRUD call interaction registry.
+- **Why It Exists**: Provides full transparency over every outbound call made by your teammates or yourself.
+- **Key Sections & Buttons**:
+  - **Call KPIs Overview**: Today's Calls Logged, Total All-Time Dials, Deals Agreed, Scheduled Callbacks, and Conversion Rate %.
+  - **Outcome Filter Pills**: Filter instantly by *All Calls*, *Agreed (Accepted)*, *Scheduled Callbacks*, *Declined*, or *No Answer / Gatekeeper*.
+  - **Search Bar**: Real-time search across business names, phone numbers, caller names, and specific notes.
+  - **Call Logs Table**:
+    - Displays call timestamp, duration, prospect name, category, city, phone, caller, outcome badge, scope/budget, and notes.
+    - **`Edit Call Log` Button (Pencil Icon)**: Opens modal to edit call notes, update agreed budget, change project scope, or alter call outcome.
+    - **`Client Audit History` Button (History Icon)**: Opens a side drawer detailing every historical call attempt with that client in chronological order.
+    - **`Delete Call Log` Button (Trash Icon)**: Removes incorrect or test call records with confirmation.
+  - **`Log Manual Call` Button**: Allows recording an outbound or inbound call interaction made offline or outside the queue.
+  - **`Export CSV` Button**: Downloads the current filtered call log into a clean spreadsheet for reporting and payroll.
+
+---
+
+### Page 4: Team & Employee Management (`/team`)
+- **What It Denotes**: Startup agency human resources and caller quota control center.
+- **Why It Exists**: Allows Deepith to expand the agency, onboard new employees/callers, set daily calling targets, and assign scraped lead batches.
+- **Key Sections & Buttons**:
+  - **Headcount KPIs**: Total Team Members, Active Telecallers / SDRs, Total Outreach Calls, Deals Won / Agreed, and Team Average Win Rate %.
+  - **`Add Employee / Member` Button**:
+    - Creates a new employee account with Name, Email, Password, Role (*Admin*, *Telecaller / SDR*, *Web Developer*), Phone, Daily Call Target (e.g. 30 calls/day), and Notes.
+  - **Team Roster Table**:
+    - Member Name, Email, Role badge, Status (*Active* vs *Inactive*).
+    - Daily call targets, total calls made, deals agreed, and individual conversion rate progress bar.
+    - **`Assign Scraped Leads` Button (Layers Icon)**: Opens batch lead assignment dialog to route 10–200 leads from specific cities to a caller.
+    - **`Edit Profile` Button**: Updates role, active status, phone, target, or resets employee password.
+    - **`Remove Member` Button**: Deactivates employee and returns assigned leads to the agency pool.
+
+---
+
+### Page 5: Discover Businesses (`/discover`)
 - **What It Denotes**: The live automated **Lead Harvester Engine**.
 - **Why It Exists**: To discover genuine, real-world local businesses across Bengaluru (Indiranagar, Koramangala, Whitefield, etc.) or international markets (US, UK, Australia, Singapore).
 - **Key Sections & Buttons**:

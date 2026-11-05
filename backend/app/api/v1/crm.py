@@ -6,14 +6,15 @@ from backend.app.core.database import get_db
 from backend.app.models.business import Business
 from backend.app.models.audit import WebsiteAudit
 from backend.app.models.contact import BusinessContact
-from backend.app.models.crm import LeadNote, OutreachRecord, SuppressionRecord, FollowUpTask, OutreachTemplate
+from backend.app.models.crm import LeadNote, OutreachRecord, SuppressionRecord, FollowUpTask, OutreachTemplate, CallLog
 from backend.app.schemas.crm import (
     LeadNoteCreate, LeadNoteResponse,
     OutreachCreate, OutreachUpdate, OutreachResponse,
     SuppressionCreate, SuppressionResponse,
     FollowUpCreate, FollowUpUpdate, FollowUpResponse,
     OutreachTemplateCreate, OutreachTemplateUpdate, OutreachTemplateResponse,
-    OutreachRenderRequest, OutreachRenderResponse, OutreachSequenceCreate
+    OutreachRenderRequest, OutreachRenderResponse, OutreachSequenceCreate,
+    CallLogCreate, CallLogUpdate, CallLogResponse, CallLogStatsResponse
 )
 from backend.app.services.outreach_generator import OutreachGenerator
 
@@ -473,4 +474,240 @@ def create_outreach_sequence(seq: OutreachSequenceCreate, db: Session = Depends(
         db.refresh(r)
 
     return created_records
+
+# ============================================================================
+# CALL LOGS CRUD & AUDIT HISTORY
+# ============================================================================
+
+def _to_call_log_response(call: CallLog, biz: Business = None) -> CallLogResponse:
+    target_biz = biz or call.business
+    return CallLogResponse(
+        id=call.id,
+        business_id=call.business_id,
+        business_name=target_biz.name if target_biz else "Unknown Business",
+        business_category=target_biz.category if target_biz else "General",
+        business_city=target_biz.city if target_biz else "",
+        user_id=call.user_id,
+        caller_name=call.caller_name or "Team Caller",
+        phone_number=call.phone_number,
+        outcome=call.outcome,
+        duration_seconds=call.duration_seconds or 0,
+        project_type=call.project_type,
+        agreed_budget=call.agreed_budget,
+        notes=call.notes,
+        decline_reason=call.decline_reason,
+        scheduled_callback_at=call.scheduled_callback_at,
+        created_at=call.created_at,
+        updated_at=call.updated_at
+    )
+
+@router.get("/call-logs", response_model=List[CallLogResponse])
+def get_call_logs(
+    outcome: Optional[str] = None,
+    business_id: Optional[str] = None,
+    user_id: Optional[str] = None,
+    search: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+
+    """Retrieve call logs with multi-parameter filtering and full prospect details."""
+    query = db.query(CallLog).join(Business, CallLog.business_id == Business.id)
+
+    if outcome:
+        if outcome == "agreed":
+            query = query.filter(CallLog.outcome.in_(["agreed", "accepted"]))
+        elif outcome == "declined":
+            query = query.filter(CallLog.outcome.in_(["declined", "rejected"]))
+        elif outcome == "callback":
+            query = query.filter(CallLog.outcome.in_(["callback_scheduled", "callback"]))
+        else:
+            query = query.filter(CallLog.outcome == outcome)
+
+    if business_id:
+        query = query.filter(CallLog.business_id == business_id)
+
+    if user_id:
+        query = query.filter(CallLog.user_id == user_id)
+
+    if search:
+        s = f"%{search}%"
+        query = query.filter(
+            (Business.name.ilike(s)) |
+            (CallLog.phone_number.ilike(s)) |
+            (CallLog.caller_name.ilike(s)) |
+            (CallLog.notes.ilike(s)) |
+            (Business.city.ilike(s))
+        )
+
+    calls = query.order_by(CallLog.created_at.desc()).offset(skip).limit(limit).all()
+    return [_to_call_log_response(c) for c in calls]
+
+@router.post("/call-logs", response_model=CallLogResponse)
+def create_call_log(call_in: CallLogCreate, db: Session = Depends(get_db)):
+    """Create a new call log entry, update lead CRM status, and trigger side effects."""
+    biz = db.query(Business).filter(Business.id == call_in.business_id).first()
+    if not biz:
+        raise HTTPException(status_code=404, detail="Business not found")
+
+    call = CallLog(
+        business_id=call_in.business_id,
+        user_id=call_in.user_id,
+        caller_name=call_in.caller_name or "Team Caller",
+        phone_number=call_in.phone_number,
+        outcome=call_in.outcome,
+        duration_seconds=call_in.duration_seconds,
+        project_type=call_in.project_type,
+        agreed_budget=call_in.agreed_budget,
+        notes=call_in.notes,
+        decline_reason=call_in.decline_reason,
+        scheduled_callback_at=call_in.scheduled_callback_at
+    )
+    db.add(call)
+
+    # Automatically synchronize CRM status and notes
+    normalized_outcome = call_in.outcome.lower()
+    if normalized_outcome in ["agreed", "accepted"]:
+        biz.crm_status = "interested"
+        note_text = f"[Call Log: AGREED] Caller: {call.caller_name} | Scope: {call_in.project_type or 'Turnkey Website'} | Budget: {call_in.agreed_budget or 'Custom'}."
+        if call_in.notes:
+            note_text += f"\nNotes: {call_in.notes}"
+        db.add(LeadNote(business_id=biz.id, content=note_text))
+
+    elif normalized_outcome in ["declined", "rejected"]:
+        biz.crm_status = "not_interested"
+        note_text = f"[Call Log: DECLINED] Reason: {call_in.decline_reason or 'Not specified'}."
+        if call_in.notes:
+            note_text += f"\nNotes: {call_in.notes}"
+        db.add(LeadNote(business_id=biz.id, content=note_text))
+
+        if call_in.add_to_suppression:
+            biz.is_suppressed = True
+            biz.crm_status = "do_not_contact"
+            suppress_val = call_in.phone_number
+            existing_sup = db.query(SuppressionRecord).filter(SuppressionRecord.value == suppress_val).first()
+            if not existing_sup:
+                db.add(SuppressionRecord(
+                    value=suppress_val,
+                    suppression_type="phone",
+                    reason=f"Declined call: {call_in.decline_reason or 'No interest'}"
+                ))
+
+    elif normalized_outcome in ["callback_scheduled", "callback"]:
+        biz.crm_status = "contacted"
+        if call_in.scheduled_callback_at:
+            db.add(FollowUpTask(
+                business_id=biz.id,
+                title=f"Scheduled Callback: {biz.name} ({call_in.phone_number})",
+                due_date=call_in.scheduled_callback_at,
+                is_completed=False
+            ))
+        if call_in.notes:
+            db.add(LeadNote(business_id=biz.id, content=f"[Call Log: CALLBACK] Notes: {call_in.notes}"))
+
+    db.commit()
+    db.refresh(call)
+    db.refresh(biz)
+
+    return _to_call_log_response(call, biz)
+
+@router.get("/call-logs/{call_id}", response_model=CallLogResponse)
+def get_call_log(call_id: str, db: Session = Depends(get_db)):
+    """Retrieve details for a single call log."""
+    call = db.query(CallLog).filter(CallLog.id == call_id).first()
+    if not call:
+        raise HTTPException(status_code=404, detail="Call log not found")
+    return _to_call_log_response(call)
+
+@router.put("/call-logs/{call_id}", response_model=CallLogResponse)
+def update_call_log(call_id: str, call_update: CallLogUpdate, db: Session = Depends(get_db)):
+    """Update an existing call log entry (edit notes, scope, budget, or outcome)."""
+    call = db.query(CallLog).filter(CallLog.id == call_id).first()
+    if not call:
+        raise HTTPException(status_code=404, detail="Call log not found")
+
+    if call_update.outcome is not None:
+        call.outcome = call_update.outcome
+    if call_update.duration_seconds is not None:
+        call.duration_seconds = call_update.duration_seconds
+    if call_update.caller_name is not None:
+        call.caller_name = call_update.caller_name
+    if call_update.project_type is not None:
+        call.project_type = call_update.project_type
+    if call_update.agreed_budget is not None:
+        call.agreed_budget = call_update.agreed_budget
+    if call_update.notes is not None:
+        call.notes = call_update.notes
+    if call_update.decline_reason is not None:
+        call.decline_reason = call_update.decline_reason
+    if call_update.scheduled_callback_at is not None:
+        call.scheduled_callback_at = call_update.scheduled_callback_at
+
+    db.commit()
+    db.refresh(call)
+    return _to_call_log_response(call)
+
+@router.delete("/call-logs/{call_id}")
+def delete_call_log(call_id: str, db: Session = Depends(get_db)):
+    """Delete a call log entry."""
+    call = db.query(CallLog).filter(CallLog.id == call_id).first()
+    if not call:
+        raise HTTPException(status_code=404, detail="Call log not found")
+
+    db.delete(call)
+    db.commit()
+    return {"message": "Call log deleted successfully", "id": call_id}
+
+@router.get("/call-logs/history/{business_id}", response_model=List[CallLogResponse])
+def get_business_call_history(business_id: str, db: Session = Depends(get_db)):
+    """Retrieve full chronological call audit history for a specific business."""
+    calls = db.query(CallLog).filter(CallLog.business_id == business_id).order_by(CallLog.created_at.desc()).all()
+    return [_to_call_log_response(c) for c in calls]
+
+@router.get("/call-logs-summary/stats", response_model=CallLogStatsResponse)
+def get_call_logs_summary_stats(db: Session = Depends(get_db)):
+    """Retrieve overall call log KPI stats for the calling desk."""
+    from datetime import datetime, time
+    today_start = datetime.combine(datetime.utcnow().date(), time.min)
+
+    today_calls = db.query(CallLog).filter(CallLog.created_at >= today_start).count()
+    all_calls = db.query(CallLog).count()
+    agreed = db.query(CallLog).filter(CallLog.outcome.in_(["agreed", "accepted"])).count()
+    declined = db.query(CallLog).filter(CallLog.outcome.in_(["declined", "rejected"])).count()
+    callbacks = db.query(CallLog).filter(CallLog.outcome.in_(["callback_scheduled", "callback"])).count()
+
+    conv_rate = round((agreed / all_calls * 100), 1) if all_calls > 0 else 0.0
+
+    # Best converting category
+    category_counts: Dict[str, Dict[str, int]] = {}
+    calls_with_biz = db.query(CallLog, Business.category).join(Business, CallLog.business_id == Business.id).all()
+    for _, cat in calls_with_biz:
+        if cat not in category_counts:
+            category_counts[cat] = {"calls": 0, "agreed": 0}
+        category_counts[cat]["calls"] += 1
+
+    for c, cat in calls_with_biz:
+        if c.outcome in ["agreed", "accepted"]:
+            category_counts[cat]["agreed"] += 1
+
+    best_cat = None
+    best_rate = -1.0
+    for cat, stats in category_counts.items():
+        if stats["calls"] >= 2:
+            rate = stats["agreed"] / stats["calls"]
+            if rate > best_rate:
+                best_rate = rate
+                best_cat = cat
+
+    return CallLogStatsResponse(
+        total_calls_today=today_calls,
+        total_calls_all_time=all_calls,
+        total_agreed=agreed,
+        total_declined=declined,
+        total_callbacks=callbacks,
+        acceptance_rate=conv_rate,
+        top_converting_category=best_cat or "Cafes & Restaurants"
+    )
+
 

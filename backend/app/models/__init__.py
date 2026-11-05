@@ -17,7 +17,7 @@ from backend.app.models.contact import BusinessContact
 from backend.app.models.verification import VerificationRecord
 from backend.app.models.audit import WebsiteAudit
 from backend.app.models.score import LeadScore
-from backend.app.models.crm import LeadNote, OutreachRecord, FollowUpTask, SuppressionRecord
+from backend.app.models.crm import LeadNote, OutreachRecord, FollowUpTask, SuppressionRecord, OutreachTemplate, CallLog
 
 __all__ = [
     "generate_uuid",
@@ -35,4 +35,6 @@ __all__ = [
     "OutreachRecord",
     "FollowUpTask",
     "SuppressionRecord",
+    "OutreachTemplate",
+    "CallLog",
 ]

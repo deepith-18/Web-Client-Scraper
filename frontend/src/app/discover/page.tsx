@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { fetchSources, fetchDiscoveryJobs, createDiscoveryJob, fetchJobLogs, cancelDiscoveryJob } from "@/lib/api-client";
 import { LeadSource, ScrapingJob } from "@/types";
+import { getActiveUser, checkPermission } from "@/lib/permissions";
 import {
   Compass,
   ArrowLeft,
@@ -22,6 +23,9 @@ import {
   FileText,
   X,
   ExternalLink,
+  UserCheck,
+  Lock,
+  ShieldAlert,
 } from "lucide-react";
 
 const targetCategories = [
@@ -123,6 +127,13 @@ export default function DiscoverPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const currentUser = getActiveUser();
+    if (!checkPermission("can_discover")) {
+      alert(`Access Restricted: ${currentUser.full_name || "Your account"} does not have permission to execute lead discovery scrapers. Contact Deepith for access.`);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const name = jobName || `${targetCategory} in ${targetCity}, ${targetCountry}`;
@@ -133,11 +144,13 @@ export default function DiscoverPage() {
         target_category: targetCategory,
         source_type: selectedSourceType,
         search_keywords: searchKeywords || undefined,
+        user_id: currentUser?.id,
+        user_name: currentUser?.full_name || currentUser?.email || "Deepith (Admin)",
       });
       setJobs((prev) => [newJob, ...prev]);
       setJobName("");
-    } catch (err) {
-      console.error("Failed to start job", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to start job");
     } finally {
       setSubmitting(false);
     }
@@ -422,12 +435,17 @@ export default function DiscoverPage() {
                           {job.status}
                         </span>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                      <div className="flex items-center gap-2.5 text-xs text-slate-400 mt-1 flex-wrap">
                         <span>
                           {job.target_category} in {job.target_city}, {job.target_country}
                         </span>
                         <span>•</span>
                         <span>Created {new Date(job.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span>•</span>
+                        <span className="font-semibold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 flex items-center gap-1">
+                          <UserCheck className="h-3 w-3" />
+                          <span>{job.user_name || "Deepith (Admin)"}</span>
+                        </span>
                       </div>
                     </div>
 

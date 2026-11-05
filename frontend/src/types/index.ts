@@ -152,12 +152,15 @@ export interface AcceptanceAnalytics {
 export interface ScrapingJob {
   id: string;
   job_name: string;
+  user_id?: string;
+  user_name?: string;
   target_country: string;
   target_city: string;
   target_postal_code?: string;
   target_category: string;
   search_keywords?: string;
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
+
   progress_pct: number;
   records_found: number;
   records_qualified: number;
@@ -236,5 +239,57 @@ export interface SuppressionRecord {
   reason?: string;
   requested_at: string;
 }
+
+export interface CallLog {
+  id: string;
+  business_id: string;
+  business_name?: string;
+  business_category?: string;
+  business_city?: string;
+  user_id?: string;
+  caller_name?: string;
+  phone_number: string;
+  outcome: "agreed" | "declined" | "callback_scheduled" | "no_answer" | "gatekeeper" | "wrong_number" | string;
+  duration_seconds: number;
+  project_type?: string;
+  agreed_budget?: string;
+  notes?: string;
+  decline_reason?: string;
+  scheduled_callback_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CallLogStats {
+  total_calls_today: number;
+  total_calls_all_time: number;
+  total_agreed: number;
+  total_declined: number;
+  total_callbacks: number;
+  acceptance_rate: number;
+  top_converting_category?: string;
+}
+
+export interface TeamMember {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: "admin" | "caller" | "sdr" | "developer" | string;
+  is_active: boolean;
+  phone?: string;
+  daily_call_target: number;
+  notes?: string;
+  permissions?: Record<string, boolean>;
+  created_at: string;
+  updated_at: string;
+  total_calls: number;
+  accepted_deals: number;
+  declined_calls: number;
+  callbacks_scheduled: number;
+  assigned_leads: number;
+  conversion_rate: number;
+}
+
+
 
 

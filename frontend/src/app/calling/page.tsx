@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { LeadModal } from "@/components/ui/lead-modal";
 import {
@@ -9,6 +10,7 @@ import {
   addBusinessNote,
   createBusinessTask,
   addToSuppression,
+  createCallLog,
 } from "@/lib/api-client";
 import { Business } from "@/types";
 import {
@@ -32,6 +34,7 @@ import {
   Sparkles,
   ArrowRight,
   X,
+  History,
 } from "lucide-react";
 
 export default function CallerDeskPage() {
@@ -142,13 +145,19 @@ export default function CallerDeskPage() {
     if (!acceptModalBiz) return;
     setSubmitting(true);
     try {
-      const updated = await updateBusinessStatus(acceptModalBiz.id, "interested");
-      const noteContent = `[CLIENT ACCEPTED AGREED]:
-Requirement: ${acceptForm.project_type}
-Budget Scope: ${acceptForm.agreed_budget}
-Caller Notes: ${acceptForm.client_notes || "Client agreed to website proposal. Ready for Deepith to review and draft pitch."}`;
-      await addBusinessNote(acceptModalBiz.id, noteContent);
+      const phoneVal = acceptModalBiz.contacts?.find((c) => c.contact_type === "phone")?.raw_value || "";
+      await createCallLog({
+        business_id: acceptModalBiz.id,
+        phone_number: phoneVal,
+        outcome: "agreed",
+        duration_seconds: 180,
+        caller_name: "Team Caller",
+        project_type: acceptForm.project_type,
+        agreed_budget: acceptForm.agreed_budget,
+        notes: acceptForm.client_notes || "Client agreed to website proposal. Ready for Deepith to review and draft pitch.",
+      });
 
+      const updated = await updateBusinessStatus(acceptModalBiz.id, "interested");
       setBusinesses((prev) => prev.map((b) => (b.id === acceptModalBiz.id ? updated : b)));
       setActionSuccess(`Great work! ${acceptModalBiz.name} marked as ACCEPTED. Handed off to Deepith for proposal!`);
       setAcceptModalBiz(null);
@@ -170,13 +179,20 @@ Caller Notes: ${acceptForm.client_notes || "Client agreed to website proposal. R
     if (!rejectModalBiz) return;
     setSubmitting(true);
     try {
+      const phoneVal = rejectModalBiz.contacts?.find((c) => c.contact_type === "phone")?.raw_value || "";
+      await createCallLog({
+        business_id: rejectModalBiz.id,
+        phone_number: phoneVal,
+        outcome: "declined",
+        duration_seconds: 60,
+        caller_name: "Team Caller",
+        decline_reason: rejectForm.reason,
+        notes: rejectForm.notes,
+        add_to_suppression: rejectForm.add_to_suppression,
+      });
+
       const statusToSet = rejectForm.add_to_suppression ? "do_not_contact" : "not_interested";
       const updated = await updateBusinessStatus(rejectModalBiz.id, statusToSet);
-
-      const noteContent = `[CALL REJECTED]: Reason: ${rejectForm.reason}. ${
-        rejectForm.notes ? `Details: ${rejectForm.notes}` : ""
-      }`;
-      await addBusinessNote(rejectModalBiz.id, noteContent);
 
       if (rejectForm.add_to_suppression && rejectModalBiz.official_website) {
         await addToSuppression({
@@ -207,15 +223,23 @@ Caller Notes: ${acceptForm.client_notes || "Client agreed to website proposal. R
     if (!callbackModalBiz || !callbackDate) return;
     setSubmitting(true);
     try {
+      const phoneVal = callbackModalBiz.contacts?.find((c) => c.contact_type === "phone")?.raw_value || "";
+      await createCallLog({
+        business_id: callbackModalBiz.id,
+        phone_number: phoneVal,
+        outcome: "callback_scheduled",
+        caller_name: "Team Caller",
+        scheduled_callback_at: new Date(callbackDate).toISOString(),
+        notes: callbackNotes || "Scheduled follow-up callback",
+      });
+
       await updateBusinessStatus(callbackModalBiz.id, "contact_permitted");
       await createBusinessTask(
         callbackModalBiz.id,
         `Callback for ${callbackModalBiz.name}: ${callbackNotes || "Scheduled follow-up call"}`,
         new Date(callbackDate).toISOString()
       );
-      if (callbackNotes) {
-        await addBusinessNote(callbackModalBiz.id, `[CALLBACK SCHEDULED]: ${callbackNotes}`);
-      }
+
       await loadData();
       setActionSuccess(`Callback scheduled for ${callbackModalBiz.name} on ${new Date(callbackDate).toLocaleString()}.`);
       setCallbackModalBiz(null);
@@ -227,6 +251,7 @@ Caller Notes: ${acceptForm.client_notes || "Client agreed to website proposal. R
       setSubmitting(false);
     }
   };
+
 
   return (
     <>
@@ -251,7 +276,14 @@ Caller Notes: ${acceptForm.client_notes || "Client agreed to website proposal. R
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex items-center gap-2.5 text-xs">
+            <Link
+              href="/calling/history"
+              className="px-3.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl shadow-2xs flex items-center gap-1.5 transition-all"
+            >
+              <History className="h-4 w-4 text-blue-600" />
+              <span>Call Logs & CRUD History</span>
+            </Link>
             <span className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5">
               <UserCheck className="h-4 w-4 text-emerald-600" />
               <span>Teammate Calling Desk</span>

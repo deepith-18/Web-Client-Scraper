@@ -24,6 +24,7 @@ class ScrapingJob(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     user_id = Column(String(36), ForeignKey("users.id"), nullable=True)
+    user_name = Column(String(255), nullable=True)
     source_id = Column(String(36), ForeignKey("lead_sources.id"), nullable=True)
     
     job_name = Column(String(255), nullable=False)
@@ -46,6 +47,8 @@ class ScrapingJob(Base):
     source = relationship("LeadSource", back_populates="jobs")
     logs = relationship("ScrapingJobLog", back_populates="job", cascade="all, delete-orphan")
     businesses = relationship("Business", back_populates="job")
+    user = relationship("User")
+
 
 class ScrapingJobLog(Base):
     __tablename__ = "scraping_job_logs"

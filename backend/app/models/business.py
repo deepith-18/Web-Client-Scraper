@@ -37,6 +37,7 @@ class Business(Base):
     # CRM Pipeline state
     crm_status = Column(String(50), default="new", nullable=False, index=True)
     is_suppressed = Column(Boolean, default=False, nullable=False, index=True)
+    assigned_to_user_id = Column(String(36), ForeignKey("users.id"), nullable=True, index=True)
 
     # Provenance and Timestamps
     first_discovered_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -54,4 +55,7 @@ class Business(Base):
     notes = relationship("LeadNote", back_populates="business", cascade="all, delete-orphan")
     outreach_records = relationship("OutreachRecord", back_populates="business", cascade="all, delete-orphan")
     follow_up_tasks = relationship("FollowUpTask", back_populates="business", cascade="all, delete-orphan")
+    call_logs = relationship("CallLog", back_populates="business", cascade="all, delete-orphan")
+    assigned_user = relationship("User", foreign_keys=[assigned_to_user_id])
+
 
