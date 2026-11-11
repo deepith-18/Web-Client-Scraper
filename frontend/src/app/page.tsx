@@ -194,7 +194,7 @@ export default function DashboardPage() {
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
                 <h2 className="text-base font-bold tracking-tight text-white flex items-center gap-2">
-                  <span>Deepith's Priority Queue: Accepted Clients</span>
+                  <span>Demanex Founder Queue: Accepted Clients</span>
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
                     {acceptedClients.length} agreed
                   </span>

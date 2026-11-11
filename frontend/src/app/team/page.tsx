@@ -14,6 +14,7 @@ import {
 } from "@/lib/api-client";
 import { TeamMember, Business } from "@/types";
 import { AVAILABLE_PERMISSIONS } from "@/lib/permissions";
+import { useAuth } from "@/lib/auth-context";
 import {
   Users,
   UserPlus,
@@ -44,6 +45,7 @@ import {
 } from "lucide-react";
 
 export default function TeamManagementPage() {
+  const { user: currentUser } = useAuth();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [auditEvents, setAuditEvents] = useState<any[]>([]);
@@ -477,6 +479,19 @@ export default function TeamManagementPage() {
         {/* TAB 1: TEAM ROSTER */}
         {activeTab === "roster" && (
           <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
+            {/* User Registry Guidance Banner */}
+            <div className="m-4 p-3.5 rounded-xl bg-blue-50/80 border border-blue-200/80 flex items-start gap-3 text-xs">
+              <Shield className="h-4 w-4 text-blue-600 mt-0.5 shrink-0" />
+              <div className="space-y-1">
+                <p className="font-semibold text-blue-950">
+                  Demanex User Registry & Test Accounts
+                </p>
+                <p className="text-blue-900/80 leading-relaxed">
+                  Every account created or signed in with Google is listed below. The multiple accounts named <strong>&quot;Deepith&quot;</strong> represent the different Google accounts used during testing plus the initial demo account. You can identify each by its <strong>Email Address</strong> and <strong>Role</strong>. You can safely delete redundant test accounts using the red trash icon. Your active session is labeled <strong>&quot;You&quot;</strong>.
+                </p>
+              </div>
+            </div>
+
             <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row items-center justify-between gap-3 bg-slate-50/50">
               <div className="relative w-full md:w-80">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
@@ -616,10 +631,14 @@ export default function TeamManagementPage() {
                               >
                                 <Edit3 className="h-3.5 w-3.5" />
                               </button>
-                              {member.role !== "admin" && (
+                              {currentUser?.id === member.id || currentUser?.email === member.email ? (
+                                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                  You
+                                </span>
+                              ) : (
                                 <button
                                   onClick={() => setDeletingMember(member)}
-                                  title="Delete Member"
+                                  title={`Delete account ${member.email}`}
                                   className="p-1.5 rounded-md hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />

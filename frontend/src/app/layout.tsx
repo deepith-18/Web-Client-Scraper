@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/sidebar";
+import { AuthProvider } from "@/lib/auth-context";
+import { ThemeProvider } from "@/lib/theme-context";
+import { AppShell } from "@/components/layout/app-shell";
 
 export const metadata: Metadata = {
-  title: "ProspectIQ – Freelance Client Acquisition Engine",
-  description: "Intelligent discovery, website auditing, and lead qualification for freelance web developers worldwide.",
+  title: "Demanex – Freelance Client Acquisition & Telephony Engine",
+  description: "Demanex: Intelligent local business discovery, website auditing, and high-converting cold call workflow for digital agencies.",
 };
 
 export default function RootLayout({
@@ -13,14 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-slate-50 flex">
-        <Sidebar />
-        <div className="flex-1 ml-64 flex flex-col min-h-screen">
-          {children}
-        </div>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 transition-colors">
+        <ThemeProvider>
+          <AuthProvider>
+            <AppShell>{children}</AppShell>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-

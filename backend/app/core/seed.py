@@ -9,6 +9,7 @@ from backend.app.models.verification import VerificationRecord
 from backend.app.models.audit import WebsiteAudit
 from backend.app.models.score import LeadScore
 from backend.app.models.crm import LeadNote, OutreachRecord, FollowUpTask, SuppressionRecord, CallLog
+from backend.app.models.finance import CompanyExpense
 from backend.app.core.security import get_password_hash
 
 def seed_database():
@@ -392,7 +393,119 @@ def seed_database():
             db.commit()
             print("Seeded sample call logs for caller workspace.")
 
+        # 5. Seed Company Expenses & Spending Telemetry if empty
+        if db.query(CompanyExpense).count() == 0:
+            expenses = [
+                {
+                    "title": "OpenAI GPT-4o API Pitch & Proposal Token Usage",
+                    "category": "ai_apis",
+                    "amount": 3250.0,
+                    "currency": "INR",
+                    "vendor": "OpenAI",
+                    "billing_type": "usage_based",
+                    "notes": "Automated cold email generation and technical proposal drafting for scraped leads.",
+                    "days_ago": 4
+                },
+                {
+                    "title": "Anthropic Claude 3.5 Sonnet Proposal Engine",
+                    "category": "ai_apis",
+                    "amount": 2100.0,
+                    "currency": "INR",
+                    "vendor": "Anthropic",
+                    "billing_type": "usage_based",
+                    "notes": "Deep technical code audit synthesis and client objection handling.",
+                    "days_ago": 12
+                },
+                {
+                    "title": "Vercel Pro Next.js App Hosting & Edge CDN",
+                    "category": "cloud_deployments",
+                    "amount": 1650.0,
+                    "currency": "INR",
+                    "vendor": "Vercel",
+                    "billing_type": "recurring_monthly",
+                    "notes": "Client dashboard and public preview sites hosting.",
+                    "days_ago": 18
+                },
+                {
+                    "title": "AWS EC2 Micro Fleet & Cloud Storage",
+                    "category": "cloud_deployments",
+                    "amount": 2800.0,
+                    "currency": "INR",
+                    "vendor": "Amazon Web Services",
+                    "billing_type": "usage_based",
+                    "notes": "Background Overpass scrapers and caching server nodes.",
+                    "days_ago": 9
+                },
+                {
+                    "title": "Twilio Telephony & Outbound Call Minutes",
+                    "category": "telephony",
+                    "amount": 4500.0,
+                    "currency": "INR",
+                    "vendor": "Twilio",
+                    "billing_type": "usage_based",
+                    "notes": "Dedicated telecaller desk calling credit for Bengaluru business numbers.",
+                    "days_ago": 7
+                },
+                {
+                    "title": "BrightData Residential Rotating Scraping Proxies",
+                    "category": "proxies_scraping",
+                    "amount": 1900.0,
+                    "currency": "INR",
+                    "vendor": "BrightData",
+                    "billing_type": "recurring_monthly",
+                    "notes": "Geospatial coordinate resolution and anti-block crawlers.",
+                    "days_ago": 22
+                },
+                {
+                    "title": "Figma Professional Team Workspace",
+                    "category": "software_tools",
+                    "amount": 1250.0,
+                    "currency": "INR",
+                    "vendor": "Figma",
+                    "billing_type": "recurring_monthly",
+                    "notes": "Rapid website mockups and client wireframing.",
+                    "days_ago": 14
+                },
+                {
+                    "title": "Team Caller Deal Commission (2 Accepted Deals)",
+                    "category": "payroll_team",
+                    "amount": 7000.0,
+                    "currency": "INR",
+                    "vendor": "Team Caller",
+                    "billing_type": "one_time",
+                    "notes": "Performance incentive for securing Third Wave Coffee and Dental Care deals.",
+                    "days_ago": 2
+                },
+                {
+                    "title": "Domain Registrations & SSL Wildcard Certificates",
+                    "category": "operations",
+                    "amount": 1450.0,
+                    "currency": "INR",
+                    "vendor": "Namecheap",
+                    "billing_type": "one_time",
+                    "notes": "New agency domains and client demo staging subdomains.",
+                    "days_ago": 25
+                }
+            ]
+
+            for exp_item in expenses:
+                db.add(CompanyExpense(
+                    title=exp_item["title"],
+                    category=exp_item["category"],
+                    amount=exp_item["amount"],
+                    currency=exp_item["currency"],
+                    vendor=exp_item["vendor"],
+                    billing_type=exp_item["billing_type"],
+                    notes=exp_item["notes"],
+                    expense_date=datetime.utcnow() - timedelta(days=exp_item["days_ago"]),
+                    logged_by_user_id=admin.id if admin else None
+                ))
+
+            db.commit()
+            print("Seeded startup company expenses and spending telemetry.")
+
         print("Database successfully seeded with international & Bengaluru business leads!")
+
 
 
     except Exception as e:

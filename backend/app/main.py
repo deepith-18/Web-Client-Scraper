@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.core.database import engine, Base, run_migrations
-from backend.app.api.v1 import auth, businesses, discovery, analytics, crm, verification, audits, scoring, team
+from backend.app.api.v1 import auth, businesses, discovery, analytics, crm, verification, audits, scoring, team, finance
 
 # Create database tables automatically if not using manual alembic
 Base.metadata.create_all(bind=engine)
@@ -11,7 +11,7 @@ run_migrations()
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    description="ProspectIQ – Intelligent Freelance Client Acquisition Platform API"
+    description="Demanex – Intelligent Freelance Client Acquisition & Telephony API"
 )
 
 # Set all CORS enabled origins
@@ -33,6 +33,8 @@ app.include_router(verification.router, prefix=settings.API_V1_STR)
 app.include_router(audits.router, prefix=settings.API_V1_STR)
 app.include_router(scoring.router, prefix=settings.API_V1_STR)
 app.include_router(team.router, prefix=settings.API_V1_STR)
+app.include_router(finance.router, prefix=settings.API_V1_STR)
+
 
 
 @app.get("/")

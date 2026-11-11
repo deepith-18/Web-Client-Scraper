@@ -7,7 +7,7 @@ from backend.app.api.v1.discovery import get_sources
 
 def test_root_endpoint():
     data = root()
-    assert data["name"] == "ProspectIQ"
+    assert data["name"] == "Demanex"
     assert data["status"] == "online"
 
 def test_health_endpoint():

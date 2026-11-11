@@ -18,6 +18,7 @@ from backend.app.models.verification import VerificationRecord
 from backend.app.models.audit import WebsiteAudit
 from backend.app.models.score import LeadScore
 from backend.app.models.crm import LeadNote, OutreachRecord, FollowUpTask, SuppressionRecord, OutreachTemplate, CallLog
+from backend.app.models.finance import CompanyExpense
 
 __all__ = [
     "generate_uuid",
@@ -37,4 +38,5 @@ __all__ = [
     "SuppressionRecord",
     "OutreachTemplate",
     "CallLog",
+    "CompanyExpense",
 ]

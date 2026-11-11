@@ -4,9 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import AnyHttpUrl, validator
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "ProspectIQ"
+    PROJECT_NAME: str = "Demanex"
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = "prospectiq-development-super-secret-key-32charsmin!"
+    SECRET_KEY: str = "demanex-development-super-secret-key-32charsmin!"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
     
     # Database config: Defaults to local SQLite for instant setup, override with Postgres URL
@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     # Scraping & Verification limits
     REQUEST_TIMEOUT_SECONDS: int = 15
     MAX_REDIRECTS: int = 5
-    USER_AGENT: str = "ProspectIQ-BusinessAuditor/1.0 (+https://prospectiq.example.com/bot-info)"
+    USER_AGENT: str = "Demanex-BusinessAuditor/1.0 (+https://demanex.io/bot)"
     
     # External APIs (Optional - fallback to open sources)
     GOOGLE_PLACES_API_KEY: str = ""

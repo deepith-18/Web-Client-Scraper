@@ -130,7 +130,7 @@ export default function DiscoverPage() {
 
     const currentUser = getActiveUser();
     if (!checkPermission("can_discover")) {
-      alert(`Access Restricted: ${currentUser.full_name || "Your account"} does not have permission to execute lead discovery scrapers. Contact Deepith for access.`);
+      alert(`Access Restricted: ${currentUser?.full_name || "Your account"} does not have permission to execute lead discovery scrapers. Contact Deepith for access.`);
       return;
     }
 

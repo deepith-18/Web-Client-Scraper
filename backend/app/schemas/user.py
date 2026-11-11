@@ -47,7 +47,26 @@ class TeamMemberResponse(UserResponse):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user: Optional[UserResponse] = None
 
 class TokenPayload(BaseModel):
     sub: Optional[str] = None
+
+class LoginJsonRequest(BaseModel):
+    email: str
+    password: str
+
+class GoogleAuthRequest(BaseModel):
+    credential: Optional[str] = None
+    email: str
+    full_name: Optional[str] = None
+    google_id: Optional[str] = None
+    avatar_url: Optional[str] = None
+    role: Optional[str] = "caller"
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
+
 

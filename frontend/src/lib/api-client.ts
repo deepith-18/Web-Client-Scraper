@@ -1,6 +1,45 @@
-import { Business, AnalyticsOverview, ScrapingJob, LeadSource, CallLog, CallLogStats, TeamMember } from "@/types";
+import { Business, AnalyticsOverview, ScrapingJob, LeadSource, CallLog, CallLogStats, TeamMember, CompanyExpense, FinancialAnalytics, AuthResponse, RegisterRequest } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+
+export async function loginJson(data: { email: string; password: string }): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/login-json`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Login failed: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function googleAuth(data: { credential: string; email: string; full_name?: string; role?: "admin" | "caller" }): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Google auth failed: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function register(data: RegisterRequest): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Registration failed: ${res.statusText}`);
+  }
+  return res.json();
+}
 
 export async function fetchAnalytics(): Promise<AnalyticsOverview> {
   const res = await fetch(`${API_BASE_URL}/analytics/overview`, { cache: "no-store" });
@@ -657,6 +696,86 @@ export async function fetchCallLogsStats(): Promise<CallLogStats> {
   }
   return res.json();
 }
+
+// -------------------------------------------------------------
+// Company Finance & Spending Tracker API
+// -------------------------------------------------------------
+
+export async function fetchExpenses(params?: {
+  category?: string;
+  vendor?: string;
+  search?: string;
+  skip?: number;
+  limit?: number;
+}): Promise<CompanyExpense[]> {
+  const query = new URLSearchParams();
+  if (params?.category) query.append("category", params.category);
+  if (params?.vendor) query.append("vendor", params.vendor);
+  if (params?.search) query.append("search", params.search);
+  if (params?.skip !== undefined) query.append("skip", String(params.skip));
+  if (params?.limit !== undefined) query.append("limit", String(params.limit));
+
+  const url = `${API_BASE_URL}/finance/expenses?${query.toString()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch company expenses: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function fetchExpense(id: string): Promise<CompanyExpense> {
+  const res = await fetch(`${API_BASE_URL}/finance/expenses/${id}`, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch expense: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function createExpense(data: Partial<CompanyExpense>): Promise<CompanyExpense> {
+  const res = await fetch(`${API_BASE_URL}/finance/expenses`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to record expense: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function updateExpense(id: string, data: Partial<CompanyExpense>): Promise<CompanyExpense> {
+  const res = await fetch(`${API_BASE_URL}/finance/expenses/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to update expense: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function deleteExpense(id: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/finance/expenses/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to delete expense: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function fetchFinancialAnalytics(): Promise<FinancialAnalytics> {
+  const res = await fetch(`${API_BASE_URL}/finance/analytics`, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch financial analytics: ${res.statusText}`);
+  }
+  return res.json();
+}
+
 
 
 

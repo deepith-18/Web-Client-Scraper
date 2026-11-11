@@ -290,6 +290,93 @@ export interface TeamMember {
   conversion_rate: number;
 }
 
+export interface CompanyExpense {
+  id: string;
+  title: string;
+  category: "ai_apis" | "cloud_deployments" | "telephony" | "proxies_scraping" | "payroll_team" | "software_tools" | "operations" | string;
+  amount: number;
+  currency: string;
+  vendor: string;
+  billing_type: "recurring_monthly" | "one_time" | "usage_based" | string;
+  notes?: string;
+  expense_date: string;
+  logged_by_user_id?: string;
+  logged_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CategorySpendDetail {
+  category_key: string;
+  category_name: string;
+  total_amount: number;
+  percentage: number;
+  count: number;
+}
+
+export interface MonthlyTrendDetail {
+  month_label: string;
+  total_spend: number;
+  ai_spend: number;
+  cloud_spend: number;
+  telephony_spend: number;
+  other_spend: number;
+}
+
+export interface VendorSpendDetail {
+  vendor: string;
+  total_amount: number;
+  percentage: number;
+}
+
+export interface FinancialAnalytics {
+  total_spend_all_time: number;
+  total_spend_this_month: number;
+  average_monthly_burn: number;
+  category_breakdown: CategorySpendDetail[];
+  monthly_trends: MonthlyTrendDetail[];
+  top_vendors: VendorSpendDetail[];
+  pipeline_deal_revenue: number;
+  net_profit: number;
+  profit_margin_pct: number;
+  cost_per_acquired_client: number;
+  total_clients_acquired: number;
+}
+
+/* ─── Auth types ─────────────────────────────────────────── */
+export interface UserResponse {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: "admin" | "caller";
+  is_active: boolean;
+  permissions?: Record<string, boolean>;
+  created_at: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: UserResponse;
+}
+
+export interface LoginJsonRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  full_name?: string;
+  role: "admin" | "caller";
+}
+
+export interface GoogleAuthRequest {
+  credential: string;
+}
+
+
 
 
 
