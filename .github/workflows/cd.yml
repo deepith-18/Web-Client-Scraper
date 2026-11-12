@@ -2,9 +2,13 @@ name: Demanex CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
     tags: [ 'v*.*.*' ]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   docker-build:
@@ -48,4 +52,3 @@ jobs:
         run: |
           echo "All CI tests, type checks, builds, and Docker packages verified."
           echo "Ready for automated deployment to cloud infrastructure (Railway, Render, AWS, or Docker Swarm)."
-

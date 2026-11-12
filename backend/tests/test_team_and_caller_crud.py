@@ -1,3 +1,4 @@
+import uuid
 import pytest
 from backend.app.core.database import SessionLocal
 from backend.app.models.user import User
@@ -26,10 +27,11 @@ from fastapi import HTTPException
 def test_team_crud_and_lead_assignment():
     db = SessionLocal()
     user_id = None
+    test_email = f"sarah.sdr.{uuid.uuid4().hex[:6]}@demanex.io"
     try:
         # 1. Create a new employee / team member
         new_emp = UserCreate(
-            email="sarah.sdr@prospectiq.io",
+            email=test_email,
             password="sdrPassword123!",
             full_name="Sarah Jenkins",
             role="sdr",
@@ -39,7 +41,7 @@ def test_team_crud_and_lead_assignment():
             notes="Experienced B2B cold caller for Indian and US retail markets"
         )
         created = create_team_member(new_emp, db=db)
-        assert created.email == "sarah.sdr@prospectiq.io"
+        assert created.email == test_email
         assert created.role == "sdr"
         assert created.daily_call_target == 40
         user_id = created.id

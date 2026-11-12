@@ -7,6 +7,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backend-test:
     name: Backend Test Suite & Security Audit
@@ -31,26 +35,20 @@ jobs:
 
       - name: Syntax & Lint Inspection (flake8)
         run: |
-          # Stop build if there are Python syntax errors or undefined names
+          # Stop build only on critical syntax errors or undefined symbols
           flake8 backend/app --count --select=E9,F63,F7,F82 --show-source --statistics
-          # Exit-zero treats all errors as warnings
+          # Informational style inspection
           flake8 backend/app --count --exit-zero --max-complexity=15 --max-line-length=120 --statistics
 
-      - name: Run SSRF Shield Security Tests
+      - name: Clean Test Database
         run: |
-          pytest backend/tests/test_ssrf.py -v
+          rm -f prospectiq.db
 
-      - name: Run Auth, RBAC & Role Separation Tests
+      - name: Run Complete Pytest Suite with Coverage
+        env:
+          SECRET_KEY: ci-testing-secret-key-demanex-32chars
         run: |
-          pytest backend/tests/test_auth.py -v
-
-      - name: Run CRM, Scraper Discovery & Telephony Tests
-        run: |
-          pytest backend/tests/test_crm.py backend/tests/test_discovery.py backend/tests/test_team_and_caller_crud.py -v
-
-      - name: Run Complete Test Suite with Coverage
-        run: |
-          pytest backend/tests -v --cov=backend.app --cov-report=xml --cov-report=term
+          pytest backend/tests -v --cov=backend.app --cov-report=term --cov-report=xml
 
       - name: Upload Test Coverage Artifact
         uses: actions/upload-artifact@v4
@@ -73,13 +71,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: frontend/package.json
 
       - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: |
-          npm ci || npm install
+          npm install --prefer-offline --no-audit
 
       - name: TypeScript Static Type Check (tsc --noEmit)
         working-directory: ./frontend
@@ -120,29 +116,52 @@ jobs:
         run: |
           pip install -r backend/requirements.txt
 
-      - name: Start Demanex Backend Daemon
+      - name: Launch Server & Run Live Smoke Checks
         env:
           SECRET_KEY: ci-test-secret-key-for-demanex-32chars
         run: |
-          python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 &
-          sleep 4
+          rm -f prospectiq.db
+          # Start FastAPI server with log output to file
+          python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 > /tmp/uvicorn.log 2>&1 &
+          SERVER_PID=$!
 
-      - name: Probe API Root & Health Endpoints
-        run: |
-          curl -f -s http://127.0.0.1:8000/health || exit 1
-          curl -f -s http://127.0.0.1:8000/ | grep -q "Demanex" || exit 1
-          echo "Health and Root endpoints responsive with Demanex branding."
+          # Wait for server readiness (up to 30 seconds)
+          echo "Waiting for Demanex backend to become responsive..."
+          READY=0
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:8000/health > /dev/null 2>&1; then
+              READY=1
+              echo "Server ready after ${i}s."
+              break
+            fi
+            sleep 1
+          done
 
-      - name: Probe Swagger OpenAPI Spec
-        run: |
+          if [ $READY -ne 1 ]; then
+            echo "ERROR: Server failed to start within 30 seconds."
+            echo "=== SERVER LOGS ==="
+            cat /tmp/uvicorn.log
+            exit 1
+          fi
+
+          echo "1. Checking Health endpoint..."
+          curl -f -s http://127.0.0.1:8000/health || { cat /tmp/uvicorn.log; exit 1; }
+
+          echo "2. Checking Root branding..."
+          ROOT_JSON=$(curl -f -s http://127.0.0.1:8000/)
+          echo "$ROOT_JSON" | grep -q "Demanex" || { echo "Branding check failed: $ROOT_JSON"; exit 1; }
+
+          echo "3. Checking OpenAPI specification..."
           curl -f -s http://127.0.0.1:8000/api/v1/openapi.json | grep -q "Authentication" || exit 1
-          echo "OpenAPI schema valid."
 
-      - name: Test JSON Authentication Endpoint
-        run: |
+          echo "4. Testing Seeded Admin Authentication..."
           LOGIN_RES=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/login-json \
             -H "Content-Type: application/json" \
             -d '{"email":"admin@demanex.io","password":"demanex123!"}')
-          echo "$LOGIN_RES" | grep -q "access_token" || { echo "Login failed: $LOGIN_RES"; exit 1; }
-          echo "Admin login smoke test passed successfully."
+          echo "$LOGIN_RES" | grep -q "access_token" || { echo "Admin login failed: $LOGIN_RES"; exit 1; }
 
+          echo "5. Testing Public Discovery Sources..."
+          curl -f -s http://127.0.0.1:8000/api/v1/discovery/sources | grep -q "OpenStreetMap" || exit 1
+
+          echo "All live smoke checks passed successfully!"
+          kill $SERVER_PID || true
