@@ -86,13 +86,13 @@ jobs:
         working-directory: ./frontend
         env:
           NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyA9v-4_ikcr3CHT7QmENTdRBHMINUOpPXI' }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'demanex.firebaseapp.com' }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'demanex' }}
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'demanex.firebasestorage.app' }}
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '305113858110' }}
-          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID || '1:305113858110:web:84eece330f974d1d8fd16f' }}
-          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-BP1LGBJJ63' }}
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ vars.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
         run: |
           npm run build
 
@@ -119,6 +119,8 @@ jobs:
       - name: Launch Server & Run Live Smoke Checks
         env:
           SECRET_KEY: ci-test-secret-key-for-demanex-32chars
+          ADMIN_SEED_PASSWORD: ${{ secrets.ADMIN_SEED_PASSWORD || 'ci-admin-seed-pass' }}
+          CALLER_SEED_PASSWORD: ${{ secrets.CALLER_SEED_PASSWORD || 'ci-caller-seed-pass' }}
         run: |
           rm -f prospectiq.db
           # Start FastAPI server with log output to file
@@ -154,13 +156,16 @@ jobs:
           echo "3. Checking OpenAPI specification..."
           curl -f -s http://127.0.0.1:8000/api/v1/openapi.json | grep -q "Authentication" || exit 1
 
-          echo "4. Testing Seeded Admin Authentication..."
+          echo "4. Seeding admin user for smoke test..."
+          ADMIN_SEED_PASSWORD=$ADMIN_SEED_PASSWORD python -m backend.app.core.seed
+
+          echo "5. Testing Seeded Admin Authentication..."
           LOGIN_RES=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/login-json \
             -H "Content-Type: application/json" \
-            -d '{"email":"admin@demanex.io","password":"demanex123!"}')
+            -d "{\"email\":\"admin@demanex.io\",\"password\":\"$ADMIN_SEED_PASSWORD\"}")
           echo "$LOGIN_RES" | grep -q "access_token" || { echo "Admin login failed: $LOGIN_RES"; exit 1; }
 
-          echo "5. Testing Public Discovery Sources..."
+          echo "6. Testing Public Discovery Sources..."
           curl -f -s http://127.0.0.1:8000/api/v1/discovery/sources | grep -q "OpenStreetMap" || exit 1
 
           echo "All live smoke checks passed successfully!"

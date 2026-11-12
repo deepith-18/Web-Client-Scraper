@@ -1,6 +1,8 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from sqlalchemy.orm import Session
 from backend.app.core.database import get_db
 from backend.app.core.security import verify_password, create_access_token, get_password_hash
@@ -17,6 +19,11 @@ from jose import jwt, JWTError
 from backend.app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+
+# Rate limiter for auth endpoints — 10 login attempts per minute per IP
+_limiter = Limiter(key_func=get_remote_address)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
@@ -40,7 +47,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+@_limiter.limit("10/minute")
+def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -55,7 +63,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     return {"access_token": access_token, "token_type": "bearer", "user": user}
 
 @router.post("/login-json", response_model=AuthResponse)
-def login_json(payload: LoginJsonRequest, db: Session = Depends(get_db)):
+@_limiter.limit("10/minute")
+def login_json(request: Request, payload: LoginJsonRequest, db: Session = Depends(get_db)):
     """Authenticate with standard JSON body (email and password)."""
     user = db.query(User).filter(User.email == payload.email.strip().lower()).first()
     if not user or not verify_password(payload.password, user.hashed_password):

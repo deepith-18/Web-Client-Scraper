@@ -1,34 +1,39 @@
 import os
+import warnings
+import secrets
 from typing import List, Union
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import AnyHttpUrl, validator
 
+_DEV_SECRET_KEY = "demanex-development-super-secret-key-32charsmin!"
+
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Demanex"
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = "demanex-development-super-secret-key-32charsmin!"
+    # NEVER use the default SECRET_KEY in production — set via environment variable
+    SECRET_KEY: str = _DEV_SECRET_KEY
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
-    
-    # Database config: Defaults to local SQLite for instant setup, override with Postgres URL
+
+    # Database config: Defaults to local SQLite; override with DATABASE_URL env var for Postgres
     DATABASE_URL: str = "sqlite:///./prospectiq.db"
-    
-    # CORS
+
+    # CORS — tighten BACKEND_CORS_ORIGINS in production
     BACKEND_CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
         "http://127.0.0.1:8000"
     ]
-    
+
     # Scraping & Verification limits
     REQUEST_TIMEOUT_SECONDS: int = 15
     MAX_REDIRECTS: int = 5
     USER_AGENT: str = "Demanex-BusinessAuditor/1.0 (+https://demanex.io/bot)"
-    
-    # External APIs (Optional - fallback to open sources)
+
+    # External APIs (optional — falls back to open sources)
     GOOGLE_PLACES_API_KEY: str = ""
     GOOGLE_PAGESPEED_API_KEY: str = ""
-    
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -37,4 +42,14 @@ class Settings(BaseSettings):
     )
 
 settings = Settings()
+
+# Warn loudly if running with the default dev secret in a non-dev context
+if settings.SECRET_KEY == _DEV_SECRET_KEY:
+    warnings.warn(
+        "\n[SECURITY] SECRET_KEY is set to the default development value.\n"
+        "  → Set the SECRET_KEY environment variable before deploying to production.\n"
+        "  → Generate one with: python -c \"import secrets; print(secrets.token_hex(32))\"",
+        UserWarning,
+        stacklevel=2,
+    )
 

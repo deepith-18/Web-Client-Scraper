@@ -1,5 +1,8 @@
+import os
 import sys
 import uuid
+import secrets
+import warnings
 from datetime import datetime
 from backend.app.core.database import SessionLocal, engine, Base
 from backend.app.models.user import User, default_permissions
@@ -51,11 +54,21 @@ def seed_database(clear_first: bool = False):
             clear_all_temporary_data(db)
 
         # 1. Ensure Demanex Admin User exists
+        # Seed password comes from environment — NEVER hardcode in source
+        admin_password = os.environ.get("ADMIN_SEED_PASSWORD")
+        if not admin_password:
+            warnings.warn(
+                "ADMIN_SEED_PASSWORD not set. Using a random one-time password for this session. "
+                "Set this environment variable to persist a known admin password.",
+                UserWarning
+            )
+            admin_password = secrets.token_urlsafe(16)
+
         admin = db.query(User).filter(User.email == "admin@demanex.io").first()
         if not admin:
             admin = User(
                 email="admin@demanex.io",
-                hashed_password=get_password_hash("demanex123!"),
+                hashed_password=get_password_hash(admin_password),
                 full_name="Deepith (Founder & Admin)",
                 role="admin",
                 is_active=True,
@@ -63,7 +76,7 @@ def seed_database(clear_first: bool = False):
                 permissions=default_permissions("admin")
             )
             db.add(admin)
-            print("Created default Demanex admin user: admin@demanex.io (password: demanex123!)")
+            print("Created Demanex admin user: admin@demanex.io")
         else:
             admin.role = "admin"
             admin.is_active = True
@@ -71,11 +84,20 @@ def seed_database(clear_first: bool = False):
                 admin.permissions = default_permissions("admin")
 
         # 2. Ensure Demanex Caller User exists
+        caller_password = os.environ.get("CALLER_SEED_PASSWORD")
+        if not caller_password:
+            warnings.warn(
+                "CALLER_SEED_PASSWORD not set. Using a random one-time password for this session. "
+                "Set this environment variable to persist a known caller password.",
+                UserWarning
+            )
+            caller_password = secrets.token_urlsafe(16)
+
         caller = db.query(User).filter(User.email == "caller@demanex.io").first()
         if not caller:
             caller = User(
                 email="caller@demanex.io",
-                hashed_password=get_password_hash("caller123!"),
+                hashed_password=get_password_hash(caller_password),
                 full_name="Team Caller",
                 role="caller",
                 is_active=True,
@@ -83,7 +105,7 @@ def seed_database(clear_first: bool = False):
                 permissions=default_permissions("caller")
             )
             db.add(caller)
-            print("Created default Demanex caller user: caller@demanex.io (password: caller123!)")
+            print("Created Demanex caller user: caller@demanex.io")
         else:
             if not caller.permissions:
                 caller.permissions = default_permissions("caller")

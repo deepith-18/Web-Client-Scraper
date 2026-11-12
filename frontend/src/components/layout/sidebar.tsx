@@ -28,26 +28,26 @@ import {
 
 const adminNavigationItems = [
   { name: "Overview", href: "/", icon: LayoutDashboard },
-  { name: "Company Spending", href: "/finance", icon: WalletCards, badge: "Burn" },
-  { name: "Team & Employees", href: "/team", icon: Users, badge: "Startup" },
-  { name: "Caller Desk", href: "/calling", icon: PhoneCall, badge: "Calls" },
-  { name: "Call Logs & CRUD", href: "/calling/history", icon: History, badge: "Logs" },
-  { name: "Discover Businesses", href: "/discover", icon: Compass, badge: "Live" },
-  { name: "Lead Explorer", href: "/leads", icon: Search },
-  { name: "Website Audits", href: "/audits", icon: Activity },
-  { name: "Verification Centre", href: "/verification", icon: ShieldCheck },
-  { name: "Lead Scoring", href: "/scoring", icon: Layers, badge: "Engine" },
-  { name: "CRM Pipeline", href: "/pipeline", icon: FileCheck2 },
+  { name: "Leads", href: "/leads", icon: Search },
+  { name: "Discovery", href: "/discover", icon: Compass },
+  { name: "Caller Desk", href: "/calling", icon: PhoneCall },
+  { name: "Call History", href: "/calling/history", icon: History },
+  { name: "Pipeline", href: "/pipeline", icon: FileCheck2 },
+  { name: "Site Audits", href: "/audits", icon: Activity },
+  { name: "Verification", href: "/verification", icon: ShieldCheck },
+  { name: "Scoring Engine", href: "/scoring", icon: Layers },
   { name: "Outreach Studio", href: "/outreach", icon: Send },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
+  { name: "Team", href: "/team", icon: Users },
+  { name: "Expenses", href: "/finance", icon: WalletCards },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 // Callers ONLY see caller tools: No admin modules, no spending, no overview dashboard
 const callerNavigationItems = [
-  { name: "Live Caller Desk", href: "/calling", icon: PhoneCall, badge: "Dial" },
-  { name: "Call Logs & History", href: "/calling/history", icon: History, badge: "CRUD" },
-  { name: "Prospect Directory", href: "/leads", icon: Search },
+  { name: "Caller Desk", href: "/calling", icon: PhoneCall },
+  { name: "Call History", href: "/calling/history", icon: History },
+  { name: "Assigned Leads", href: "/leads", icon: Search },
 ];
 
 export function Sidebar() {
@@ -98,17 +98,14 @@ export function Sidebar() {
       {/* Brand Header */}
       <div className="p-4 flex items-center justify-between border-b border-slate-800/80">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 via-indigo-600 to-emerald-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
+          <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/30">
             <Globe2 className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-white tracking-tight text-base">Demanex</span>
-              <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                PRO
-              </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-medium">Startup Agency OS</p>
+            <p className="text-[11px] text-slate-400 font-medium">B2B Outbound Engine</p>
           </div>
         </div>
 
@@ -153,27 +150,10 @@ export function Sidebar() {
         </div>
       )}
 
-      {/* Target Market Indicator */}
-      <div className="px-3.5 py-2 mx-3 my-2 rounded-lg bg-slate-900/60 border border-slate-800/70 flex items-center gap-2.5">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        <div className="text-[11px] min-w-0">
-          <div className="text-slate-200 font-medium flex items-center gap-1 truncate">
-            <span>{user?.role === "caller" || portal === "caller" ? "Caller Queue" : "Admin Command"}</span>
-            <span className="text-[10px] text-slate-400">• Bengaluru & Global</span>
-          </div>
-          <div className="text-slate-400 text-[10px] truncate">
-            {user?.role === "caller" || portal === "caller" ? "Telephony & Client Conversion" : "Full Agency & Team Control"}
-          </div>
-        </div>
-      </div>
-
       {/* Navigation Links */}
-      <nav className="flex-1 px-3 space-y-1 overflow-y-auto pt-1">
-        <p className="px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-          {user?.role === "caller" || portal === "caller" ? "Caller Desk Modules" : "Administrative Modules"}
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto pt-3">
+        <p className="px-3 text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          {user?.role === "caller" || portal === "caller" ? "Workspace" : "Navigation"}
         </p>
         {currentNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
@@ -195,15 +175,6 @@ export function Sidebar() {
                 <Icon className={`h-4 w-4 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-slate-200"}`} />
                 <span>{item.name}</span>
               </div>
-              {item.badge && (
-                <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
-                  isActive
-                    ? "bg-white/20 text-white"
-                    : "bg-slate-800 text-slate-300 border border-slate-700"
-                }`}>
-                  {item.badge}
-                </span>
-              )}
             </Link>
           );
         })}

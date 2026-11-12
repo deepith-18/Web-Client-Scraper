@@ -127,27 +127,19 @@ export default function DashboardPage() {
       />
 
       <main className="p-8 space-y-8 flex-1">
-        {/* Banner Announcement */}
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        {/* Dashboard Header Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                Worldwide Engine Ready
-              </span>
-              <span className="text-xs text-slate-300">Targeting High-Potential Leads</span>
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight">Freelance Prospect Acquisition Center</h1>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Discover local businesses in Bengaluru and global metros with broken, outdated, or nonexistent websites. Verified public contacts with automated opportunity scoring.
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Pipeline Overview</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Live prospect acquisition and conversion across active target markets.
             </p>
           </div>
-          <div className="flex items-center gap-3 bg-white/10 p-2.5 rounded-xl backdrop-blur-xs border border-white/10 text-xs">
-            <div>
-              <p className="text-slate-400 text-[10px] uppercase font-semibold">Active Market</p>
-              <p className="font-bold text-white text-sm">
-                {selectedCity ? `${selectedCity}` : "All Global Metros"}
-              </p>
-            </div>
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Market:</span>
+            <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+              {selectedCity || "Global Metros"}
+            </span>
           </div>
         </div>
 
@@ -156,69 +148,66 @@ export default function DashboardPage() {
           <MetricsCard
             title="Total Discovered"
             value={analytics?.total_discovered_businesses ?? businesses.length}
-            subtitle="Verified public business entries"
+            subtitle="Verified listings"
             icon={Users}
             color="blue"
           />
           <MetricsCard
-            title="No Official Website"
+            title="No Website"
             value={analytics?.businesses_without_websites ?? 0}
-            subtitle="Prime targets for new site build"
+            subtitle="Prime build opportunities"
             icon={Globe}
-            trend="+30 Score Pts"
+            trend="+30 Score"
             color="rose"
           />
           <MetricsCard
-            title="Improvement Opportunities"
+            title="Audits Flagged"
             value={analytics?.website_improvement_opportunities ?? 0}
-            subtitle="Broken SSL, mobile, slow speed"
+            subtitle="Performance & mobile issues"
             icon={AlertCircle}
             color="amber"
           />
           <MetricsCard
             title="Qualified Leads"
             value={analytics?.qualified_leads ?? 0}
-            subtitle="Ready for freelance outreach"
+            subtitle="Ready for outreach"
             icon={CheckCircle2}
             color="emerald"
           />
         </div>
 
-        {/* Deepith's Action Queue: Accepted Clients (Agreed to Website) */}
-        <div className="p-6 bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 text-white rounded-2xl border border-emerald-500/30 shadow-xl space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+        {/* High-Intent / Accepted Leads Queue */}
+        <div className="p-6 bg-slate-900 dark:bg-[#0b101b] text-white rounded-xl border border-slate-800 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <h2 className="text-base font-bold tracking-tight text-white flex items-center gap-2">
-                  <span>Demanex Founder Queue: Accepted Clients</span>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                    {acceptedClients.length} agreed
+                <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                <h2 className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
+                  <span>Hot Leads & Accepted Proposals</span>
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {acceptedClients.length} active
                   </span>
                 </h2>
               </div>
-              <p className="text-xs text-slate-300 mt-1">
-                Clients your teammate successfully called and confirmed. Ready for you to review audits, build wireframes, and send proposals.
+              <p className="text-xs text-slate-400 mt-1">
+                Prospects marked as interested or ready for pitch wireframes and proposal follow-ups.
               </p>
             </div>
 
             <a
               href="/calling"
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto flex items-center gap-1.5"
+              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium transition-colors self-start sm:self-auto flex items-center gap-1.5"
             >
-              <PhoneCall className="h-4 w-4" />
-              <span>Go to Caller Desk</span>
+              <PhoneCall className="h-3.5 w-3.5" />
+              <span>Caller Desk</span>
             </a>
           </div>
 
           {acceptedClients.length === 0 ? (
-            <div className="p-8 text-center bg-white/5 rounded-xl border border-white/10 text-xs text-slate-300 space-y-1">
-              <p className="font-semibold text-white">No confirmed clients waiting yet.</p>
-              <p className="text-slate-400">
-                Have your teammate open the <a href="/calling" className="text-emerald-400 underline">Caller Desk</a> to call leads and mark agreed businesses as Accepted!
+            <div className="p-6 text-center bg-slate-950/40 rounded-lg border border-slate-800 text-xs text-slate-400">
+              <p className="font-medium text-slate-300">No active deals in the accepted queue yet.</p>
+              <p className="text-slate-500 text-[11px] mt-0.5">
+                Outbound call outcomes and verified positive responses will appear here for follow-up.
               </p>
             </div>
           ) : (

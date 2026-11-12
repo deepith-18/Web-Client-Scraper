@@ -1,5 +1,6 @@
 import uuid
 import pytest
+from starlette.requests import Request as StarletteRequest
 from backend.app.core.security import get_password_hash, verify_password, create_access_token
 from jose import jwt
 from backend.app.core.config import settings
@@ -8,6 +9,18 @@ from backend.app.models.user import User
 from backend.app.schemas.user import LoginJsonRequest, UserCreate, GoogleAuthRequest
 from backend.app.api.v1.auth import login_json, register, google_auth
 from fastapi import HTTPException
+
+# Real starlette Request required by slowapi rate limiter decorator
+def _mock_request():
+    scope = {
+        "type": "http",
+        "method": "POST",
+        "path": "/api/v1/auth/login-json",
+        "query_string": b"",
+        "headers": [],
+        "client": ("127.0.0.1", 12345),
+    }
+    return StarletteRequest(scope=scope)
 
 def test_password_hashing_and_verification():
     raw_pwd = "my_secure_password_123!"
@@ -24,10 +37,11 @@ def test_jwt_token_generation():
 
 def test_json_login_flow():
     db = SessionLocal()
+    mock_req = _mock_request()
     try:
         # Login with seeded admin
         req = LoginJsonRequest(email="admin@demanex.io", password="demanex123!")
-        res = login_json(req, db=db)
+        res = login_json(mock_req, req, db=db)
         assert res.access_token is not None
         assert res.token_type == "bearer"
         assert res.user.role == "admin"
@@ -36,7 +50,7 @@ def test_json_login_flow():
         # Login with incorrect password
         with pytest.raises(HTTPException) as exc_info:
             bad_req = LoginJsonRequest(email="admin@demanex.io", password="badpassword")
-            login_json(bad_req, db=db)
+            login_json(mock_req, bad_req, db=db)
         assert exc_info.value.status_code == 401
     finally:
         db.close()
