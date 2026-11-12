@@ -3,12 +3,12 @@ version: '3.8'
 services:
   db:
     image: postgres:16-alpine
-    container_name: prospectiq_db
+    container_name: demanex_db
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespassword123
-      POSTGRES_DB: prospectiq
+      POSTGRES_DB: demanex
     ports:
       - "5432:5432"
     volumes:
@@ -18,11 +18,11 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: prospectiq_backend
+    container_name: demanex_backend
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgresql://postgres:postgrespassword123@db:5432/prospectiq
-      - SECRET_KEY=production-secret-key-change-me-32chars
+      - DATABASE_URL=postgresql://postgres:postgrespassword123@db:5432/demanex
+      - SECRET_KEY=demanex-production-secret-key-32chars
       - REQUEST_TIMEOUT_SECONDS=15
     ports:
       - "8000:8000"
@@ -33,7 +33,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: prospectiq_frontend
+    container_name: demanex_frontend
     restart: unless-stopped
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1

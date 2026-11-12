@@ -64,8 +64,20 @@ def test_team_crud_and_lead_assignment():
         assert updated.phone == "+91 98450 99999"
 
         # 5. Assign leads to employee
+        created_biz = False
         biz = db.query(Business).first()
-        assert biz is not None
+        if not biz:
+            biz = Business(
+                name="Test Client Corp",
+                category="IT Services",
+                city="Bengaluru",
+                country="India",
+                crm_status="uncontacted"
+            )
+            db.add(biz)
+            db.commit()
+            db.refresh(biz)
+            created_biz = True
 
         assign_res = assign_leads_to_member(LeadAssignRequest(lead_ids=[biz.id], user_id=user_id), db=db)
         assert assign_res["lead_count"] == 1
@@ -80,6 +92,9 @@ def test_team_crud_and_lead_assignment():
         user_id = None
 
     finally:
+        if created_biz and biz:
+            db.delete(biz)
+            db.commit()
         if user_id:
             db.query(User).filter(User.id == user_id).delete()
             db.commit()
@@ -88,10 +103,23 @@ def test_team_crud_and_lead_assignment():
 def test_call_logs_crud_and_history():
     db = SessionLocal()
     call_id = None
+    created_biz = False
+    biz = None
     try:
         biz = db.query(Business).first()
+        if not biz:
+            biz = Business(
+                name="Test Telephony Prospect",
+                category="Restaurants",
+                city="Bengaluru",
+                country="India",
+                crm_status="uncontacted"
+            )
+            db.add(biz)
+            db.commit()
+            db.refresh(biz)
+            created_biz = True
         caller = db.query(User).filter(User.role == "caller").first()
-        assert biz is not None
 
         # 1. Create a Call Log: AGREED
         call_in = CallLogCreate(
@@ -152,4 +180,7 @@ def test_call_logs_crud_and_history():
     finally:
         if call_id:
             delete_call_log(call_id, db=db)
+        if created_biz and biz:
+            db.delete(biz)
+            db.commit()
         db.close()

@@ -1,0 +1,148 @@
+name: Demanex CI Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  backend-test:
+    name: Backend Test Suite & Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Demanex Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install pytest pytest-cov flake8
+
+      - name: Syntax & Lint Inspection (flake8)
+        run: |
+          # Stop build if there are Python syntax errors or undefined names
+          flake8 backend/app --count --select=E9,F63,F7,F82 --show-source --statistics
+          # Exit-zero treats all errors as warnings
+          flake8 backend/app --count --exit-zero --max-complexity=15 --max-line-length=120 --statistics
+
+      - name: Run SSRF Shield Security Tests
+        run: |
+          pytest backend/tests/test_ssrf.py -v
+
+      - name: Run Auth, RBAC & Role Separation Tests
+        run: |
+          pytest backend/tests/test_auth.py -v
+
+      - name: Run CRM, Scraper Discovery & Telephony Tests
+        run: |
+          pytest backend/tests/test_crm.py backend/tests/test_discovery.py backend/tests/test_team_and_caller_crud.py -v
+
+      - name: Run Complete Test Suite with Coverage
+        run: |
+          pytest backend/tests -v --cov=backend.app --cov-report=xml --cov-report=term
+
+      - name: Upload Test Coverage Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage-report
+          path: coverage.xml
+          retention-days: 7
+
+  frontend-test:
+    name: Frontend Quality & Production Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Demanex Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: |
+          npm ci || npm install
+
+      - name: TypeScript Static Type Check (tsc --noEmit)
+        working-directory: ./frontend
+        run: |
+          npm run type-check
+
+      - name: Next.js Production Build
+        working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyA9v-4_ikcr3CHT7QmENTdRBHMINUOpPXI' }}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'demanex.firebaseapp.com' }}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'demanex' }}
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'demanex.firebasestorage.app' }}
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '305113858110' }}
+          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID || '1:305113858110:web:84eece330f974d1d8fd16f' }}
+          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-BP1LGBJJ63' }}
+        run: |
+          npm run build
+
+  integration-smoke:
+    name: E2E API Integration Smoke Check
+    needs: [backend-test, frontend-test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Demanex Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        run: |
+          pip install -r backend/requirements.txt
+
+      - name: Start Demanex Backend Daemon
+        env:
+          SECRET_KEY: ci-test-secret-key-for-demanex-32chars
+        run: |
+          python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 &
+          sleep 4
+
+      - name: Probe API Root & Health Endpoints
+        run: |
+          curl -f -s http://127.0.0.1:8000/health || exit 1
+          curl -f -s http://127.0.0.1:8000/ | grep -q "Demanex" || exit 1
+          echo "Health and Root endpoints responsive with Demanex branding."
+
+      - name: Probe Swagger OpenAPI Spec
+        run: |
+          curl -f -s http://127.0.0.1:8000/api/v1/openapi.json | grep -q "Authentication" || exit 1
+          echo "OpenAPI schema valid."
+
+      - name: Test JSON Authentication Endpoint
+        run: |
+          LOGIN_RES=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/login-json \
+            -H "Content-Type: application/json" \
+            -d '{"email":"admin@demanex.io","password":"demanex123!"}')
+          echo "$LOGIN_RES" | grep -q "access_token" || { echo "Login failed: $LOGIN_RES"; exit 1; }
+          echo "Admin login smoke test passed successfully."
+

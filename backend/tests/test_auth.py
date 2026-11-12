@@ -1,8 +1,10 @@
+import uuid
 import pytest
 from backend.app.core.security import get_password_hash, verify_password, create_access_token
 from jose import jwt
 from backend.app.core.config import settings
 from backend.app.core.database import SessionLocal
+from backend.app.models.user import User
 from backend.app.schemas.user import LoginJsonRequest, UserCreate, GoogleAuthRequest
 from backend.app.api.v1.auth import login_json, register, google_auth
 from fastapi import HTTPException
@@ -41,8 +43,8 @@ def test_json_login_flow():
 
 def test_register_and_separate_caller_role():
     db = SessionLocal()
+    caller_email = f"test_sdr_{uuid.uuid4().hex[:8]}@demanex.io"
     try:
-        caller_email = "test_sdr_caller_888@demanex.io"
         req = UserCreate(
             email=caller_email,
             password="callerpass123!",
@@ -57,12 +59,14 @@ def test_register_and_separate_caller_role():
         assert res.user.permissions["can_manage_team"] is False
         assert res.access_token is not None
     finally:
+        db.query(User).filter(User.email == caller_email).delete()
+        db.commit()
         db.close()
 
 def test_google_auth_flow():
     db = SessionLocal()
+    google_user_email = f"google_{uuid.uuid4().hex[:8]}@company.com"
     try:
-        google_user_email = "alex.google_caller@company.com"
         req = GoogleAuthRequest(
             email=google_user_email,
             full_name="Alex Google SDR",
@@ -82,4 +86,6 @@ def test_google_auth_flow():
         res2 = google_auth(req2, db=db)
         assert res2.user.email == google_user_email
     finally:
+        db.query(User).filter(User.email == google_user_email).delete()
+        db.commit()
         db.close()
