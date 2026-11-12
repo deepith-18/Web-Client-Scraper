@@ -117,3 +117,30 @@ def cancel_job(job_id: str, db: Session = Depends(get_db)):
     db.add(log)
     db.commit()
     return {"message": "Job successfully cancelled", "job_id": job_id}
+
+@router.delete("/jobs/{job_id}")
+def delete_job(job_id: str, db: Session = Depends(get_db)):
+    """Delete a single discovery scraping job and its associated logs."""
+    job = db.query(ScrapingJob).filter(ScrapingJob.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Discovery job not found")
+    
+    db.query(ScrapingJobLog).filter(ScrapingJobLog.job_id == job_id).delete()
+    db.delete(job)
+    db.commit()
+    return {"message": "Discovery job deleted", "id": job_id}
+
+@router.delete("/jobs")
+def clear_all_jobs(db: Session = Depends(get_db)):
+    """Clear all discovery jobs and logs."""
+    db.query(ScrapingJobLog).delete()
+    db.query(ScrapingJob).delete()
+    db.commit()
+    return {"message": "All discovery jobs and logs have been cleared"}
+
+@router.post("/purge-temporary-data")
+def purge_temporary_data_endpoint(db: Session = Depends(get_db)):
+    """Purge all fake and temporary discovered data across the platform."""
+    from backend.app.core.seed import clear_all_temporary_data
+    clear_all_temporary_data(db)
+    return {"message": "All temporary data, jobs, and fake leads successfully cleared"}

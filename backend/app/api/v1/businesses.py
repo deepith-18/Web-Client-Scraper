@@ -141,3 +141,22 @@ def delete_business(business_id: str, db: Session = Depends(get_db)):
     db.delete(biz)
     db.commit()
     return {"message": "Business deleted successfully", "id": business_id}
+
+@router.delete("")
+def clear_all_businesses(db: Session = Depends(get_db)):
+    """Delete all business leads and associated child records."""
+    from backend.app.models.contact import BusinessContact
+    from backend.app.models.audit import WebsiteAudit
+    from backend.app.models.score import LeadScore
+    from backend.app.models.crm import LeadNote, CallLog, OutreachRecord, FollowUpTask
+
+    db.query(CallLog).delete()
+    db.query(OutreachRecord).delete()
+    db.query(LeadNote).delete()
+    db.query(FollowUpTask).delete()
+    db.query(LeadScore).delete()
+    db.query(WebsiteAudit).delete()
+    db.query(BusinessContact).delete()
+    deleted_count = db.query(Business).delete()
+    db.commit()
+    return {"message": f"Successfully cleared {deleted_count} businesses and their records"}

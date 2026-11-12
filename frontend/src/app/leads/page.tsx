@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import { Header } from "@/components/layout/header";
 import { LeadModal } from "@/components/ui/lead-modal";
 import { formatScoreTier } from "@/lib/utils";
-import { fetchBusinesses, updateBusinessStatus, createManualBusiness } from "@/lib/api-client";
+import { fetchBusinesses, updateBusinessStatus, createManualBusiness, clearAllBusinesses } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { Business } from "@/types";
 import {
   Search,
@@ -20,11 +21,15 @@ import {
   X,
   AlertCircle,
   CheckCircle2,
+  Trash2,
 } from "lucide-react";
 
 export default function LeadExplorerPage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
+  const [clearing, setClearing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -62,6 +67,23 @@ export default function LeadExplorerPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  const handleClearAllLeads = async () => {
+    if (!window.confirm("Are you sure you want to delete all leads? This action cannot be undone.")) {
+      return;
+    }
+    setClearing(true);
+    try {
+      await clearAllBusinesses();
+      await loadData();
+      setSelectedLead(null);
+    } catch (err) {
+      console.error("Failed to clear leads", err);
+      alert("Failed to clear leads. Please try again.");
+    } finally {
+      setClearing(false);
+    }
+  };
 
   const handleStatusUpdate = async (bizId: string, newStatus: string) => {
     try {
@@ -247,11 +269,22 @@ export default function LeadExplorerPage() {
             <button
               onClick={exportToCSV}
               disabled={filteredBusinesses.length === 0}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
             >
               <Download className="h-4 w-4 text-slate-500" />
               <span>Export CSV ({filteredBusinesses.length})</span>
             </button>
+            {isAdmin && businesses.length > 0 && (
+              <button
+                onClick={handleClearAllLeads}
+                disabled={clearing}
+                className="flex items-center gap-2 px-3 py-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
+                title="Clear all leads from database"
+              >
+                <Trash2 className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+                <span>{clearing ? "Clearing..." : "Clear All"}</span>
+              </button>
+            )}
           </div>
         </div>
 

@@ -7,7 +7,9 @@ import {
   addToSuppression,
   deleteFromSuppression,
   fetchSources,
+  purgeAllTemporaryData,
 } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { LeadSource } from "@/types";
 import {
   Settings,
@@ -22,9 +24,12 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const [suppressionList, setSuppressionList] = useState<any[]>([]);
   const [sources, setSources] = useState<LeadSource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [purging, setPurging] = useState(false);
 
   // New suppression input
   const [newValue, setNewValue] = useState("");
@@ -32,6 +37,22 @@ export default function SettingsPage() {
   const [newReason, setNewReason] = useState("Opt-out request");
   const [adding, setAdding] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const handlePurgeAll = async () => {
+    if (!window.confirm("Are you sure you want to purge all temporary scraped data and discovery jobs? Real user accounts and suppression lists will be preserved.")) {
+      return;
+    }
+    setPurging(true);
+    setStatusMessage(null);
+    try {
+      const res = await purgeAllTemporaryData();
+      setStatusMessage(res.message || "All temporary data, discovery jobs, and test leads purged successfully.");
+    } catch (err: any) {
+      setStatusMessage(`Error purging data: ${err.message}`);
+    } finally {
+      setPurging(false);
+    }
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -243,6 +264,32 @@ export default function SettingsPage() {
             ))}
           </div>
         </div>
+
+        {/* Agency Data Reset & Purge (Admins Only) */}
+        {isAdmin && (
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-rose-200 dark:border-rose-900/60 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-sm font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wider flex items-center gap-2">
+                  <Trash2 className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+                  <span>Platform Data Reset & Cleanup</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+                  Quickly purge all temporary discovery jobs, scraped leads, audits, call logs, and scoring runs.
+                  User accounts and suppression rules will remain untouched so your team can start fresh with real client data.
+                </p>
+              </div>
+              <button
+                onClick={handlePurgeAll}
+                disabled={purging}
+                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-2 shrink-0 transition-colors"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span>{purging ? "Purging System Data..." : "Purge All Scraped Data"}</span>
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </>
   );

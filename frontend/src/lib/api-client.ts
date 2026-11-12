@@ -776,6 +776,47 @@ export async function fetchFinancialAnalytics(): Promise<FinancialAnalytics> {
   return res.json();
 }
 
+export async function deleteDiscoveryJob(jobId: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/discovery/jobs/${jobId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to delete discovery job: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function clearAllDiscoveryJobs(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/discovery/jobs`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to clear discovery jobs: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function clearAllBusinesses(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/businesses`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to clear businesses: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function purgeAllTemporaryData(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/discovery/purge-temporary-data`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to purge temporary data: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+
 
 
 

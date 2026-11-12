@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { fetchSources, fetchDiscoveryJobs, createDiscoveryJob, fetchJobLogs, cancelDiscoveryJob } from "@/lib/api-client";
+import { fetchSources, fetchDiscoveryJobs, createDiscoveryJob, fetchJobLogs, cancelDiscoveryJob, deleteDiscoveryJob, clearAllDiscoveryJobs } from "@/lib/api-client";
 import { LeadSource, ScrapingJob } from "@/types";
 import { getActiveUser, checkPermission } from "@/lib/permissions";
 import {
@@ -26,6 +26,7 @@ import {
   UserCheck,
   Lock,
   ShieldAlert,
+  Trash2,
 } from "lucide-react";
 
 const targetCategories = [
@@ -163,6 +164,25 @@ export default function DiscoverPage() {
       setJobs(updated);
     } catch (err) {
       console.error("Error cancelling job", err);
+    }
+  };
+
+  const handleDeleteJob = async (jobId: string) => {
+    try {
+      await deleteDiscoveryJob(jobId);
+      setJobs((prev) => prev.filter((j) => j.id !== jobId));
+    } catch (err) {
+      console.error("Error deleting job", err);
+    }
+  };
+
+  const handleClearAllJobs = async () => {
+    if (!confirm("Are you sure you want to clear all discovery jobs and logs?")) return;
+    try {
+      await clearAllDiscoveryJobs();
+      setJobs([]);
+    } catch (err) {
+      console.error("Error clearing jobs", err);
     }
   };
 
@@ -404,7 +424,18 @@ export default function DiscoverPage() {
                 Live processing states, qualified business discovery metrics, and activity logs
               </p>
             </div>
-            <span className="text-xs text-slate-400 font-medium">Auto-refreshes while jobs run</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-slate-400 font-medium hidden sm:inline">Auto-refreshes while jobs run</span>
+              {jobs.length > 0 && (
+                <button
+                  onClick={handleClearAllJobs}
+                  className="px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors flex items-center gap-1.5"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>Clear All Jobs</span>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="divide-y divide-slate-100">
@@ -500,6 +531,14 @@ export default function DiscoverPage() {
                             Cancel
                           </button>
                         )}
+
+                        <button
+                          onClick={() => handleDeleteJob(job.id)}
+                          title="Delete Job"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
                       </div>
                     </div>
                   </div>
