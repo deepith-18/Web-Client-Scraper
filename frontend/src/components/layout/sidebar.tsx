@@ -84,6 +84,7 @@ const callerSections: NavSection[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const currentPath = pathname || "";
   const router = useRouter();
   const { logout, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -200,8 +201,8 @@ export function Sidebar() {
             </div>
             {sec.items.map((item) => {
               const isActive =
-                pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href));
+                currentPath === item.href ||
+                (item.href !== "/" && currentPath.startsWith(item.href));
               const Icon = item.icon;
 
               return (

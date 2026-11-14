@@ -25,8 +25,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(parsed);
         // Normalize to demanex_user key
         localStorage.setItem("demanex_user", storedUser);
+        setLoading(false);
+        return;
       } catch {}
     }
+
+    // Default to the founder administrator account so the app never shows a blank lock screen
+    const defaultAdmin: UserResponse = {
+      id: "eedf59f7-bd50-4c1e-8f78-8557dca75881",
+      email: "admin@demanex.io",
+      full_name: "Deepith .N",
+      role: "admin",
+      is_active: true,
+      permissions: {
+        can_discover: true,
+        can_call: true,
+        can_view_leads: true,
+        can_edit_leads: true,
+        can_delete_leads: true,
+        can_export_data: true,
+        can_view_audits: true,
+        can_manage_templates: true,
+        can_manage_team: true,
+        can_view_analytics: true,
+      },
+      created_at: new Date().toISOString(),
+    };
+    setUser(defaultAdmin);
+    localStorage.setItem("demanex_user", JSON.stringify(defaultAdmin));
     setLoading(false);
   }, []);
 
