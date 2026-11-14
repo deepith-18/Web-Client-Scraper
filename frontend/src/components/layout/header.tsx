@@ -65,11 +65,10 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
             <button
               key={loc.label}
               onClick={() => onCitySelect && onCitySelect(loc.value)}
-              className={`px-2.5 py-1 rounded-md transition-all font-medium ${
-                isSelected
+              className={`px-2.5 py-1 rounded-md transition-all font-medium ${isSelected
                   ? "bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-400 shadow-xs border border-slate-200 dark:border-slate-700"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-              }`}
+                }`}
             >
               {loc.label}
             </button>
@@ -89,11 +88,10 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs transition-all shadow-xs"
           >
             <div
-              className={`h-6 w-6 rounded-full flex items-center justify-center font-bold text-[10px] text-white ${
-                user?.role === "admin"
+              className={`h-6 w-6 rounded-full flex items-center justify-center font-bold text-[10px] text-white ${user?.role === "admin"
                   ? "bg-gradient-to-tr from-blue-600 to-indigo-600"
                   : "bg-gradient-to-tr from-emerald-600 to-teal-600"
-              }`}
+                }`}
             >
               {user?.full_name ? user.full_name.charAt(0).toUpperCase() : user?.email?.charAt(0).toUpperCase() || "D"}
             </div>
