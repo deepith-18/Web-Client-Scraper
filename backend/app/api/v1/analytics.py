@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from backend.app.core.database import get_db
@@ -143,5 +144,4 @@ def get_acceptance_analytics(db: Session = Depends(get_db)):
         best_converting_category=best_cat if best_cat != "N/A" else (cat_breakdown[0].category if cat_breakdown else "None"),
         category_breakdown=cat_breakdown
     )
-
 
