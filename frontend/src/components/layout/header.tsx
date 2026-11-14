@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface HeaderProps {
   onSearchChange?: (val: string) => void;
@@ -40,6 +40,7 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+  const pathname = usePathname() || "";
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMarketMenuOpen, setIsMarketMenuOpen] = useState(false);
   const marketMenuRef = useRef<HTMLDivElement>(null);
@@ -150,23 +151,43 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
 
       {/* ── 3. Right: Fast Action + Theme Toggle + User Menu ─── */}
       <div className="flex items-center gap-3">
-        {/* Quick Launch Discovery or Calling Desk Button */}
+        {/* Contextual Quick Action Button */}
         {user?.role === "admin" ? (
-          <Link
-            href="/discover"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-blue-200" />
-            <span>Launch Discovery</span>
-          </Link>
+          pathname === "/discover" ? (
+            <Link
+              href="/leads"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
+            >
+              <Search className="h-3.5 w-3.5 text-blue-200" />
+              <span>View Leads</span>
+            </Link>
+          ) : (
+            <Link
+              href="/discover"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-blue-200" />
+              <span>Launch Discovery</span>
+            </Link>
+          )
         ) : (
-          <Link
-            href="/calling"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
-          >
-            <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
-            <span>Open Dial Desk</span>
-          </Link>
+          pathname === "/calling" ? (
+            <Link
+              href="/leads"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
+            >
+              <Search className="h-3.5 w-3.5 text-emerald-200" />
+              <span>Assigned Leads</span>
+            </Link>
+          ) : (
+            <Link
+              href="/calling"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
+            >
+              <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
+              <span>Open Dial Desk</span>
+            </Link>
+          )
         )}
 
         {/* Theme Toggle Button */}

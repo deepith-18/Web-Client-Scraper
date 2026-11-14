@@ -420,7 +420,7 @@ export default function CallLogsHistoryPage() {
 
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <div className="bg-white dark:bg-[#0c121e] p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Today's Calls</span>
               <PhoneCall className="h-4 w-4 text-blue-500" />
@@ -429,7 +429,7 @@ export default function CallLogsHistoryPage() {
             <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Logged today</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <div className="bg-white dark:bg-[#0c121e] p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">All-Time Calls</span>
               <History className="h-4 w-4 text-slate-400" />
@@ -438,7 +438,7 @@ export default function CallLogsHistoryPage() {
             <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Total outreach logged</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <div className="bg-white dark:bg-[#0c121e] p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Confirmed Agreed</span>
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
@@ -447,7 +447,7 @@ export default function CallLogsHistoryPage() {
             <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1 block">Sent to Deepith</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <div className="bg-white dark:bg-[#0c121e] p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Scheduled Callbacks</span>
               <Clock className="h-4 w-4 text-amber-500" />
@@ -456,7 +456,7 @@ export default function CallLogsHistoryPage() {
             <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Follow-up reminders</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <div className="bg-white dark:bg-[#0c121e] p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Win Rate %</span>
               <TrendingUp className="h-4 w-4 text-emerald-500" />
@@ -467,9 +467,9 @@ export default function CallLogsHistoryPage() {
         </div>
 
         {/* Search, Filter Tabs & Call Logs Table */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+        <div className="bg-white dark:bg-[#0c121e] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
           {/* Toolbar */}
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-900/60">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-900/40">
             {/* Outcome Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
               {[
@@ -501,7 +501,7 @@ export default function CallLogsHistoryPage() {
                 placeholder="Search business, phone, caller, notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-slate-400"
+                className="w-full pl-9 pr-4 py-1.5 text-xs bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               />
             </div>
           </div>
@@ -674,15 +674,15 @@ export default function CallLogsHistoryPage() {
       {/* MODAL 1: EDIT CALL LOG */}
       {editingCall && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-white dark:bg-[#0c121e] rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Edit Call Log Entry</h3>
-                <p className="text-xs text-slate-500 mt-0.5">{editingCall.business_name} ({editingCall.phone_number})</p>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Edit Call Log Entry</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{editingCall.business_name} ({editingCall.phone_number})</p>
               </div>
               <button
                 onClick={() => setEditingCall(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -691,11 +691,11 @@ export default function CallLogsHistoryPage() {
             <form onSubmit={handleUpdateCall} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Call Outcome</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Call Outcome</label>
                   <select
                     value={editForm.outcome}
                     onChange={(e) => setEditForm({ ...editForm, outcome: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   >
                     <option value="agreed">Agreed to Website (Accepted)</option>
                     <option value="callback_scheduled">Callback Scheduled</option>
@@ -706,80 +706,80 @@ export default function CallLogsHistoryPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Duration (Seconds)</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Duration (Seconds)</label>
                   <input
                     type="number"
                     value={editForm.duration_seconds}
                     onChange={(e) => setEditForm({ ...editForm, duration_seconds: Number(e.target.value) })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Project Scope</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Project Scope</label>
                   <input
                     type="text"
                     placeholder="Turnkey Website Build"
                     value={editForm.project_type}
                     onChange={(e) => setEditForm({ ...editForm, project_type: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Agreed Budget</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Agreed Budget</label>
                   <input
                     type="text"
                     placeholder="₹25,000 - ₹50,000"
                     value={editForm.agreed_budget}
                     onChange={(e) => setEditForm({ ...editForm, agreed_budget: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
               </div>
 
               {editForm.outcome === "callback_scheduled" && (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Scheduled Callback Time</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Scheduled Callback Time</label>
                   <input
                     type="datetime-local"
                     value={editForm.scheduled_callback_at}
                     onChange={(e) => setEditForm({ ...editForm, scheduled_callback_at: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
               )}
 
               {editForm.outcome === "declined" && (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Decline Reason</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Decline Reason</label>
                   <input
                     type="text"
                     placeholder="Already has agency, no budget, etc."
                     value={editForm.decline_reason}
                     onChange={(e) => setEditForm({ ...editForm, decline_reason: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Call Notes</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Call Notes</label>
                 <textarea
                   rows={3}
                   value={editForm.notes}
                   onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 ></textarea>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setEditingCall(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg"
                 >
                   Cancel
                 </button>
@@ -799,21 +799,21 @@ export default function CallLogsHistoryPage() {
       {/* MODAL 2: DELETE CALL LOG */}
       {deletingCall && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full border border-slate-200 shadow-xl p-6 space-y-4">
-            <div className="h-10 w-10 rounded-full bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center">
+          <div className="bg-white dark:bg-[#0c121e] rounded-2xl max-w-sm w-full border border-slate-200 dark:border-slate-800 shadow-xl p-6 space-y-4">
+            <div className="h-10 w-10 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 flex items-center justify-center">
               <Trash2 className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 text-base">Delete Call Log Entry?</h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">Delete Call Log Entry?</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Are you sure you want to delete the record for{" "}
-                <span className="font-semibold text-slate-800">{deletingCall.business_name}</span>? This action cannot be undone.
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{deletingCall.business_name}</span>? This action cannot be undone.
               </p>
             </div>
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setDeletingCall(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg"
               >
                 Cancel
               </button>
@@ -832,17 +832,17 @@ export default function CallLogsHistoryPage() {
       {/* MODAL 3: AUDIT HISTORY DRAWER */}
       {historyBiz && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-end">
-          <div className="bg-white h-full max-w-md w-full border-l border-slate-200 shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-white dark:bg-[#0c121e] h-full max-w-md w-full border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   Client Audit Trail
                 </span>
-                <h3 className="font-bold text-slate-900 text-base mt-0.5">{historyBiz.name}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base mt-0.5">{historyBiz.name}</h3>
               </div>
               <button
                 onClick={() => setHistoryBiz(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -850,16 +850,16 @@ export default function CallLogsHistoryPage() {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {loadingHistory ? (
-                <div className="py-12 text-center text-slate-400 text-xs">Loading client call trail...</div>
+                <div className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">Loading client call trail...</div>
               ) : historyLogs.length === 0 ? (
-                <div className="py-12 text-center text-slate-400 text-xs">No previous call records for this client.</div>
+                <div className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">No previous call records for this client.</div>
               ) : (
                 <div className="space-y-4">
                   {historyLogs.map((h, idx) => (
-                    <div key={h.id} className="relative pl-6 pb-4 border-l-2 border-slate-200 last:border-0">
-                      <div className="absolute -left-1.5 top-0.5 h-3 w-3 rounded-full bg-blue-600 border-2 border-white"></div>
+                    <div key={h.id} className="relative pl-6 pb-4 border-l-2 border-slate-200 dark:border-slate-800 last:border-0">
+                      <div className="absolute -left-1.5 top-0.5 h-3 w-3 rounded-full bg-blue-600 border-2 border-white dark:border-[#0c121e]"></div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-slate-900">
+                        <span className="text-xs font-semibold text-slate-900 dark:text-white">
                           {new Date(h.created_at).toLocaleString("en-IN", {
                             month: "short",
                             day: "numeric",
@@ -869,12 +869,12 @@ export default function CallLogsHistoryPage() {
                         </span>
                         {getOutcomeBadge(h.outcome)}
                       </div>
-                      <div className="text-[11px] text-slate-500 mt-1">Caller: {h.caller_name || "Team Caller"}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Caller: {h.caller_name || "Team Caller"}</div>
                       {h.agreed_budget && (
-                        <div className="text-xs font-bold text-emerald-600 mt-1">Budget: {h.agreed_budget}</div>
+                        <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">Budget: {h.agreed_budget}</div>
                       )}
                       {h.notes && (
-                        <p className="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 mt-2">
+                        <p className="text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 mt-2">
                           {h.notes}
                         </p>
                       )}
@@ -890,15 +890,15 @@ export default function CallLogsHistoryPage() {
       {/* MODAL 4: MANUAL CALL LOG */}
       {isManualModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-white dark:bg-[#0c121e] rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Record Manual Call Log</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Log an outbound or inbound call interaction directly.</p>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Record Manual Call Log</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Log an outbound or inbound call interaction directly.</p>
               </div>
               <button
                 onClick={() => setIsManualModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -906,7 +906,7 @@ export default function CallLogsHistoryPage() {
 
             <form onSubmit={handleManualSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Select Prospect Business</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Select Prospect Business</label>
                 <select
                   required
                   value={manualForm.business_id}
@@ -919,7 +919,7 @@ export default function CallLogsHistoryPage() {
                       phone_number: phone
                     });
                   }}
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 >
                   <option value="">-- Choose Business --</option>
                   {businesses.map((b) => (
@@ -932,23 +932,23 @@ export default function CallLogsHistoryPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number Called</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone Number Called</label>
                   <input
                     type="text"
                     required
                     placeholder="+91..."
                     value={manualForm.phone_number}
                     onChange={(e) => setManualForm({ ...manualForm, phone_number: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Outcome</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Outcome</label>
                   <select
                     value={manualForm.outcome}
                     onChange={(e) => setManualForm({ ...manualForm, outcome: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   >
                     <option value="agreed">Agreed to Website (Accepted)</option>
                     <option value="callback_scheduled">Callback Scheduled</option>
@@ -961,42 +961,42 @@ export default function CallLogsHistoryPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Project Scope</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Project Scope</label>
                   <input
                     type="text"
                     value={manualForm.project_type}
                     onChange={(e) => setManualForm({ ...manualForm, project_type: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Agreed Budget</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Agreed Budget</label>
                   <input
                     type="text"
                     value={manualForm.agreed_budget}
                     onChange={(e) => setManualForm({ ...manualForm, agreed_budget: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Caller Notes & Next Steps</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Caller Notes & Next Steps</label>
                 <textarea
                   rows={2}
                   placeholder="Key talking points, decision maker name..."
                   value={manualForm.notes}
                   onChange={(e) => setManualForm({ ...manualForm, notes: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 ></textarea>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsManualModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg"
                 >
                   Cancel
                 </button>

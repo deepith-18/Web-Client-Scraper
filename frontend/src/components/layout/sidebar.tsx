@@ -73,17 +73,73 @@ const adminSections: NavSection[] = [
   },
 ];
 
-const callerSections: NavSection[] = [
-  {
-    title: "Caller Workspace",
+function getCallerSections(user: any): NavSection[] {
+  const perms = user?.permissions || {};
+  const sections: NavSection[] = [];
+
+  // 1. Telephony & Calling Workspace
+  const telephonyItems = [];
+  if (perms.can_call !== false) {
+    telephonyItems.push({ name: "Live Caller Desk", href: "/calling", icon: PhoneCall });
+    telephonyItems.push({ name: "Call History & Logs", href: "/calling/history", icon: History });
+  }
+  if (perms.can_view_leads !== false) {
+    telephonyItems.push({ name: "Assigned Leads", href: "/leads", icon: Search });
+    telephonyItems.push({ name: "Deals Pipeline", href: "/pipeline", icon: FileCheck2 });
+  }
+  if (telephonyItems.length > 0) {
+    sections.push({
+      title: "Telephony & Deals",
+      items: telephonyItems,
+    });
+  }
+
+  // 2. Research & Intelligence (Granted via granular permissions)
+  const intelItems = [];
+  if (perms.can_discover) {
+    intelItems.push({ name: "Discovery Engine", href: "/discover", icon: Compass });
+    intelItems.push({ name: "Verification", href: "/verification", icon: ShieldCheck });
+  }
+  if (perms.can_view_audits) {
+    intelItems.push({ name: "Website Audits", href: "/audits", icon: Activity });
+    intelItems.push({ name: "Scoring Engine", href: "/scoring", icon: Layers });
+  }
+  if (intelItems.length > 0) {
+    sections.push({
+      title: "Research & Intelligence",
+      items: intelItems,
+    });
+  }
+
+  // 3. Operations & Outreach Studio (Granted via granular permissions)
+  const opsItems = [];
+  if (perms.can_manage_templates) {
+    opsItems.push({ name: "Outreach Studio", href: "/outreach", icon: Send });
+  }
+  if (perms.can_view_analytics) {
+    opsItems.push({ name: "Analytics", href: "/analytics", icon: BarChart3 });
+    opsItems.push({ name: "Company Spend", href: "/finance", icon: WalletCards });
+  }
+  if (perms.can_manage_team) {
+    opsItems.push({ name: "Team & Callers", href: "/team", icon: Users });
+  }
+  if (opsItems.length > 0) {
+    sections.push({
+      title: "Operations & Admin",
+      items: opsItems,
+    });
+  }
+
+  // 4. Demanex Knowledge
+  sections.push({
+    title: "Organization",
     items: [
-      { name: "Live Caller Desk", href: "/calling", icon: PhoneCall },
-      { name: "Call History & Logs", href: "/calling/history", icon: History },
-      { name: "Assigned Leads", href: "/leads", icon: Search },
       { name: "About Demanex", href: "/about", icon: Info },
     ],
-  },
-];
+  });
+
+  return sections;
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -126,7 +182,9 @@ export function Sidebar() {
   };
 
   const currentSections =
-    user?.role === "caller" || portal === "caller" ? callerSections : adminSections;
+    user?.role === "caller" || (user?.role === "admin" && portal === "caller")
+      ? getCallerSections(user)
+      : adminSections;
 
   return (
     <aside className="w-64 bg-white dark:bg-[#070b14] border-r border-slate-200 dark:border-slate-800/80 text-slate-700 dark:text-slate-300 flex flex-col h-screen fixed left-0 top-0 z-30 select-none shadow-sm transition-colors duration-200">

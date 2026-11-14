@@ -210,9 +210,9 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+      <div className="bg-white dark:bg-[#0c121e] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-[#0c121e]">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200 dark:border-blue-800/60">
@@ -720,7 +720,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
+        <div className="p-4 bg-slate-50 dark:bg-[#0c121e]/80 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
             className="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-colors"
