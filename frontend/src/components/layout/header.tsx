@@ -15,7 +15,8 @@ import {
   Command,
   Sun,
   Moon,
-  ExternalLink
+  ExternalLink,
+  User
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
@@ -235,7 +236,21 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
                 </div>
               </div>
 
-              <div className="py-1">
+              <div className="py-1 space-y-0.5">
+                <Link
+                  href="/profile"
+                  onClick={() => setIsUserMenuOpen(false)}
+                  className="w-full flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                >
+                  <span className="flex items-center gap-2">
+                    <User className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
+                    <span>Account Profile</span>
+                  </span>
+                  <span className="text-[10px] font-semibold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-md border border-teal-200 dark:border-teal-800/60">
+                    Live
+                  </span>
+                </Link>
+
                 <button
                   onClick={toggleTheme}
                   className="w-full flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"

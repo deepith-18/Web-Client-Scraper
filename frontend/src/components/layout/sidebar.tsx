@@ -241,33 +241,39 @@ export function Sidebar() {
 
       {/* ── Executive Bottom Dock ────────────────────────────── */}
       <div className="p-3 border-t border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-950/50 space-y-2">
-        {/* User Card */}
-        <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-          <div
-            className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs text-white shrink-0 shadow-xs ${
-              user?.role === "admin"
-                ? "bg-gradient-to-tr from-blue-600 to-indigo-600"
-                : "bg-gradient-to-tr from-emerald-600 to-teal-600"
-            }`}
+        {/* User Card linking to Profile */}
+        <div className="flex items-center gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          <Link
+            href="/profile"
+            className="flex items-center gap-2.5 flex-1 min-w-0 p-1 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group"
+            title="Open Account Profile & Preferences"
           >
-            {user?.full_name
-              ? user.full_name.charAt(0).toUpperCase()
-              : user?.email?.charAt(0).toUpperCase() ?? "D"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate leading-none">
-              {user?.full_name || user?.email?.split("@")[0] || "Demanex User"}
-            </p>
-            <p
-              className={`text-[10px] font-medium mt-0.5 truncate leading-none ${
+            <div
+              className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs text-white shrink-0 shadow-xs ${
                 user?.role === "admin"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-emerald-600 dark:text-emerald-400"
+                  ? "bg-gradient-to-tr from-teal-500 to-cyan-600"
+                  : "bg-gradient-to-tr from-emerald-600 to-teal-600"
               }`}
             >
-              {user?.role === "admin" ? "Founder & Admin" : "Caller / Telecaller"}
-            </p>
-          </div>
+              {user?.full_name
+                ? user.full_name.charAt(0).toUpperCase()
+                : user?.email?.charAt(0).toUpperCase() ?? "D"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate leading-none group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                {user?.full_name || user?.email?.split("@")[0] || "Demanex User"}
+              </p>
+              <p
+                className={`text-[10px] font-medium mt-0.5 truncate leading-none ${
+                  user?.role === "admin"
+                    ? "text-teal-600 dark:text-teal-400"
+                    : "text-emerald-600 dark:text-emerald-400"
+                }`}
+              >
+                {user?.role === "admin" ? "Founder & Admin" : "Caller / Telecaller"}
+              </p>
+            </div>
+          </Link>
 
           {/* Quick Theme Switcher Icon */}
           <button
@@ -275,7 +281,7 @@ export function Sidebar() {
             onClick={toggleTheme}
             aria-label="Toggle theme"
             title={`Switch to ${theme === "dark" ? "Light" : "Dark"} mode`}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shrink-0"
           >
             {theme === "dark" ? (
               <Sun className="h-3.5 w-3.5 text-amber-400" />
@@ -290,7 +296,7 @@ export function Sidebar() {
             onClick={handleSignOut}
             aria-label="Sign out"
             title="Sign out of Demanex"
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-rose-600 hover:border-rose-300 dark:hover:border-rose-900/60 dark:hover:text-rose-400 transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-rose-600 hover:border-rose-300 dark:hover:border-rose-900/60 dark:hover:text-rose-400 transition-colors shrink-0"
           >
             <LogOut className="h-3.5 w-3.5" />
           </button>

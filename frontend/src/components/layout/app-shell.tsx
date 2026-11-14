@@ -10,7 +10,7 @@ import type { ReactNode } from "react";
 const PORTAL_ROUTES = ["/admin", "/caller"];
 
 // Callers are strictly restricted to these routes only
-const CALLER_ALLOWED_PREFIXES = ["/calling", "/leads"];
+const CALLER_ALLOWED_PREFIXES = ["/calling", "/leads", "/profile"];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
