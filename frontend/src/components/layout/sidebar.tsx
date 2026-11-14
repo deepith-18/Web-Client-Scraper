@@ -162,22 +162,39 @@ export function Sidebar() {
   };
 
   useEffect(() => {
-    if (user) {
-      const roleMode = user.role === "admin" ? "admin" : "caller";
-      setPortal(roleMode);
-      localStorage.setItem("demanex_portal_mode", roleMode);
-    } else {
+    if (!user) {
       const saved = localStorage.getItem("demanex_portal_mode");
       if (saved === "caller" || saved === "admin") setPortal(saved);
+      return;
     }
-  }, [user, pathname]);
+    // Callers are strictly locked to caller portal
+    if (user.role === "caller") {
+      setPortal("caller");
+      localStorage.setItem("demanex_portal_mode", "caller");
+      return;
+    }
+    // Admins preserve their explicit toggle preference without resetting on page clicks
+    const saved = localStorage.getItem("demanex_portal_mode");
+    if (saved === "caller" || saved === "admin") {
+      setPortal(saved);
+    } else {
+      setPortal("admin");
+      localStorage.setItem("demanex_portal_mode", "admin");
+    }
+  }, [user?.role]);
 
   const switchPortal = (mode: "admin" | "caller") => {
     if (user?.role !== "admin") return;
     setPortal(mode);
     localStorage.setItem("demanex_portal_mode", mode);
-    if (mode === "caller" && pathname === "/") {
-      router.push("/calling");
+    if (mode === "caller") {
+      if (pathname === "/" || pathname === "/discover" || pathname === "/audits" || pathname === "/scoring" || pathname === "/team" || pathname === "/finance" || pathname === "/settings") {
+        router.push("/calling");
+      }
+    } else if (mode === "admin") {
+      if (pathname === "/calling") {
+        router.push("/");
+      }
     }
   };
 

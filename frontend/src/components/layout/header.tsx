@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Search,
-  Plus,
   Globe,
   Shield,
   PhoneCall,
@@ -15,12 +15,16 @@ import {
   Command,
   Sun,
   Moon,
-  ExternalLink,
-  User
+  User,
+  Radio,
+  SlidersHorizontal,
+  Headphones,
+  Compass,
+  ArrowRight,
+  Zap
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import { useRouter, usePathname } from "next/navigation";
 
 interface HeaderProps {
   onSearchChange?: (val: string) => void;
@@ -29,11 +33,11 @@ interface HeaderProps {
 }
 
 const popularLocations = [
-  { label: "All Worldwide", value: "", count: "Global" },
-  { label: "Bengaluru, India", value: "Bengaluru", count: "India Hub" },
-  { label: "Austin, TX (USA)", value: "Austin", count: "US Metro" },
-  { label: "London, UK", value: "London", count: "UK / Europe" },
-  { label: "Sydney, Australia", value: "Sydney", count: "APAC" },
+  { label: "All Worldwide", value: "", count: "Global", flag: "🌐" },
+  { label: "Bengaluru, India", value: "Bengaluru", count: "India Hub", flag: "🇮🇳" },
+  { label: "Austin, TX (USA)", value: "Austin", count: "US Metro", flag: "🇺🇸" },
+  { label: "London, UK", value: "London", count: "UK / Europe", flag: "🇬🇧" },
+  { label: "Sydney, Australia", value: "Sydney", count: "APAC", flag: "🇦🇺" },
 ];
 
 export function Header({ onSearchChange, selectedCity = "", onCitySelect }: HeaderProps) {
@@ -72,46 +76,60 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
     }
   };
 
-  const currentMarketLabel =
-    popularLocations.find((l) => l.value === selectedCity)?.label || "All Worldwide";
+  const currentMarket = popularLocations.find((l) => l.value === selectedCity) || popularLocations[0];
 
   return (
-    <header className="h-16 bg-white/90 dark:bg-[#070b14]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-20 transition-colors duration-200">
-      {/* ── 1. Search Bar ────────────────────────────────────── */}
-      <div className="flex items-center gap-3 flex-1 max-w-md">
+    <header className="h-16 bg-white/85 dark:bg-[#070b14]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-20 transition-all duration-200 shadow-2xs">
+      {/* ── 1. Search Bar & Engine Telemetry Pulse ─────────────── */}
+      <div className="flex items-center gap-3 flex-1 max-w-xl">
         <div className="relative w-full group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
           <input
             type="text"
-            placeholder="Search leads, phone numbers, categories..."
+            placeholder="Search leads, phone numbers, target categories..."
             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-14 py-2 bg-slate-100/80 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-xl text-xs placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-500 transition-all font-medium"
+            className="w-full pl-10 pr-14 py-2 bg-slate-100/70 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-xl text-xs placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-500 transition-all font-medium"
           />
-          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-400">
+          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-400 shadow-2xs">
             <Command className="h-2.5 w-2.5" />
             <span>K</span>
           </div>
         </div>
+
+        {/* Live System Activity Ticker Pill */}
+        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 text-xs shrink-0">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+            Outbound Engine
+          </span>
+          <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
+            Active
+          </span>
+        </div>
       </div>
 
-      {/* ── 2. Center: Sleek Market Selector Dropdown ─────────── */}
-      <div className="hidden lg:flex items-center gap-2">
+      {/* ── 2. Center: Creative Market Selector Pill ───────────── */}
+      <div className="hidden md:flex items-center gap-2 mx-4">
         <div className="relative" ref={marketMenuRef}>
           <button
             type="button"
             onClick={() => setIsMarketMenuOpen(!isMarketMenuOpen)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800/90 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all shadow-2xs"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-all shadow-2xs group"
           >
-            <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-            <Globe className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-            <span>Market: {currentMarketLabel}</span>
-            <ChevronDown className="h-3 w-3 text-slate-400" />
+            <span className="text-sm">{currentMarket.flag}</span>
+            <span className="text-slate-500 dark:text-slate-400 font-normal">Market:</span>
+            <span className="text-slate-900 dark:text-white font-bold">{currentMarket.label}</span>
+            <ChevronDown className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 transition-colors ml-0.5" />
           </button>
 
           {isMarketMenuOpen && (
-            <div className="absolute left-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-1.5 text-xs animate-in fade-in zoom-in-95 duration-100">
-              <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                Select Active Market
+            <div className="absolute left-0 mt-2 w-64 bg-white dark:bg-[#0c121e] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-1.5 text-xs animate-in fade-in zoom-in-95 duration-100">
+              <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                <span>Select Outreach Hub</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
               </div>
               <div className="py-1 space-y-0.5">
                 {popularLocations.map((loc) => {
@@ -130,7 +148,7 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <Globe className="h-3.5 w-3.5 text-slate-400" />
+                        <span className="text-sm">{loc.flag}</span>
                         <span>{loc.label}</span>
                       </div>
                       {isSelected ? (
@@ -149,43 +167,43 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
         </div>
       </div>
 
-      {/* ── 3. Right: Fast Action + Theme Toggle + User Menu ─── */}
-      <div className="flex items-center gap-3">
-        {/* Contextual Quick Action Button */}
+      {/* ── 3. Right: Contextual Quick Action + Theme + User Menu ── */}
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Contextual Action Button with glowing gradient styling */}
         {user?.role === "admin" ? (
           pathname === "/discover" ? (
             <Link
               href="/leads"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
             >
               <Search className="h-3.5 w-3.5 text-blue-200" />
-              <span>View Leads</span>
+              <span className="hidden sm:inline">View Leads</span>
             </Link>
           ) : (
             <Link
               href="/discover"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all hover:scale-[1.02]"
             >
               <Sparkles className="h-3.5 w-3.5 text-blue-200" />
-              <span>Launch Discovery</span>
+              <span className="hidden sm:inline">Launch Discovery</span>
             </Link>
           )
         ) : (
           pathname === "/calling" ? (
             <Link
               href="/leads"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
             >
               <Search className="h-3.5 w-3.5 text-emerald-200" />
-              <span>Assigned Leads</span>
+              <span className="hidden sm:inline">Assigned Leads</span>
             </Link>
           ) : (
             <Link
               href="/calling"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]"
             >
               <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
-              <span>Open Dial Desk</span>
+              <span className="hidden sm:inline">Open Dial Desk</span>
             </Link>
           )
         )}
@@ -209,7 +227,7 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
         <div className="relative" ref={userMenuRef}>
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs transition-all shadow-2xs"
+            className="flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c121e] hover:bg-slate-50 dark:hover:bg-slate-800/80 text-xs transition-all shadow-2xs"
           >
             <div
               className={`h-7 w-7 rounded-lg flex items-center justify-center font-bold text-xs text-white shadow-xs ${
@@ -234,12 +252,12 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
           </button>
 
           {isUserMenuOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-2 text-xs animate-in fade-in zoom-in-95 duration-100">
+            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0c121e] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-2 text-xs animate-in fade-in zoom-in-95 duration-100">
               <div className="p-2.5 border-b border-slate-100 dark:border-slate-800">
                 <p className="font-bold text-slate-900 dark:text-slate-100 truncate">
                   {user?.full_name || "Demanex User"}
                 </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-mono">
                   {user?.email}
                 </p>
                 <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
@@ -261,7 +279,7 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
                 <Link
                   href="/profile"
                   onClick={() => setIsUserMenuOpen(false)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                  className="w-full flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-xl transition-colors font-medium"
                 >
                   <span className="flex items-center gap-2">
                     <User className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
@@ -274,7 +292,7 @@ export function Header({ onSearchChange, selectedCity = "", onCitySelect }: Head
 
                 <button
                   onClick={toggleTheme}
-                  className="w-full flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-xl transition-colors"
                 >
                   <span className="flex items-center gap-2">
                     {theme === "dark" ? (
