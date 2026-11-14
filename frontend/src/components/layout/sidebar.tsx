@@ -26,7 +26,8 @@ import {
   Moon,
   ChevronRight,
   Shield,
-  Headphones
+  Headphones,
+  Info
 } from "lucide-react";
 
 interface NavSection {
@@ -66,6 +67,7 @@ const adminSections: NavSection[] = [
       { name: "Analytics", href: "/analytics", icon: BarChart3 },
       { name: "Team & Callers", href: "/team", icon: Users },
       { name: "Company Spend", href: "/finance", icon: WalletCards },
+      { name: "About Demanex", href: "/about", icon: Info },
       { name: "Settings", href: "/settings", icon: Settings },
     ],
   },
@@ -78,6 +80,7 @@ const callerSections: NavSection[] = [
       { name: "Live Caller Desk", href: "/calling", icon: PhoneCall },
       { name: "Call History & Logs", href: "/calling/history", icon: History },
       { name: "Assigned Leads", href: "/leads", icon: Search },
+      { name: "About Demanex", href: "/about", icon: Info },
     ],
   },
 ];
@@ -209,6 +212,7 @@ export function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={true}
                   className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group ${
                     isActive
                       ? portal === "caller" || user?.role === "caller"

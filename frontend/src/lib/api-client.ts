@@ -41,12 +41,54 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
   return res.json();
 }
 
-export async function fetchAnalytics(): Promise<AnalyticsOverview> {
-  const res = await fetch(`${API_BASE_URL}/analytics/overview`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch analytics: ${res.statusText}`);
+// ── Ultra-Fast Client-Side SWR Cache & Safety Timeout ──────────
+const clientCache = new Map<string, { data: any; expiry: number }>();
+
+export function invalidateClientCache(pattern?: string) {
+  if (!pattern) {
+    clientCache.clear();
+    return;
   }
-  return res.json();
+  const keysToDelete: string[] = [];
+  clientCache.forEach((_, key) => {
+    if (key.includes(pattern)) {
+      keysToDelete.push(key);
+    }
+  });
+  keysToDelete.forEach((k) => clientCache.delete(k));
+}
+
+async function cachedFetch<T>(url: string, ttlMs: number = 25000): Promise<T> {
+  const now = Date.now();
+  const hit = clientCache.get(url);
+  // Instant 0ms return if cached and fresh
+  if (hit && hit.expiry > now) {
+    return hit.data as T;
+  }
+
+  // Fast AbortController safety timeout (3.5s) to prevent UI hanging on slow/dead backend
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 3500);
+
+  try {
+    const res = await fetch(url, { signal: controller.signal, cache: "no-store" });
+    clearTimeout(timer);
+    if (!res.ok) {
+      if (hit) return hit.data as T; // Return stale cache gracefully
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    const data = await res.json();
+    clientCache.set(url, { data, expiry: now + ttlMs });
+    return data as T;
+  } catch (err) {
+    clearTimeout(timer);
+    if (hit) return hit.data as T; // Graceful stale fallback
+    throw err;
+  }
+}
+
+export async function fetchAnalytics(): Promise<AnalyticsOverview> {
+  return cachedFetch<AnalyticsOverview>(`${API_BASE_URL}/analytics/overview`);
 }
 
 export async function fetchBusinesses(params?: {
@@ -68,22 +110,15 @@ export async function fetchBusinesses(params?: {
   if (params?.has_website !== undefined) query.append("has_website", String(params.has_website));
 
   const url = `${API_BASE_URL}/businesses?${query.toString()}`;
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch businesses: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<Business[]>(url);
 }
 
 export async function fetchBusiness(id: string): Promise<Business> {
-  const res = await fetch(`${API_BASE_URL}/businesses/${id}`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch business: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<Business>(`${API_BASE_URL}/businesses/${id}`);
 }
 
 export async function updateBusinessStatus(id: string, crm_status: string): Promise<Business> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/businesses/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -513,11 +548,7 @@ export async function createOutreachSequence(data: any): Promise<any[]> {
 }
 
 export async function fetchAcceptanceAnalytics(): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/analytics/acceptance-rates`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch acceptance analytics: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<any>(`${API_BASE_URL}/analytics/acceptance-rates`);
 }
 
 // ============================================================================
@@ -525,14 +556,11 @@ export async function fetchAcceptanceAnalytics(): Promise<any> {
 // ============================================================================
 
 export async function fetchTeamMembers(): Promise<TeamMember[]> {
-  const res = await fetch(`${API_BASE_URL}/team`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch team members: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<TeamMember[]>(`${API_BASE_URL}/team`);
 }
 
 export async function createTeamMember(data: any): Promise<TeamMember> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/team`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -546,6 +574,7 @@ export async function createTeamMember(data: any): Promise<TeamMember> {
 }
 
 export async function updateTeamMember(userId: string, data: any): Promise<TeamMember> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/team/${userId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -559,6 +588,7 @@ export async function updateTeamMember(userId: string, data: any): Promise<TeamM
 }
 
 export async function deleteTeamMember(userId: string): Promise<any> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/team/${userId}`, {
     method: "DELETE",
   });
@@ -570,6 +600,7 @@ export async function deleteTeamMember(userId: string): Promise<any> {
 }
 
 export async function assignLeadsToMember(leadIds: string[], userId?: string | null): Promise<any> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/team/assign-leads`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -583,6 +614,7 @@ export async function assignLeadsToMember(leadIds: string[], userId?: string | n
 }
 
 export async function updateTeamMemberPermissions(userId: string, permissions: Record<string, boolean>): Promise<TeamMember> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/team/${userId}/permissions`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -596,11 +628,7 @@ export async function updateTeamMemberPermissions(userId: string, permissions: R
 }
 
 export async function fetchMemberActivityAudit(userId: string): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/team/${userId}/activity`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch member activity: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<any>(`${API_BASE_URL}/team/${userId}/activity`);
 }
 
 
@@ -624,11 +652,7 @@ export async function fetchCallLogs(params?: {
   if (params?.skip) query.append("skip", String(params.skip));
   if (params?.limit) query.append("limit", String(params.limit));
 
-  const res = await fetch(`${API_BASE_URL}/crm/call-logs?${query.toString()}`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch call logs: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<CallLog[]>(`${API_BASE_URL}/crm/call-logs?${query.toString()}`);
 }
 
 export async function createCallLog(data: {
@@ -645,6 +669,7 @@ export async function createCallLog(data: {
   add_to_suppression?: boolean;
   user_id?: string;
 }): Promise<CallLog> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/crm/call-logs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -658,6 +683,7 @@ export async function createCallLog(data: {
 }
 
 export async function updateCallLog(callId: string, data: Partial<CallLog>): Promise<CallLog> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/crm/call-logs/${callId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -671,6 +697,7 @@ export async function updateCallLog(callId: string, data: Partial<CallLog>): Pro
 }
 
 export async function deleteCallLog(callId: string): Promise<any> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/crm/call-logs/${callId}`, {
     method: "DELETE",
   });
@@ -682,19 +709,11 @@ export async function deleteCallLog(callId: string): Promise<any> {
 }
 
 export async function fetchBusinessCallHistory(businessId: string): Promise<CallLog[]> {
-  const res = await fetch(`${API_BASE_URL}/crm/call-logs/history/${businessId}`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch call history: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<CallLog[]>(`${API_BASE_URL}/crm/call-logs/history/${businessId}`);
 }
 
 export async function fetchCallLogsStats(): Promise<CallLogStats> {
-  const res = await fetch(`${API_BASE_URL}/crm/call-logs-summary/stats`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch call logs stats: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<CallLogStats>(`${API_BASE_URL}/crm/call-logs-summary/stats`);
 }
 
 // -------------------------------------------------------------
@@ -715,23 +734,15 @@ export async function fetchExpenses(params?: {
   if (params?.skip !== undefined) query.append("skip", String(params.skip));
   if (params?.limit !== undefined) query.append("limit", String(params.limit));
 
-  const url = `${API_BASE_URL}/finance/expenses?${query.toString()}`;
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch company expenses: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<CompanyExpense[]>(`${API_BASE_URL}/finance/expenses?${query.toString()}`);
 }
 
 export async function fetchExpense(id: string): Promise<CompanyExpense> {
-  const res = await fetch(`${API_BASE_URL}/finance/expenses/${id}`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch expense: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<CompanyExpense>(`${API_BASE_URL}/finance/expenses/${id}`);
 }
 
 export async function createExpense(data: Partial<CompanyExpense>): Promise<CompanyExpense> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/finance/expenses`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -745,6 +756,7 @@ export async function createExpense(data: Partial<CompanyExpense>): Promise<Comp
 }
 
 export async function updateExpense(id: string, data: Partial<CompanyExpense>): Promise<CompanyExpense> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/finance/expenses/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -758,6 +770,7 @@ export async function updateExpense(id: string, data: Partial<CompanyExpense>): 
 }
 
 export async function deleteExpense(id: string): Promise<any> {
+  invalidateClientCache();
   const res = await fetch(`${API_BASE_URL}/finance/expenses/${id}`, {
     method: "DELETE",
   });
@@ -769,11 +782,7 @@ export async function deleteExpense(id: string): Promise<any> {
 }
 
 export async function fetchFinancialAnalytics(): Promise<FinancialAnalytics> {
-  const res = await fetch(`${API_BASE_URL}/finance/analytics`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch financial analytics: ${res.statusText}`);
-  }
-  return res.json();
+  return cachedFetch<FinancialAnalytics>(`${API_BASE_URL}/finance/analytics`);
 }
 
 export async function deleteDiscoveryJob(jobId: string): Promise<any> {
