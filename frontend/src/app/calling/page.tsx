@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { LeadModal } from "@/components/ui/lead-modal";
+import { CallerDeskSkeleton } from "@/components/ui/skeleton";
 import {
   fetchBusinesses,
   updateBusinessStatus,
@@ -365,7 +366,9 @@ export default function CallerDeskPage() {
 
         {/* High-Value Calling Leads Feed */}
         <div className="space-y-4">
-          {phoneLeads.length === 0 ? (
+          {loading ? (
+            <CallerDeskSkeleton count={4} />
+          ) : phoneLeads.length === 0 ? (
             <div className="p-12 text-center text-slate-400 dark:text-slate-400 bg-white dark:bg-[#0c121e] rounded-2xl border border-slate-200 dark:border-slate-800 text-xs">
               No matching prospects found. Try adjusting your filter or run Discovery to scrape more leads.
             </div>

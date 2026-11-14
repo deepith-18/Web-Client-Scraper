@@ -49,12 +49,33 @@ export function AppShell({ children }: { children: ReactNode }) {
     return <>{children}</>;
   }
 
-  // Show sleek loading state while checking session
+  // Show sleek skeleton loading state while checking session
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#070b14] flex flex-col items-center justify-center gap-3">
-        <div className="h-8 w-8 border-2 border-slate-300 dark:border-slate-700 border-t-blue-500 rounded-full animate-spin" />
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Authenticating Demanex session...</p>
+      <div className="flex min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100">
+        <aside className="w-64 bg-white dark:bg-[#070b14] border-r border-slate-200 dark:border-slate-800/80 p-4 space-y-4 hidden md:block">
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-xl bg-slate-200 dark:bg-slate-800 animate-pulse" />
+            <div className="space-y-1">
+              <div className="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded animate-pulse" />
+              <div className="h-2.5 w-16 bg-slate-200/60 dark:bg-slate-800/60 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="space-y-2 pt-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-8 w-full bg-slate-200/60 dark:bg-slate-800/60 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        </aside>
+        <div className="flex-1 p-6 md:p-8 space-y-6">
+          <div className="h-12 w-full bg-slate-200/60 dark:bg-slate-800/60 rounded-xl animate-pulse" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+          <div className="h-64 w-full bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl animate-pulse" />
+        </div>
       </div>
     );
   }

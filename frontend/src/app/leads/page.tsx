@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Header } from "@/components/layout/header";
 import { LeadModal } from "@/components/ui/lead-modal";
+import { TableRowSkeleton } from "@/components/ui/skeleton";
 import { formatScoreTier } from "@/lib/utils";
 import { fetchBusinesses, updateBusinessStatus, createManualBusiness, clearAllBusinesses } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
@@ -389,11 +390,9 @@ export default function LeadExplorerPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {loading ? (
-                  <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400 dark:text-slate-500">
-                      Loading prospects...
-                    </td>
-                  </tr>
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <TableRowSkeleton key={i} cols={8} />
+                  ))
                 ) : filteredBusinesses.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="py-12 text-center text-slate-400 dark:text-slate-500">

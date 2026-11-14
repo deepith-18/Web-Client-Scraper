@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Header } from "@/components/layout/header";
 import { MetricsCard } from "@/components/ui/metrics-card";
 import { LeadModal } from "@/components/ui/lead-modal";
+import { CardSkeleton, TableRowSkeleton } from "@/components/ui/skeleton";
 import { formatScoreTier } from "@/lib/utils";
 import { fetchAnalytics, fetchBusinesses, updateBusinessStatus, fetchAcceptanceAnalytics } from "@/lib/api-client";
 import { Business, AnalyticsOverview, AcceptanceAnalytics } from "@/types";
@@ -145,35 +146,46 @@ export default function DashboardPage() {
 
         {/* Analytics KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <MetricsCard
-            title="Total Discovered"
-            value={analytics?.total_discovered_businesses ?? businesses.length}
-            subtitle="Verified listings"
-            icon={Users}
-            color="blue"
-          />
-          <MetricsCard
-            title="No Website"
-            value={analytics?.businesses_without_websites ?? 0}
-            subtitle="Prime build opportunities"
-            icon={Globe}
-            trend="+30 Score"
-            color="rose"
-          />
-          <MetricsCard
-            title="Audits Flagged"
-            value={analytics?.website_improvement_opportunities ?? 0}
-            subtitle="Performance & mobile issues"
-            icon={AlertCircle}
-            color="amber"
-          />
-          <MetricsCard
-            title="Qualified Leads"
-            value={analytics?.qualified_leads ?? 0}
-            subtitle="Ready for outreach"
-            icon={CheckCircle2}
-            color="emerald"
-          />
+          {loading ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            <>
+              <MetricsCard
+                title="Total Discovered"
+                value={analytics?.total_discovered_businesses ?? businesses.length}
+                subtitle="Verified listings"
+                icon={Users}
+                color="blue"
+              />
+              <MetricsCard
+                title="No Website"
+                value={analytics?.businesses_without_websites ?? 0}
+                subtitle="Prime build opportunities"
+                icon={Globe}
+                trend="+30 Score"
+                color="rose"
+              />
+              <MetricsCard
+                title="Audits Flagged"
+                value={analytics?.website_improvement_opportunities ?? 0}
+                subtitle="Performance & mobile issues"
+                icon={AlertCircle}
+                color="amber"
+              />
+              <MetricsCard
+                title="Qualified Leads"
+                value={analytics?.qualified_leads ?? 0}
+                subtitle="Ready for outreach"
+                icon={CheckCircle2}
+                color="emerald"
+              />
+            </>
+          )}
         </div>
 
         {/* High-Intent / Accepted Leads Queue */}
@@ -380,11 +392,9 @@ export default function DashboardPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {loading ? (
-                  <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">
-                      Loading prospect records...
-                    </td>
-                  </tr>
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <TableRowSkeleton key={i} cols={7} />
+                  ))
                 ) : filteredBusinesses.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">
