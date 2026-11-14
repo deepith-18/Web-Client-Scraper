@@ -152,14 +152,14 @@ export default function LeadScoringPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-amber-500/10 text-amber-600 rounded-lg">
+              <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg">
                 <Layers className="h-6 w-6" />
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Intelligent Lead Scoring Engine
               </h1>
             </div>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Module E: Configurable 0–100 point algorithm ranking high-urgency freelance web opportunities.
             </p>
           </div>
@@ -176,14 +176,14 @@ export default function LeadScoringPage() {
 
         {/* Notification Banner */}
         {notification && (
-          <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs flex items-center justify-between shadow-xs">
+          <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 rounded-xl text-xs flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-600" />
+              <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400" />
               <span>{notification}</span>
             </div>
             <button
               onClick={() => setNotification(null)}
-              className="text-amber-700 hover:text-amber-900 p-1"
+              className="text-amber-700 dark:text-amber-300 hover:text-amber-900 p-1"
             >
               <X className="h-4 w-4" />
             </button>
@@ -192,65 +192,65 @@ export default function LeadScoringPage() {
 
         {/* Priority Tier Distribution KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-xs">
-            <span className="text-xs font-medium text-slate-500">Average Lead Score</span>
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Average Lead Score</span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-slate-900">
+              <span className="text-2xl font-bold text-slate-900 dark:text-white">
                 {summary?.average_opportunity_score || 0}
               </span>
-              <span className="text-xs text-slate-400">/ 100 pts</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">/ 100 pts</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 shadow-xs">
-            <span className="text-xs font-semibold text-emerald-800 flex items-center gap-1.5">
+          <div className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/30 shadow-xs">
+            <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
               High Priority (80–100)
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-emerald-900">
+              <span className="text-2xl font-bold text-emerald-900 dark:text-emerald-200">
                 {summary?.high_priority_count || 0}
               </span>
-              <span className="text-xs text-emerald-700">prospects</span>
+              <span className="text-xs text-emerald-700 dark:text-emerald-400">prospects</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/50 shadow-xs">
-            <span className="text-xs font-semibold text-blue-800 flex items-center gap-1.5">
+          <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-800/80 bg-blue-50/50 dark:bg-blue-950/30 shadow-xs">
+            <span className="text-xs font-semibold text-blue-800 dark:text-blue-300 flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-blue-500"></span>
               Good Opportunity (60–79)
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-blue-900">
+              <span className="text-2xl font-bold text-blue-900 dark:text-blue-200">
                 {summary?.good_opportunity_count || 0}
               </span>
-              <span className="text-xs text-blue-700">prospects</span>
+              <span className="text-xs text-blue-700 dark:text-blue-400">prospects</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/50 shadow-xs">
-            <span className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
+          <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-800/80 bg-amber-50/50 dark:bg-amber-950/30 shadow-xs">
+            <span className="text-xs font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-amber-500"></span>
               Medium Priority (40–59)
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-amber-900">
+              <span className="text-2xl font-bold text-amber-900 dark:text-amber-200">
                 {summary?.medium_priority_count || 0}
               </span>
-              <span className="text-xs text-amber-700">prospects</span>
+              <span className="text-xs text-amber-700 dark:text-amber-400">prospects</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 shadow-xs">
-            <span className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 shadow-xs">
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-slate-400"></span>
               Low Priority (0–39)
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-slate-800">
+              <span className="text-2xl font-bold text-slate-800 dark:text-slate-200">
                 {summary?.low_priority_count || 0}
               </span>
-              <span className="text-xs text-slate-500">prospects</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">prospects</span>
             </div>
           </div>
         </div>
@@ -258,11 +258,11 @@ export default function LeadScoringPage() {
         {/* Strategy Presets Selector */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <Zap className="h-4 w-4 text-amber-600" />
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400" />
               <span>1. Select Freelance Opportunity Strategy</span>
             </h2>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-500 dark:text-slate-400">
               Adapts scoring weights to your freelance specialization
             </span>
           </div>
@@ -276,17 +276,17 @@ export default function LeadScoringPage() {
                   onClick={() => handleSelectPreset(preset)}
                   className={`p-4 rounded-xl border cursor-pointer transition-all ${
                     isSelected
-                      ? "border-amber-500 bg-amber-50/40 shadow-sm ring-2 ring-amber-500/20"
-                      : "border-slate-200 bg-white hover:border-slate-300"
+                      ? "border-amber-500 bg-amber-50/40 dark:bg-amber-950/30 shadow-sm ring-2 ring-amber-500/20"
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-slate-900">{preset.name}</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">{preset.name}</span>
                     {isSelected && (
-                      <span className="h-2 w-2 rounded-full bg-amber-600"></span>
+                      <span className="h-2 w-2 rounded-full bg-amber-600 dark:bg-amber-400"></span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
                     {preset.description}
                   </p>
                 </div>
@@ -296,28 +296,28 @@ export default function LeadScoringPage() {
         </div>
 
         {/* Configurable Weight Matrix (Sliders & Inputs) */}
-        <div className="p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                <Sliders className="h-4 w-4 text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <Sliders className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <span>2. Custom Weight Matrix Configuration (0–100 Pts Total)</span>
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Tune the point contribution of each technical deficiency and feasibility factor
               </p>
             </div>
-            <span className="text-xs font-mono font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg border border-slate-200">
+            <span className="text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
               Active Strategy: {selectedPresetId.toUpperCase()}
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
             {/* Factor 1: No Website */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>No Official Website</span>
-                <span className="font-mono text-amber-600">+{weights.no_website} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.no_website} pts</span>
               </div>
               <input
                 type="range"
@@ -325,16 +325,16 @@ export default function LeadScoringPage() {
                 max="60"
                 value={weights.no_website}
                 onChange={(e) => handleWeightChange("no_website", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">Zero digital presence</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Zero digital presence</span>
             </div>
 
             {/* Factor 2: Website Unavailable */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Website Offline/Error</span>
-                <span className="font-mono text-amber-600">+{weights.website_unavailable} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.website_unavailable} pts</span>
               </div>
               <input
                 type="range"
@@ -342,16 +342,16 @@ export default function LeadScoringPage() {
                 max="50"
                 value={weights.website_unavailable}
                 onChange={(e) => handleWeightChange("website_unavailable", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">HTTP 4xx/5xx or timeout</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">HTTP 4xx/5xx or timeout</span>
             </div>
 
             {/* Factor 3: Poor Mobile Experience */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Poor Mobile Experience</span>
-                <span className="font-mono text-amber-600">+{weights.poor_mobile} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.poor_mobile} pts</span>
               </div>
               <input
                 type="range"
@@ -359,16 +359,16 @@ export default function LeadScoringPage() {
                 max="40"
                 value={weights.poor_mobile}
                 onChange={(e) => handleWeightChange("poor_mobile", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">Missing mobile viewport</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Missing mobile viewport</span>
             </div>
 
             {/* Factor 4: Missing Contact Form */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Missing Contact Form</span>
-                <span className="font-mono text-amber-600">+{weights.missing_contact} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.missing_contact} pts</span>
               </div>
               <input
                 type="range"
@@ -376,16 +376,16 @@ export default function LeadScoringPage() {
                 max="30"
                 value={weights.missing_contact}
                 onChange={(e) => handleWeightChange("missing_contact", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">No lead capture form</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">No lead capture form</span>
             </div>
 
             {/* Factor 5: Performance Latency */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Performance Latency</span>
-                <span className="font-mono text-amber-600">+{weights.performance_issues} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.performance_issues} pts</span>
               </div>
               <input
                 type="range"
@@ -393,16 +393,16 @@ export default function LeadScoringPage() {
                 max="30"
                 value={weights.performance_issues}
                 onChange={(e) => handleWeightChange("performance_issues", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">Load time &gt; 3 seconds</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Load time &gt; 3 seconds</span>
             </div>
 
             {/* Factor 6: Missing Business Info */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Missing Business Info</span>
-                <span className="font-mono text-amber-600">+{weights.missing_info} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.missing_info} pts</span>
               </div>
               <input
                 type="range"
@@ -410,16 +410,16 @@ export default function LeadScoringPage() {
                 max="20"
                 value={weights.missing_info}
                 onChange={(e) => handleWeightChange("missing_info", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">Incomplete directory details</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Incomplete directory details</span>
             </div>
 
             {/* Factor 7: Identity Corroborated */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Identity Corroborated</span>
-                <span className="font-mono text-amber-600">+{weights.identity_corroborated} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.identity_corroborated} pts</span>
               </div>
               <input
                 type="range"
@@ -427,16 +427,16 @@ export default function LeadScoringPage() {
                 max="20"
                 value={weights.identity_corroborated}
                 onChange={(e) => handleWeightChange("identity_corroborated", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">Authentic physical listing</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Authentic physical listing</span>
             </div>
 
             {/* Factor 8: Public Email Available */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">
                 <span>Public Email Available</span>
-                <span className="font-mono text-amber-600">+{weights.email_available} pts</span>
+                <span className="font-mono text-amber-600 dark:text-amber-400">+{weights.email_available} pts</span>
               </div>
               <input
                 type="range"
@@ -444,21 +444,21 @@ export default function LeadScoringPage() {
                 max="20"
                 value={weights.email_available}
                 onChange={(e) => handleWeightChange("email_available", parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <span className="text-[10px] text-slate-400 block mt-1">Viable for B2B proposal</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Viable for B2B proposal</span>
             </div>
           </div>
         </div>
 
         {/* Ranked Lead Opportunities Table */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+          <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                 Ranked Freelance Opportunities ({filteredBusinesses.length})
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Sorted by lead opportunity score. Click any business to inspect evidence and pitch angle.
               </p>
             </div>
@@ -466,7 +466,7 @@ export default function LeadScoringPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50/80 border-b border-slate-200/80 text-slate-500 font-semibold uppercase tracking-wider">
+              <thead className="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
                 <tr>
                   <th className="py-3.5 px-4">Opportunity Rank</th>
                   <th className="py-3.5 px-4">Business</th>
@@ -476,7 +476,7 @@ export default function LeadScoringPage() {
                   <th className="py-3.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {filteredBusinesses.map((biz, idx) => {
                   const scoreObj = biz.lead_scores?.[0];
                   const score = scoreObj?.total_opportunity_score || 0;
@@ -488,11 +488,11 @@ export default function LeadScoringPage() {
                     <tr
                       key={biz.id}
                       onClick={() => setSelectedLead(biz)}
-                      className="hover:bg-slate-50/80 cursor-pointer transition-colors group"
+                      className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group"
                     >
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-slate-400 text-[11px]">#{idx + 1}</span>
+                          <span className="font-mono text-slate-400 dark:text-slate-500 text-[11px]">#{idx + 1}</span>
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold border ${badge.badgeClass}`}
                           >
@@ -502,23 +502,23 @@ export default function LeadScoringPage() {
                       </td>
 
                       <td className="py-3.5 px-4">
-                        <p className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                        <p className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {biz.name}
                         </p>
-                        <span className="text-[11px] text-slate-500">{biz.category}</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">{biz.category}</span>
                       </td>
 
-                      <td className="py-3.5 px-4 text-slate-600">
+                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-400">
                         {biz.city}, {biz.country}
                       </td>
 
                       <td className="py-3.5 px-4">
                         {biz.official_website ? (
-                          <span className="text-blue-600 truncate max-w-[180px] block">
+                          <span className="text-blue-600 dark:text-blue-400 truncate max-w-[180px] block">
                             {biz.official_website}
                           </span>
                         ) : (
-                          <span className="text-rose-600 font-semibold text-[11px] bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                          <span className="text-rose-600 dark:text-rose-400 font-semibold text-[11px] bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800">
                             No Website Detected
                           </span>
                         )}
@@ -527,22 +527,22 @@ export default function LeadScoringPage() {
                       <td className="py-3.5 px-4">
                         <div className="flex flex-wrap gap-1 max-w-[280px]">
                           {!biz.official_website && (
-                            <span className="text-[10px] font-medium bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded border border-rose-200">
+                            <span className="text-[10px] font-medium bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 px-1.5 py-0.5 rounded border border-rose-200 dark:border-rose-800">
                               +30 Turnkey
                             </span>
                           )}
                           {audit && !audit.is_mobile_friendly && (
-                            <span className="text-[10px] font-medium bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">
+                            <span className="text-[10px] font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800">
                               +15 Unresponsive
                             </span>
                           )}
                           {audit && !audit.has_contact_form && (
-                            <span className="text-[10px] font-medium bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">
+                            <span className="text-[10px] font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
                               +10 No Form
                             </span>
                           )}
                           {audit && !audit.has_ssl && biz.official_website && (
-                            <span className="text-[10px] font-medium bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded border border-rose-200">
+                            <span className="text-[10px] font-medium bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 px-1.5 py-0.5 rounded border border-rose-200 dark:border-rose-800">
                               No HTTPS
                             </span>
                           )}
@@ -550,7 +550,7 @@ export default function LeadScoringPage() {
                       </td>
 
                       <td className="py-3.5 px-4 text-right">
-                        <button className="text-blue-600 hover:text-blue-800 font-semibold text-xs inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xs inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                           <span>Inspect</span>
                           <ChevronRight className="h-3.5 w-3.5" />
                         </button>
@@ -564,10 +564,10 @@ export default function LeadScoringPage() {
         </div>
 
         {/* Ethical Standards & Transparency Note */}
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
-          <Shield className="h-5 w-5 text-slate-500 shrink-0 mt-0.5" />
-          <div className="text-xs text-slate-600 space-y-1">
-            <p className="font-semibold text-slate-800">
+        <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-start gap-3">
+          <Shield className="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0 mt-0.5" />
+          <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+            <p className="font-semibold text-slate-800 dark:text-slate-200">
               Responsible Scoring & Client Acquisition Standards
             </p>
             <p>

@@ -349,53 +349,53 @@ export default function CallLogsHistoryPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50/50">
+    <div className="flex-1 flex flex-col min-h-screen">
       <Header />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-8">
+      <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8">
         {/* Toast Notification */}
         {notification && (
           <div
             className={`p-4 rounded-xl border flex items-center justify-between text-xs font-medium transition-all ${
               notification.type === "success"
-                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                : "bg-rose-50 border-rose-200 text-rose-800"
+                ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+                : "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300"
             }`}
           >
             <div className="flex items-center gap-2">
               {notification.type === "success" ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               ) : (
-                <AlertCircle className="h-4 w-4 text-rose-600" />
+                <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
               )}
               <span>{notification.message}</span>
             </div>
-            <button onClick={() => setNotification(null)} className="text-slate-400 hover:text-slate-600">
+            <button onClick={() => setNotification(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
               <X className="h-4 w-4" />
             </button>
           </div>
         )}
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 pb-6">
           <div>
             <div className="flex items-center gap-2.5">
               <Link
                 href="/calling"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 <span>Return to Live Caller Desk</span>
               </Link>
-              <span className="text-slate-300">•</span>
-              <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 rounded-md">
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md">
                 Full CRUD Audit Trail
               </span>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
               Call Logs & Interaction History
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Complete chronological registry of all cold calls made. Review agreed deal budgets, edit notes, inspect client audit histories, and export reports.
             </p>
           </div>
@@ -403,7 +403,7 @@ export default function CallLogsHistoryPage() {
           <div className="flex items-center gap-2.5">
             <button
               onClick={exportToCSV}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-2xs transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-semibold shadow-2xs transition-all"
             >
               <Download className="h-3.5 w-3.5" />
               <span>Export CSV</span>
@@ -420,56 +420,56 @@ export default function CallLogsHistoryPage() {
 
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Today's Calls</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Today's Calls</span>
               <PhoneCall className="h-4 w-4 text-blue-500" />
             </div>
-            <div className="text-2xl font-bold text-blue-600 mt-2">{stats?.total_calls_today ?? 0}</div>
-            <span className="text-[11px] text-slate-400 mt-1 block">Logged today</span>
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-2">{stats?.total_calls_today ?? 0}</div>
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Logged today</span>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">All-Time Calls</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">All-Time Calls</span>
               <History className="h-4 w-4 text-slate-400" />
             </div>
-            <div className="text-2xl font-bold text-slate-900 mt-2">{stats?.total_calls_all_time ?? 0}</div>
-            <span className="text-[11px] text-slate-400 mt-1 block">Total outreach logged</span>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-2">{stats?.total_calls_all_time ?? 0}</div>
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Total outreach logged</span>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Confirmed Agreed</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Confirmed Agreed</span>
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
             </div>
-            <div className="text-2xl font-bold text-emerald-600 mt-2">{stats?.total_agreed ?? 0}</div>
-            <span className="text-[11px] text-emerald-600 font-medium mt-1 block">Sent to Deepith</span>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">{stats?.total_agreed ?? 0}</div>
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1 block">Sent to Deepith</span>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Scheduled Callbacks</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Scheduled Callbacks</span>
               <Clock className="h-4 w-4 text-amber-500" />
             </div>
-            <div className="text-2xl font-bold text-amber-600 mt-2">{stats?.total_callbacks ?? 0}</div>
-            <span className="text-[11px] text-slate-400 mt-1 block">Follow-up reminders</span>
+            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-2">{stats?.total_callbacks ?? 0}</div>
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Follow-up reminders</span>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Win Rate %</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Win Rate %</span>
               <TrendingUp className="h-4 w-4 text-emerald-500" />
             </div>
-            <div className="text-2xl font-bold text-slate-900 mt-2">{stats?.acceptance_rate ?? 0}%</div>
-            <span className="text-[11px] text-slate-400 mt-1 block">Top: {stats?.top_converting_category || "Cafes"}</span>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-2">{stats?.acceptance_rate ?? 0}%</div>
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 block">Top: {stats?.top_converting_category || "Cafes"}</span>
           </div>
         </div>
 
         {/* Search, Filter Tabs & Call Logs Table */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
           {/* Toolbar */}
-          <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/50">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-900/60">
             {/* Outcome Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
               {[
@@ -484,8 +484,8 @@ export default function CallLogsHistoryPage() {
                   onClick={() => setOutcomeFilter(tab.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                     outcomeFilter === tab.id
-                      ? "bg-white text-blue-700 shadow-2xs border border-slate-200"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                      ? "bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-400 shadow-2xs border border-slate-200 dark:border-slate-700"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60"
                   }`}
                 >
                   {tab.label}
@@ -501,7 +501,7 @@ export default function CallLogsHistoryPage() {
                 placeholder="Search business, phone, caller, notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full pl-9 pr-4 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-slate-400"
               />
             </div>
           </div>
@@ -510,7 +510,7 @@ export default function CallLogsHistoryPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                   <th className="py-3.5 px-4">Date & Time</th>
                   <th className="py-3.5 px-4">Prospect Business</th>
                   <th className="py-3.5 px-4">Phone Number</th>
@@ -521,31 +521,31 @@ export default function CallLogsHistoryPage() {
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
+                    <td colSpan={8} className="py-12 text-center text-slate-400 dark:text-slate-500">
                       Loading call activity logs...
                     </td>
                   </tr>
                 ) : filteredLogs.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
+                    <td colSpan={8} className="py-12 text-center text-slate-400 dark:text-slate-500">
                       No call records found matching criteria.
                     </td>
                   </tr>
                 ) : (
                   filteredLogs.map((call) => (
-                    <tr key={call.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3.5 px-4 whitespace-nowrap text-slate-500">
-                        <div className="font-medium text-slate-700">
+                    <tr key={call.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3.5 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400">
+                        <div className="font-medium text-slate-700 dark:text-slate-300">
                           {new Date(call.created_at).toLocaleDateString("en-IN", {
                             month: "short",
                             day: "numeric",
                             year: "numeric"
                           })}
                         </div>
-                        <div className="text-[11px] text-slate-400">
+                        <div className="text-[11px] text-slate-400 dark:text-slate-500">
                           {new Date(call.created_at).toLocaleTimeString("en-IN", {
                             hour: "2-digit",
                             minute: "2-digit"
@@ -555,8 +555,8 @@ export default function CallLogsHistoryPage() {
                       </td>
 
                       <td className="py-3.5 px-4">
-                        <div className="font-semibold text-slate-900">{call.business_name || "Unknown"}</div>
-                        <div className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-0.5">
+                        <div className="font-semibold text-slate-900 dark:text-white">{call.business_name || "Unknown"}</div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
                           <span>{call.business_category}</span>
                           {call.business_city && (
                             <>
@@ -589,7 +589,7 @@ export default function CallLogsHistoryPage() {
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4 whitespace-nowrap font-medium text-slate-700">
+                      <td className="py-3.5 px-4 whitespace-nowrap font-medium text-slate-700 dark:text-slate-300">
                         {call.caller_name || "Team Caller"}
                       </td>
 
@@ -598,32 +598,32 @@ export default function CallLogsHistoryPage() {
                       <td className="py-3.5 px-4">
                         {call.project_type || call.agreed_budget ? (
                           <div>
-                            <span className="font-semibold text-slate-900">{call.project_type || "Turnkey Build"}</span>
+                            <span className="font-semibold text-slate-900 dark:text-white">{call.project_type || "Turnkey Build"}</span>
                             {call.agreed_budget && (
-                              <span className="block text-[11px] font-bold text-emerald-600 mt-0.5">
+                              <span className="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
                                 {call.agreed_budget}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <span className="text-slate-400">—</span>
+                          <span className="text-slate-400 dark:text-slate-500">—</span>
                         )}
                       </td>
 
                       <td className="py-3.5 px-4 max-w-xs">
                         {call.notes ? (
-                          <p className="text-slate-700 truncate" title={call.notes}>
+                          <p className="text-slate-700 dark:text-slate-300 truncate" title={call.notes}>
                             {call.notes}
                           </p>
                         ) : call.decline_reason ? (
-                          <p className="text-rose-700 truncate" title={call.decline_reason}>
+                          <p className="text-rose-700 dark:text-rose-400 truncate" title={call.decline_reason}>
                             Decline: {call.decline_reason}
                           </p>
                         ) : (
-                          <span className="text-slate-400">No notes</span>
+                          <span className="text-slate-400 dark:text-slate-500">No notes</span>
                         )}
                         {call.scheduled_callback_at && (
-                          <div className="text-[11px] text-amber-700 font-medium flex items-center gap-1 mt-0.5">
+                          <div className="text-[11px] text-amber-700 dark:text-amber-400 font-medium flex items-center gap-1 mt-0.5">
                             <Clock className="h-3 w-3" />
                             <span>
                               Callback: {new Date(call.scheduled_callback_at).toLocaleString("en-IN", {
@@ -642,21 +642,21 @@ export default function CallLogsHistoryPage() {
                           <button
                             onClick={() => openHistoryDrawer(call.business_id, call.business_name || "Business")}
                             title="View Client Call History"
-                            className="p-1.5 rounded-md hover:bg-slate-100 text-slate-500 hover:text-indigo-600 transition-colors"
+                            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                           >
                             <History className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => openEditModal(call)}
                             title="Edit Call Log"
-                            className="p-1.5 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                           >
                             <Edit3 className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => setDeletingCall(call)}
                             title="Delete Call Log"
-                            className="p-1.5 rounded-md hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors"
+                            className="p-1.5 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>

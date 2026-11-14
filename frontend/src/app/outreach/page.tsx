@@ -258,23 +258,23 @@ export default function OutreachManagerPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+              <div className="p-2 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-lg">
                 <Send className="h-6 w-6" />
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Outreach Studio</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Outreach Studio</h1>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Phase 8: Multi-touch cadence tracking, rich template variable studio, and manual dispatch guardrails.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl">
+          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
             <button
               onClick={() => setActiveTab("queue")}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === "queue"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               Approval Queue ({outreachRecords.length})
@@ -283,8 +283,8 @@ export default function OutreachManagerPage() {
               onClick={() => setActiveTab("templates")}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === "templates"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               Template Studio ({templates.length})
@@ -293,8 +293,8 @@ export default function OutreachManagerPage() {
               onClick={() => setActiveTab("sequences")}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === "sequences"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               Multi-Touch Sequences
@@ -304,17 +304,17 @@ export default function OutreachManagerPage() {
 
         {/* Action Notifications */}
         {actionSuccess && (
-          <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-lg flex items-center justify-between animate-in fade-in">
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs rounded-lg flex items-center justify-between animate-in fade-in">
             <span>{actionSuccess}</span>
-            <button onClick={() => setActionSuccess(null)} className="text-emerald-700 hover:text-emerald-900">
+            <button onClick={() => setActionSuccess(null)} className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-900">
               <X className="h-4 w-4" />
             </button>
           </div>
         )}
         {actionError && (
-          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-lg flex items-center justify-between animate-in fade-in">
+          <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs rounded-lg flex items-center justify-between animate-in fade-in">
             <span>{actionError}</span>
-            <button onClick={() => setActionError(null)} className="text-rose-700 hover:text-rose-900">
+            <button onClick={() => setActionError(null)} className="text-rose-700 dark:text-rose-400 hover:text-rose-900">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -324,25 +324,25 @@ export default function OutreachManagerPage() {
         {activeTab === "queue" && (
           <div className="space-y-6">
             {/* Generate Pitch Card */}
-            <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-blue-600" />
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span>Generate Single Proposal Draft</span>
                 </h2>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Manual Approval Required Before Sending</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                 <div className="md:col-span-6 space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-500">Target Qualified Lead</label>
+                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Target Qualified Lead</label>
                   <select
                     value={selectedBusinessId}
                     onChange={(e) => setSelectedBusinessId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                   >
                     {businesses.map((b) => (
                       <option key={b.id} value={b.id} disabled={b.is_suppressed}>
@@ -353,11 +353,11 @@ export default function OutreachManagerPage() {
                 </div>
 
                 <div className="md:col-span-4 space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-500">Select Template Strategy</label>
+                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Select Template Strategy</label>
                   <select
                     value={selectedTemplateId}
                     onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                   >
                     {templates.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -383,13 +383,13 @@ export default function OutreachManagerPage() {
             {/* Queue List */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                   Outreach Approval Queue ({outreachRecords.length})
                 </h3>
               </div>
 
               {outreachRecords.length === 0 ? (
-                <div className="p-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 text-xs">
+                <div className="p-12 text-center text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs">
                   No outreach records drafted yet. Select a qualified lead above to generate a proposal.
                 </div>
               ) : (
@@ -398,7 +398,7 @@ export default function OutreachManagerPage() {
                     const isSent = rec.status === "sent";
                     const isApproved = rec.status === "approved" || rec.manual_approval_granted;
                     const mailtoUrl = rec.recipient
-                      ? `mailto:${rec.recipient}?subject=${encodeURIComponent(
+                        ? `mailto:${rec.recipient}?subject=${encodeURIComponent(
                           rec.subject || "Website Development Proposal"
                         )}&body=${encodeURIComponent(rec.generated_pitch)}`
                       : "";
@@ -406,31 +406,31 @@ export default function OutreachManagerPage() {
                     return (
                       <div
                         key={rec.id}
-                        className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs space-y-4 hover:border-slate-300 transition-colors"
+                        className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                       >
                         {/* Header Details */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-slate-900 text-sm">
+                              <span className="font-bold text-slate-900 dark:text-white text-sm">
                                 {rec.subject || "Proposal Draft"}
                               </span>
-                              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 text-slate-700 border border-slate-200">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                 Touch {rec.stage_step || 1}
                               </span>
                               <span
                                 className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
                                   isSent
-                                    ? "bg-blue-50 text-blue-700 border-blue-200"
+                                    ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60"
                                     : isApproved
-                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                    : "bg-amber-50 text-amber-700 border-amber-200"
+                                    ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60"
+                                    : "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/60"
                                 }`}
                               >
                                 {rec.status}
                               </span>
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-slate-500">
+                            <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                               <span className="flex items-center gap-1 font-mono text-[11px]">
                                 <Mail className="h-3 w-3 text-slate-400" />
                                 {rec.recipient || "No recipient email (manual pitch)"}
@@ -446,17 +446,17 @@ export default function OutreachManagerPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => copyToClipboard(rec.generated_pitch, rec.id)}
-                              className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                              className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
                               title="Copy pitch to clipboard"
                             >
                               {copiedId === rec.id ? (
                                 <>
-                                  <Check className="h-3.5 w-3.5 text-emerald-600" />
-                                  <span className="text-emerald-600">Copied</span>
+                                  <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                                  <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
                                 </>
                               ) : (
                                 <>
-                                  <Copy className="h-3.5 w-3.5 text-slate-500" />
+                                  <Copy className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
                                   <span>Copy</span>
                                 </>
                               )}
@@ -467,9 +467,9 @@ export default function OutreachManagerPage() {
                                 href={mailtoUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
                               >
-                                <ExternalLink className="h-3.5 w-3.5 text-slate-500" />
+                                <ExternalLink className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
                                 <span>Open Client</span>
                               </a>
                             )}
@@ -477,20 +477,20 @@ export default function OutreachManagerPage() {
                         </div>
 
                         {/* Proposal Text Content */}
-                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto">
+                        <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto">
                           {rec.generated_pitch}
                         </div>
 
                         {/* Workflow Buttons */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-                          <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                             {isApproved ? (
-                              <span className="flex items-center gap-1 text-emerald-600 font-medium">
+                              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
                                 <CheckCircle2 className="h-4 w-4" />
                                 Approved for manual transmission
                               </span>
                             ) : (
-                              <span className="flex items-center gap-1 text-amber-600 font-medium">
+                              <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
                                 <Clock className="h-4 w-4" />
                                 Requires developer review and approval
                               </span>
@@ -519,7 +519,7 @@ export default function OutreachManagerPage() {
                             )}
 
                             {isSent && (
-                              <span className="text-xs text-slate-500 italic">
+                              <span className="text-xs text-slate-500 dark:text-slate-400 italic">
                                 Sent on {new Date(rec.sent_at || rec.created_at).toLocaleDateString()}
                               </span>
                             )}
@@ -539,8 +539,8 @@ export default function OutreachManagerPage() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">Outreach Template Studio</h2>
-                <p className="text-xs text-slate-500">
+                <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Outreach Template Studio</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Craft reusable, evidence-backed pitch templates with smart dynamic replacement tags.
                 </p>
               </div>
@@ -554,22 +554,22 @@ export default function OutreachManagerPage() {
             </div>
 
             {/* Live Interactive Preview Tester */}
-            <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                <Eye className="h-4 w-4 text-blue-600" />
+            <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <Eye className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <span>Dynamic Variable Live Preview Tester</span>
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Select any business in your pipeline to test how smart tokens dynamically render technical findings.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                 <div className="md:col-span-5 space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-500">Test Prospect</label>
+                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Test Prospect</label>
                   <select
                     value={previewBusinessId}
                     onChange={(e) => setPreviewBusinessId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-800 font-medium"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 font-medium"
                   >
                     {businesses.map((b) => (
                       <option key={b.id} value={b.id}>
@@ -580,11 +580,11 @@ export default function OutreachManagerPage() {
                 </div>
 
                 <div className="md:col-span-5 space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-500">Template to Test</label>
+                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Template to Test</label>
                   <select
                     value={previewTemplateId}
                     onChange={(e) => setPreviewTemplateId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-800 font-medium"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 font-medium"
                   >
                     {templates.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -598,7 +598,7 @@ export default function OutreachManagerPage() {
                   <button
                     onClick={handleTestPreview}
                     disabled={previewLoading || !previewBusinessId || !previewTemplateId}
-                    className="w-full py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-slate-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-1.5"
                   >
                     {previewLoading ? <span>Rendering...</span> : <span>Render Preview</span>}
                   </button>
@@ -606,25 +606,25 @@ export default function OutreachManagerPage() {
               </div>
 
               {renderedPreview && (
-                <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 animate-in fade-in">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
                     <div className="text-xs">
-                      <span className="font-semibold text-slate-500">Subject: </span>
-                      <span className="font-bold text-slate-900">{renderedPreview.subject}</span>
+                      <span className="font-semibold text-slate-500 dark:text-slate-400">Subject: </span>
+                      <span className="font-bold text-slate-900 dark:text-white">{renderedPreview.subject}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-slate-400">Tokens substituted:</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500">Tokens substituted:</span>
                       {renderedPreview.tokens_substituted.map((token) => (
                         <span
                           key={token}
-                          className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-mono font-semibold"
+                          className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 rounded text-[10px] font-mono font-semibold"
                         >
                           {token}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className="font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed">
+                  <div className="font-mono text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
                     {renderedPreview.body}
                   </div>
                 </div>
@@ -636,27 +636,27 @@ export default function OutreachManagerPage() {
               {templates.map((tpl) => (
                 <div
                   key={tpl.id}
-                  className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between"
+                  className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3 flex flex-col justify-between"
                 >
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h3 className="font-bold text-slate-900 text-sm">{tpl.name}</h3>
+                        <h3 className="font-bold text-slate-900 dark:text-white text-sm">{tpl.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 text-slate-700 border border-slate-200">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                             Touch {tpl.stage_step}
                           </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60">
                             {tpl.channel}
                           </span>
                           {tpl.delay_days > 0 && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               Day +{tpl.delay_days}
                             </span>
                           )}
                           {tpl.is_default && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                               System Preset
                             </span>
                           )}
@@ -666,7 +666,7 @@ export default function OutreachManagerPage() {
                       {!tpl.is_default && (
                         <button
                           onClick={() => handleDeleteTemplate(tpl.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
                           title="Delete template"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -676,24 +676,24 @@ export default function OutreachManagerPage() {
 
                     <div className="text-xs">
                       <span className="text-slate-400">Subject: </span>
-                      <span className="font-semibold text-slate-800 font-mono text-[11px]">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono text-[11px]">
                         {tpl.subject_template}
                       </span>
                     </div>
 
-                    <div className="p-3 bg-slate-50 rounded-lg border border-slate-100 font-mono text-[11px] text-slate-600 line-clamp-4 whitespace-pre-wrap">
+                    <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 font-mono text-[11px] text-slate-600 dark:text-slate-300 line-clamp-4 whitespace-pre-wrap">
                       {tpl.body_template}
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
                     <span>Last updated {new Date(tpl.updated_at).toLocaleDateString()}</span>
                     <button
                       onClick={() => {
                         setPreviewTemplateId(tpl.id);
                         handleTestPreview();
                       }}
-                      className="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold inline-flex items-center gap-1"
                     >
                       <span>Test Render</span>
                       <ArrowRight className="h-3 w-3" />
@@ -708,12 +708,12 @@ export default function OutreachManagerPage() {
         {/* TAB 3: MULTI-TOUCH SEQUENCES */}
         {activeTab === "sequences" && (
           <div className="space-y-6">
-            <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
               <div>
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">
+                <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                   Launch Multi-Touch Outreach Sequence
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Enrolls a business into an automated sequence (e.g. Initial pitch, Day 4 evidence follow-up, Day 8 check-in)
                   with calendar reminders. Every outreach dispatch still requires manual approval.
                 </p>
@@ -721,11 +721,11 @@ export default function OutreachManagerPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Target Lead</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Target Lead</label>
                   <select
                     value={sequenceBusinessId}
                     onChange={(e) => setSequenceBusinessId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {businesses.map((b) => (
                       <option key={b.id} value={b.id} disabled={b.is_suppressed}>
@@ -736,14 +736,14 @@ export default function OutreachManagerPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Sequence Templates to Include</label>
-                  <div className="space-y-2 p-3 bg-slate-50 rounded-lg border border-slate-200 max-h-48 overflow-y-auto">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Sequence Templates to Include</label>
+                  <div className="space-y-2 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-700 max-h-48 overflow-y-auto">
                     {templates.map((tpl) => {
                       const isChecked = sequenceTemplateIds.includes(tpl.id);
                       return (
                         <label
                           key={tpl.id}
-                          className="flex items-center gap-2.5 text-xs text-slate-800 cursor-pointer hover:text-slate-900"
+                          className="flex items-center gap-2.5 text-xs text-slate-800 dark:text-slate-200 cursor-pointer hover:text-slate-900 dark:hover:text-white"
                         >
                           <input
                             type="checkbox"
@@ -787,16 +787,16 @@ export default function OutreachManagerPage() {
 
       {/* CREATE TEMPLATE MODAL */}
       {isTemplateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900 tracking-tight">Create Outreach Template</h3>
-                <p className="text-xs text-slate-500">Define dynamic B2B email or messaging templates.</p>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Create Outreach Template</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Define dynamic B2B email or messaging templates.</p>
               </div>
               <button
                 onClick={() => setIsTemplateModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -805,7 +805,7 @@ export default function OutreachManagerPage() {
             <form onSubmit={handleCreateTemplate} className="p-6 space-y-4 overflow-y-auto flex-1">
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2 space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Template Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -814,16 +814,16 @@ export default function OutreachManagerPage() {
                     placeholder="e.g. Turnkey Web Solution - First Touch"
                     value={templateForm.name}
                     onChange={(e) => setTemplateForm({ ...templateForm, name: e.target.value })}
-                    className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full text-xs px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Channel</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Channel</label>
                   <select
                     value={templateForm.channel}
                     onChange={(e) => setTemplateForm({ ...templateForm, channel: e.target.value })}
-                    className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium bg-white"
+                    className="w-full text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                   >
                     <option value="email">Email</option>
                     <option value="linkedin">LinkedIn</option>
@@ -834,34 +834,34 @@ export default function OutreachManagerPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Sequence Stage Step</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Sequence Stage Step</label>
                   <input
                     type="number"
                     min="1"
                     max="10"
                     value={templateForm.stage_step}
                     onChange={(e) => setTemplateForm({ ...templateForm, stage_step: parseInt(e.target.value) || 1 })}
-                    className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full text-xs px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Delay Days After Previous Step</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Delay Days After Previous Step</label>
                   <input
                     type="number"
                     min="0"
                     max="60"
                     value={templateForm.delay_days}
                     onChange={(e) => setTemplateForm({ ...templateForm, delay_days: parseInt(e.target.value) || 0 })}
-                    className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full text-xs px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                   />
                 </div>
               </div>
 
               {/* Dynamic Tag Inserters */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                     Click to Insert Dynamic Tokens:
                   </span>
                 </div>
@@ -881,7 +881,7 @@ export default function OutreachManagerPage() {
                       key={token}
                       type="button"
                       onClick={() => insertToken(token, "body_template")}
-                      className="px-2 py-1 bg-white hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 border border-slate-200 rounded text-[10px] font-mono font-semibold text-slate-600 transition-colors shadow-2xs"
+                      className="px-2 py-1 bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/60 hover:text-blue-700 dark:hover:text-blue-400 hover:border-blue-300 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono font-semibold text-slate-600 dark:text-slate-300 transition-colors shadow-2xs"
                     >
                       +{token}
                     </button>
@@ -890,7 +890,7 @@ export default function OutreachManagerPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-700">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Subject Line Template <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -899,12 +899,12 @@ export default function OutreachManagerPage() {
                   placeholder="Website development proposal for {{business_name}} in {{city}}"
                   value={templateForm.subject_template}
                   onChange={(e) => setTemplateForm({ ...templateForm, subject_template: e.target.value })}
-                  className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-[11px]"
+                  className="w-full text-xs px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-[11px]"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-700">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Proposal Body Template <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -913,15 +913,15 @@ export default function OutreachManagerPage() {
                   placeholder="Dear {{business_name}} Team,&#10;&#10;I noticed..."
                   value={templateForm.body_template}
                   onChange={(e) => setTemplateForm({ ...templateForm, body_template: e.target.value })}
-                  className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-[11px] resize-none"
+                  className="w-full text-xs px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-[11px] resize-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsTemplateModalOpen(false)}
-                  className="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-semibold transition-colors"
+                  className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-semibold transition-colors"
                 >
                   Cancel
                 </button>

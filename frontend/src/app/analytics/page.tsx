@@ -49,16 +49,16 @@ export default function AnalyticsPage() {
     <>
       <Header />
 
-      <main className="p-8 space-y-8 flex-1 bg-slate-50/50">
+      <main className="p-6 md:p-8 space-y-8 flex-1">
         {/* Title */}
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+            <div className="p-2 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-xl">
               <BarChart3 className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Conversion Analytics</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Conversion Analytics</h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Track which business types accept websites the most, caller conversion rates, and pipeline distribution.
           </p>
         </div>
@@ -97,47 +97,47 @@ export default function AnalyticsPage() {
 
         {/* Which Business Type Accepts Most? (Table & Visual Bars) */}
         {acceptanceStats && (
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
               <div>
-                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <Award className="h-4 w-4 text-indigo-600" />
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <Award className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <span>Acceptance Rate by Business Category (Which Type Accepts Most)</span>
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Identifies which industries yield the highest positive response for website sales.
                 </p>
               </div>
 
-              <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-200">
+              <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 rounded-lg border border-indigo-200 dark:border-indigo-800/60">
                 {acceptanceStats.overall_calls} Total Calls Logged
               </span>
             </div>
 
             <div className="space-y-4 pt-1">
               {acceptanceStats.category_breakdown.map((cat, idx) => (
-                <div key={cat.category} className="space-y-1.5 p-3 rounded-xl bg-slate-50/70 border border-slate-100">
+                <div key={cat.category} className="space-y-1.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[11px] font-bold text-slate-400">#{idx + 1}</span>
-                      <span className="font-bold text-slate-900">{cat.category}</span>
+                      <span className="font-mono text-[11px] font-bold text-slate-400 dark:text-slate-500">#{idx + 1}</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{cat.category}</span>
                       {idx === 0 && cat.total_called > 0 && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 flex items-center gap-1">
                           <Sparkles className="h-3 w-3" /> Top Performer
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-3 font-mono text-xs">
-                      <span className="text-emerald-700 font-bold">{cat.accepted_count} Accepted</span>
-                      <span className="text-slate-300">/</span>
-                      <span className="text-rose-600 font-medium">{cat.rejected_count} Declined</span>
-                      <span className="text-slate-300">/</span>
-                      <span className="font-bold text-indigo-600 text-sm">{cat.acceptance_rate_pct}% Rate</span>
+                      <span className="text-emerald-700 dark:text-emerald-400 font-bold">{cat.accepted_count} Accepted</span>
+                      <span className="text-slate-300 dark:text-slate-600">/</span>
+                      <span className="text-rose-600 dark:text-rose-400 font-medium">{cat.rejected_count} Declined</span>
+                      <span className="text-slate-300 dark:text-slate-600">/</span>
+                      <span className="font-bold text-indigo-600 dark:text-indigo-400 text-sm">{cat.acceptance_rate_pct}% Rate</span>
                     </div>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden flex">
+                  <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-700/60 rounded-full overflow-hidden flex">
                     <div
                       className="h-full bg-emerald-500 transition-all duration-500"
                       style={{
@@ -146,7 +146,7 @@ export default function AnalyticsPage() {
                       title={`${cat.accepted_count} Accepted`}
                     ></div>
                     <div
-                      className="h-full bg-rose-400 transition-all duration-500"
+                      className="h-full bg-rose-400 dark:bg-rose-500 transition-all duration-500"
                       style={{
                         width: `${cat.total_called > 0 ? (cat.rejected_count / cat.total_called) * 100 : 0}%`,
                       }}
@@ -161,12 +161,12 @@ export default function AnalyticsPage() {
 
         {/* Opportunity Tiers & Industry Distribution */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <Layers className="h-4 w-4 text-blue-600" />
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-4">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <Layers className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               <span>Opportunity Score Distribution</span>
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Breakdown of discovered businesses across priority tiers
             </p>
 
@@ -182,14 +182,14 @@ export default function AnalyticsPage() {
                 return (
                   <div key={item.tier} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-800 capitalize">{item.tier}</span>
-                      <span className="font-mono text-slate-500">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 capitalize">{item.tier}</span>
+                      <span className="font-mono text-slate-500 dark:text-slate-400">
                         {item.count} leads ({pct}%)
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                        className="h-full bg-blue-600 dark:bg-blue-500 rounded-full transition-all duration-500"
                         style={{ width: `${Math.max(5, pct)}%` }}
                       ></div>
                     </div>
@@ -199,12 +199,12 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <Globe className="h-4 w-4 text-indigo-600" />
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-4">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <Globe className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
               <span>Target Category Volume</span>
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Distribution of discovered businesses by industry sector
             </p>
 
@@ -215,14 +215,14 @@ export default function AnalyticsPage() {
                 return (
                   <div key={cat.category} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-800">{cat.category}</span>
-                      <span className="font-mono text-slate-500">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">{cat.category}</span>
+                      <span className="font-mono text-slate-500 dark:text-slate-400">
                         {cat.count} ({pct}%)
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                        className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all duration-500"
                         style={{ width: `${Math.max(5, pct)}%` }}
                       ></div>
                     </div>

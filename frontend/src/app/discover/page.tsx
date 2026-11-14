@@ -208,25 +208,25 @@ export default function DiscoverPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 transition-colors shadow-xs"
+              className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors shadow-xs"
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                 <span>Business Discovery Engine</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                   Worldwide Active
                 </span>
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                 Target prospective businesses by region, industry category, and authorized source registry
               </p>
             </div>
           </div>
           <button
             onClick={loadData}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-xs"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
           >
             <RotateCw className="h-3.5 w-3.5" />
             <span>Refresh Jobs</span>
@@ -234,21 +234,21 @@ export default function DiscoverPage() {
         </div>
 
         {/* Discovery Launcher Card */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                <Compass className="h-4 w-4 text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                <Compass className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <span>Configure Discovery Job</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                 Runs automated extraction, normalisation, duplicate checking, and opportunity scoring
               </p>
             </div>
 
             {/* Quick Market Presets */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 Quick Market Presets (Bengaluru & Global Metros)
               </label>
               <div className="flex flex-wrap gap-2">
@@ -262,7 +262,7 @@ export default function DiscoverPage() {
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                         isSelected
                           ? "bg-blue-600 text-white border-blue-600 shadow-xs"
-                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                       }`}
                     >
                       {preset.city}, {preset.country}
@@ -275,7 +275,7 @@ export default function DiscoverPage() {
             {/* Form Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Target Country
                 </label>
                 <input
@@ -284,12 +284,12 @@ export default function DiscoverPage() {
                   value={targetCountry}
                   onChange={(e) => setTargetCountry(e.target.value)}
                   placeholder="e.g. India, United States, UK"
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Target City / Area
                 </label>
                 <input
@@ -298,12 +298,12 @@ export default function DiscoverPage() {
                   value={targetCity}
                   onChange={(e) => setTargetCity(e.target.value)}
                   placeholder="e.g. Bengaluru, Indiranagar, Austin"
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Postal / PIN Code (Optional)
                 </label>
                 <input
@@ -311,14 +311,14 @@ export default function DiscoverPage() {
                   value={targetPostalCode}
                   onChange={(e) => setTargetPostalCode(e.target.value)}
                   placeholder="e.g. 560038 or 78701"
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
               </div>
             </div>
 
             {/* Target Category Pills */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 Target Business Category
               </label>
               <div className="flex flex-wrap gap-2">
@@ -331,8 +331,8 @@ export default function DiscoverPage() {
                       onClick={() => handleCategorySelect(cat)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                         isSelected
-                          ? "bg-slate-900 text-white border-slate-900 shadow-xs"
-                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          ? "bg-slate-900 dark:bg-blue-600 text-white border-slate-900 dark:border-blue-600 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                       }`}
                     >
                       {cat}
@@ -344,7 +344,7 @@ export default function DiscoverPage() {
 
             {/* Authorized Data Sources */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 Authorized Discovery Registry Source
               </label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -352,15 +352,15 @@ export default function DiscoverPage() {
                   onClick={() => setSelectedSourceType("open_osm")}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                     selectedSourceType === "open_osm"
-                      ? "border-blue-600 bg-blue-50/40 ring-1 ring-blue-600"
-                      : "border-slate-200 bg-slate-50/50 hover:bg-slate-50"
+                      ? "border-blue-600 dark:border-blue-500 bg-blue-50/40 dark:bg-blue-950/30 ring-1 ring-blue-600 dark:ring-blue-500"
+                      : "border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <Globe2 className="h-4 w-4 text-blue-600" />
-                    <span className="text-xs font-bold text-slate-900">OpenStreetMap Overpass</span>
+                    <Globe2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">OpenStreetMap Overpass</span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                     Global geospatial business database. Free, rate-limit friendly, zero CAPTCHAs.
                   </p>
                 </div>
@@ -369,15 +369,15 @@ export default function DiscoverPage() {
                   onClick={() => setSelectedSourceType("google_places")}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                     selectedSourceType === "google_places"
-                      ? "border-blue-600 bg-blue-50/40 ring-1 ring-blue-600"
-                      : "border-slate-200 bg-slate-50/50 hover:bg-slate-50"
+                      ? "border-blue-600 dark:border-blue-500 bg-blue-50/40 dark:bg-blue-950/30 ring-1 ring-blue-600 dark:ring-blue-500"
+                      : "border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <Server className="h-4 w-4 text-emerald-600" />
-                    <span className="text-xs font-bold text-slate-900">Google Places API</span>
+                    <Server className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">Google Places API</span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                     Direct API commercial directory with high-fidelity contact details.
                   </p>
                 </div>
@@ -386,15 +386,15 @@ export default function DiscoverPage() {
                   onClick={() => setSelectedSourceType("public_directory")}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                     selectedSourceType === "public_directory"
-                      ? "border-blue-600 bg-blue-50/40 ring-1 ring-blue-600"
-                      : "border-slate-200 bg-slate-50/50 hover:bg-slate-50"
+                      ? "border-blue-600 dark:border-blue-500 bg-blue-50/40 dark:bg-blue-950/30 ring-1 ring-blue-600 dark:ring-blue-500"
+                      : "border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <Compass className="h-4 w-4 text-purple-600" />
-                    <span className="text-xs font-bold text-slate-900">Public Business Crawler</span>
+                    <Compass className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">Public Business Crawler</span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                     SSRF-safe direct website crawler respecting robots.txt and rate limits.
                   </p>
                 </div>
@@ -416,20 +416,20 @@ export default function DiscoverPage() {
         </div>
 
         {/* Discovery Jobs History */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+          <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 tracking-tight">Recent Discovery Jobs</h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">Recent Discovery Jobs</h2>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                 Live processing states, qualified business discovery metrics, and activity logs
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-slate-400 font-medium hidden sm:inline">Auto-refreshes while jobs run</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium hidden sm:inline">Auto-refreshes while jobs run</span>
               {jobs.length > 0 && (
                 <button
                   onClick={handleClearAllJobs}
-                  className="px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors flex items-center gap-1.5"
+                  className="px-2.5 py-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-900 rounded-lg transition-colors flex items-center gap-1.5"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   <span>Clear All Jobs</span>
@@ -438,42 +438,42 @@ export default function DiscoverPage() {
             </div>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {jobs.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-400">
+              <div className="p-8 text-center text-xs text-slate-400 dark:text-slate-500">
                 No discovery jobs executed yet. Launch one above to discover prospects!
               </div>
             ) : (
               jobs.map((job) => (
-                <div key={job.id} className="p-5 hover:bg-slate-50/60 transition-colors">
+                <div key={job.id} className="p-5 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-900 text-sm">{job.job_name}</span>
+                        <span className="font-semibold text-slate-900 dark:text-white text-sm">{job.job_name}</span>
                         <span
                           className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
                             job.status === "completed"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
                               : job.status === "running"
-                              ? "bg-blue-50 text-blue-700 border-blue-200 animate-pulse"
+                              ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800 animate-pulse"
                               : job.status === "failed"
-                              ? "bg-rose-50 text-rose-700 border-rose-200"
+                              ? "bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800"
                               : job.status === "cancelled"
-                              ? "bg-amber-50 text-amber-700 border-amber-200"
-                              : "bg-slate-100 text-slate-600 border-slate-200"
+                              ? "bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800"
+                              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700"
                           }`}
                         >
                           {job.status}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2.5 text-xs text-slate-400 mt-1 flex-wrap">
+                      <div className="flex items-center gap-2.5 text-xs text-slate-400 dark:text-slate-500 mt-1 flex-wrap">
                         <span>
                           {job.target_category} in {job.target_city}, {job.target_country}
                         </span>
                         <span>•</span>
                         <span>Created {new Date(job.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         <span>•</span>
-                        <span className="font-semibold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 flex items-center gap-1">
+                        <span className="font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-800 flex items-center gap-1">
                           <UserCheck className="h-3 w-3" />
                           <span>{job.user_name || "Deepith (Admin)"}</span>
                         </span>
@@ -482,14 +482,14 @@ export default function DiscoverPage() {
 
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="text-xs font-bold text-slate-900">{job.records_found} Discovered</p>
-                        <p className="text-[11px] text-emerald-600 font-medium">
+                        <p className="text-xs font-bold text-slate-900 dark:text-white">{job.records_found} Discovered</p>
+                        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
                           {job.records_qualified} Qualified Leads
                         </p>
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="w-24 bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                      <div className="w-24 bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-200 dark:border-slate-700">
                         <div
                           className={`h-full transition-all ${
                             job.status === "completed"
@@ -506,17 +506,17 @@ export default function DiscoverPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleOpenLogs(job)}
-                          className="px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+                          className="px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5"
                           title="View Execution Logs"
                         >
-                          <FileText className="h-3.5 w-3.5 text-slate-500" />
+                          <FileText className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
                           <span>Logs</span>
                         </button>
 
                         {job.status === "completed" && job.records_qualified > 0 && (
                           <Link
                             href={`/?search=${encodeURIComponent(job.target_city)}`}
-                            className="px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 border border-blue-200 rounded-lg transition-colors flex items-center gap-1"
+                            className="px-2.5 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg transition-colors flex items-center gap-1"
                           >
                             <span>View Leads</span>
                             <ExternalLink className="h-3 w-3" />
@@ -526,7 +526,7 @@ export default function DiscoverPage() {
                         {(job.status === "running" || job.status === "pending") && (
                           <button
                             onClick={() => handleCancel(job.id)}
-                            className="px-2.5 py-1.5 text-xs font-medium text-rose-600 hover:text-rose-800 bg-rose-50 border border-rose-200 rounded-lg transition-colors"
+                            className="px-2.5 py-1.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:text-rose-800 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-lg transition-colors"
                           >
                             Cancel
                           </button>
@@ -535,7 +535,7 @@ export default function DiscoverPage() {
                         <button
                           onClick={() => handleDeleteJob(job.id)}
                           title="Delete Job"
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 dark:hover:border-rose-800 rounded-lg transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -552,19 +552,19 @@ export default function DiscoverPage() {
       {/* Real-time Job Logs Modal */}
       {activeJobLogs && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/80">
               <div>
-                <h3 className="font-bold text-slate-900 text-sm">
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">
                   Execution Logs: {activeJobLogs.job.job_name}
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
                   Status: <span className="font-semibold uppercase">{activeJobLogs.job.status}</span> • Progress: {activeJobLogs.job.progress_pct}%
                 </p>
               </div>
               <button
                 onClick={() => setActiveJobLogs(null)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -596,10 +596,10 @@ export default function DiscoverPage() {
               )}
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-end">
               <button
                 onClick={() => setActiveJobLogs(null)}
-                className="px-4 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+                className="px-4 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
               >
                 Close
               </button>

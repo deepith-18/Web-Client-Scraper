@@ -6,6 +6,7 @@ import { Globe2, PhoneCall, Eye, EyeOff, Mail, Lock, User, Chrome, ArrowRight, B
 import { loginJson, googleAuth, register } from "@/lib/api-client";
 import { signInWithGoogle } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth-context";
+import { ThemeToggle } from "@/lib/theme-context";
 
 type Tab = "login" | "signup";
 
@@ -85,9 +86,14 @@ export default function CallerPortalPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 dark:bg-[#070b14] flex text-slate-100 transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#070b14] flex text-slate-900 dark:text-slate-100 transition-colors relative">
+      {/* Floating Theme Switcher */}
+      <div className="absolute top-5 right-5 z-20">
+        <ThemeToggle />
+      </div>
+
       {/* ── Left branding panel ─────────────────────────── */}
-      <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 bg-gradient-to-br from-slate-950 via-emerald-950/40 to-slate-950 border-r border-slate-800/80">
+      <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 bg-gradient-to-br from-slate-950 via-emerald-950/40 to-slate-950 text-white border-r border-slate-200/20 dark:border-slate-800/80">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
@@ -157,32 +163,32 @@ export default function CallerPortalPage() {
       </div>
 
       {/* ── Right auth panel ────────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center p-6 relative">
+      <div className="flex-1 flex items-center justify-center p-6 relative bg-white dark:bg-[#070b14]">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2 mb-8">
             <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-500 flex items-center justify-center">
               <Globe2 className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-white text-lg">Demanex</span>
+            <span className="font-bold text-slate-900 dark:text-white text-lg">Demanex</span>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-6">
             <PhoneCall className="h-3 w-3" />
             Caller Portal — Telephony Desk
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-1">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
             {tab === "login" ? "Welcome back, Teammate" : "Join the calling team"}
           </h2>
-          <p className="text-slate-400 text-sm mb-8">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">
             {tab === "login"
               ? "Sign in to access your assigned leads and dialer queue"
               : "Register your caller profile to begin calling"}
           </p>
 
           {/* Tab switcher */}
-          <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-xl mb-6">
+          <div className="flex p-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl mb-6">
             <button
               onClick={() => {
                 setTab("login");
@@ -190,8 +196,8 @@ export default function CallerPortalPage() {
               }}
               className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
                 tab === "login"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               Sign In
@@ -203,8 +209,8 @@ export default function CallerPortalPage() {
               }}
               className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
                 tab === "signup"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               Sign Up
@@ -213,7 +219,7 @@ export default function CallerPortalPage() {
 
           {/* Error Alert */}
           {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2.5">
+            <div className="mb-5 p-3.5 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm flex items-start gap-2.5">
               <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
@@ -223,41 +229,41 @@ export default function CallerPortalPage() {
           <form onSubmit={tab === "login" ? handleLogin : handleSignup} className="space-y-3.5">
             {tab === "signup" && (
               <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-slate-800 text-white placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-colors"
                 />
               </div>
             )}
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
               <input
                 type="email"
                 placeholder="caller@demanex.io"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-slate-800 text-white placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
               <input
                 type={showPass ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full pl-10 pr-10 py-3 bg-slate-900/90 border border-slate-800 text-white placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
               >
                 {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -281,25 +287,25 @@ export default function CallerPortalPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-slate-800" />
-            <span className="text-slate-500 text-xs">or sign in with</span>
-            <div className="flex-1 h-px bg-slate-800" />
+            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+            <span className="text-slate-400 dark:text-slate-500 text-xs">or sign in with</span>
+            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
           </div>
 
           {/* Google Auth Button */}
           <button
             onClick={handleGoogle}
             disabled={loading}
-            className="w-full py-3 bg-slate-900 hover:bg-slate-800/90 border border-slate-800 hover:border-slate-700 text-white font-medium rounded-xl text-sm flex items-center justify-center gap-3 transition-all disabled:opacity-50 shadow-sm"
+            className="w-full py-3 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-white font-medium rounded-xl text-sm flex items-center justify-center gap-3 transition-all disabled:opacity-50 shadow-xs"
           >
-            <Chrome className="h-4 w-4 text-emerald-400" />
+            <Chrome className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
             <span>Continue with Google</span>
           </button>
 
           {/* Admin portal link */}
-          <p className="mt-8 text-center text-slate-500 text-xs">
+          <p className="mt-8 text-center text-slate-500 dark:text-slate-400 text-xs">
             Are you an administrator?{" "}
-            <a href="/admin" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors underline">
+            <a href="/admin" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors underline">
               Switch to Admin Portal
             </a>
           </p>

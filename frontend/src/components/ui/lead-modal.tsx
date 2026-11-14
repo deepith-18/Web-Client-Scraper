@@ -209,13 +209,13 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+    <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-start justify-between bg-slate-50/50">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200 dark:border-blue-800/60">
                 {business.category}
               </span>
               <span
@@ -224,9 +224,9 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                 {totalScore} / 100 Opportunity ({scoreBadge.label})
               </span>
             </div>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">{business.name}</h2>
-            <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-              <MapPin className="h-3.5 w-3.5 text-slate-400" />
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{business.name}</h2>
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <MapPin className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
               <span>
                 {business.address_line1 ? `${business.address_line1}, ` : ""}
                 {business.city}, {business.state_province ? `${business.state_province}, ` : ""}
@@ -236,7 +236,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -246,26 +246,26 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
         <div className="p-6 space-y-6">
           {/* Action Notification Banner */}
           {actionMessage && (
-            <div className="p-3 bg-blue-50 border border-blue-200 text-blue-800 text-xs rounded-lg flex items-center justify-between">
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-800 dark:text-blue-300 text-xs rounded-lg flex items-center justify-between">
               <span>{actionMessage}</span>
-              <button onClick={() => setActionMessage(null)} className="text-blue-500 hover:text-blue-700">
+              <button onClick={() => setActionMessage(null)} className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300">
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
           )}
 
           {/* CRM Status & Action Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-blue-50/50 rounded-xl border border-blue-100 gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-blue-50/50 dark:bg-blue-950/30 rounded-xl border border-blue-100 dark:border-blue-900/40 gap-3">
             <div>
-              <p className="text-xs font-semibold text-blue-900">CRM Pipeline Stage</p>
-              <p className="text-xs text-blue-700">Update current outreach state</p>
+              <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">CRM Pipeline Stage</p>
+              <p className="text-xs text-blue-700 dark:text-blue-400">Update current outreach state</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <select
                 value={business.crm_status}
                 disabled={updating}
                 onChange={handleStatusChange}
-                className="bg-white border border-blue-200 text-slate-800 text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white dark:bg-slate-800 border border-blue-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {crmStatuses.map((st) => (
                   <option key={st.value} value={st.value}>
@@ -299,7 +299,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                   <button
                     onClick={handleRunAudit}
                     disabled={auditing}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 dark:bg-slate-800 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
                     title="Run deep technical website opportunity audit"
                   >
                     <Activity className="h-3.5 w-3.5" />
@@ -322,7 +322,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                 <select
                   value={selectedTemplateId}
                   onChange={(e) => setSelectedTemplateId(e.target.value)}
-                  className="bg-white border border-blue-200 text-slate-800 text-[11px] font-medium rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 max-w-[140px] truncate"
+                  className="bg-white dark:bg-slate-800 border border-blue-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-medium rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 max-w-[140px] truncate"
                   title="Choose outreach template strategy"
                 >
                   {availableTemplates.map((t) => (
@@ -347,31 +347,31 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
           {/* Contact Details */}
           <div>
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
               Public Business Contacts & Provenance
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Official Website */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 flex items-center justify-between">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200/80 dark:border-slate-700 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-white border border-slate-200 text-slate-600">
+                  <div className="p-2 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                     <Globe className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-medium text-slate-400">Official Website</p>
-                    <p className="text-xs font-semibold text-slate-800">
+                    <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Official Website</p>
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                       {business.official_website ? (
                         <a
                           href={business.official_website}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-blue-600 hover:underline flex items-center gap-1"
+                          className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
                         >
                           <span>{business.official_website}</span>
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       ) : (
-                        <span className="text-rose-600">No Website Detected (+30 pts)</span>
+                        <span className="text-rose-600 dark:text-rose-400">No Website Detected (+30 pts)</span>
                       )}
                     </p>
                   </div>
@@ -380,24 +380,24 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
               {/* Contact Page URL if found */}
               {business.contact_page_url && (
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 flex items-center justify-between">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200/80 dark:border-slate-700 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-md bg-white border border-slate-200 text-slate-600">
+                    <div className="p-2 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                       <ExternalLink className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-[11px] font-medium text-slate-400">Contact / About Page</p>
+                      <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Contact / About Page</p>
                       <a
                         href={business.contact_page_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs font-semibold text-blue-600 hover:underline truncate max-w-[200px] block"
+                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline truncate max-w-[200px] block"
                       >
                         {business.contact_page_url}
                       </a>
                     </div>
                   </div>
-                  <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                  <span className="text-[10px] font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800/60">
                     Discovered
                   </span>
                 </div>
@@ -408,10 +408,10 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                 business.contacts.map((contact) => (
                   <div
                     key={contact.id}
-                    className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 flex items-center justify-between"
+                    className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200/80 dark:border-slate-700 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-md bg-white border border-slate-200 text-slate-600">
+                      <div className="p-2 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                         {contact.contact_type === "email" ? (
                           <Mail className="h-4 w-4" />
                         ) : (
@@ -419,28 +419,28 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                         )}
                       </div>
                       <div>
-                        <p className="text-[11px] font-medium text-slate-400 capitalize">
+                        <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 capitalize">
                           {contact.contact_type} ({contact.verification_status.replace(/_/g, " ")})
                         </p>
-                        <p className="text-xs font-semibold text-slate-800">
+                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                           {contact.normalized_value || contact.raw_value}
                         </p>
                       </div>
                     </div>
                     {contact.verification_status === "mx_confirmed" && (
-                      <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
                         <Check className="h-3 w-3" /> MX Confirmed
                       </span>
                     )}
                     {contact.verification_status === "valid_syntax" && (
-                      <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      <span className="text-[10px] font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800/60">
                         Valid Syntax
                       </span>
                     )}
                   </div>
                 ))
               ) : (
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-500 italic">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 italic">
                   No public direct contact detected yet.
                 </div>
               )}
@@ -450,7 +450,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
           {/* Social Profiles */}
           {business.social_links && Object.keys(business.social_links).length > 0 && (
             <div>
-              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Share2 className="h-3.5 w-3.5 text-slate-400" />
                 <span>Verified Social Footprints</span>
               </h3>
@@ -461,7 +461,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                     href={link}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 border border-slate-200 transition-colors capitalize flex items-center gap-1"
+                    className="px-2.5 py-1 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 hover:text-blue-700 dark:hover:text-blue-400 border border-slate-200 dark:border-slate-700 transition-colors capitalize flex items-center gap-1"
                   >
                     <span>{net}</span>
                     <ExternalLink className="h-3 w-3" />
@@ -473,58 +473,58 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
           {/* Website Audit Breakdown */}
           <div>
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
               Website Opportunity Diagnostics
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg border border-slate-200 bg-white">
-                <span className="text-[11px] text-slate-400 font-medium">SSL Security</span>
+              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850">
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">SSL Security</span>
                 <p className="text-xs font-semibold mt-1 flex items-center gap-1">
                   {audit?.has_ssl ? (
-                    <span className="text-emerald-600 flex items-center gap-1">
+                    <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <CheckCircle2 className="h-3.5 w-3.5" /> Active HTTPS
                     </span>
                   ) : (
-                    <span className="text-rose-600 flex items-center gap-1">
+                    <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1">
                       <AlertTriangle className="h-3.5 w-3.5" /> Missing SSL (+15 pts)
                     </span>
                   )}
                 </p>
               </div>
 
-              <div className="p-3 rounded-lg border border-slate-200 bg-white">
-                <span className="text-[11px] text-slate-400 font-medium">Mobile Experience</span>
+              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850">
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Mobile Experience</span>
                 <p className="text-xs font-semibold mt-1 flex items-center gap-1">
                   {audit?.is_mobile_friendly ? (
-                    <span className="text-emerald-600 flex items-center gap-1">
+                    <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <CheckCircle2 className="h-3.5 w-3.5" /> Responsive
                     </span>
                   ) : (
-                    <span className="text-rose-600 flex items-center gap-1">
+                    <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1">
                       <AlertTriangle className="h-3.5 w-3.5" /> Unresponsive (+15 pts)
                     </span>
                   )}
                 </p>
               </div>
 
-              <div className="p-3 rounded-lg border border-slate-200 bg-white">
-                <span className="text-[11px] text-slate-400 font-medium">Inquiry Form</span>
+              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850">
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Inquiry Form</span>
                 <p className="text-xs font-semibold mt-1 flex items-center gap-1">
                   {audit?.has_contact_form ? (
-                    <span className="text-emerald-600 flex items-center gap-1">
+                    <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <CheckCircle2 className="h-3.5 w-3.5" /> Detected
                     </span>
                   ) : (
-                    <span className="text-amber-600 flex items-center gap-1">
+                    <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
                       <AlertTriangle className="h-3.5 w-3.5" /> Missing Form (+10 pts)
                     </span>
                   )}
                 </p>
               </div>
 
-              <div className="p-3 rounded-lg border border-slate-200 bg-white">
-                <span className="text-[11px] text-slate-400 font-medium">Load Time</span>
-                <p className="text-xs font-semibold mt-1">
+              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850">
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Load Time</span>
+                <p className="text-xs font-semibold mt-1 text-slate-900 dark:text-white">
                   {audit?.load_time_ms ? `${audit.load_time_ms} ms` : "N/A (No site)"}
                 </p>
               </div>
@@ -532,16 +532,16 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
             {/* Detected Technology Stack */}
             {audit?.technologies_detected && audit.technologies_detected.length > 0 && (
-              <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                <p className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-                  <Code2 className="h-3.5 w-3.5 text-blue-600" />
+              <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg">
+                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <Code2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                   <span>Detected Technology Stack:</span>
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {audit.technologies_detected.map((tech) => (
                     <span
                       key={tech}
-                      className="text-[11px] font-medium bg-white text-slate-700 px-2 py-0.5 rounded border border-slate-200"
+                      className="text-[11px] font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700"
                     >
                       {tech}
                     </span>
@@ -552,9 +552,9 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
             {/* Opportunities List with Concrete Evidence */}
             {audit?.opportunities_identified && audit.opportunities_identified.length > 0 && (
-              <div className="mt-3 p-3 bg-amber-50/60 border border-amber-200 rounded-lg">
-                <p className="text-xs font-semibold text-amber-900 mb-2 flex items-center gap-1.5">
-                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
+              <div className="mt-3 p-3 bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 rounded-lg">
+                <p className="text-xs font-semibold text-amber-900 dark:text-amber-300 mb-2 flex items-center gap-1.5">
+                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                   <span>Evidence-Backed Freelance Pitch Angles:</span>
                 </p>
                 <div className="space-y-1.5">
@@ -563,12 +563,12 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                     return (
                       <div
                         key={opp}
-                        className="text-xs font-medium bg-amber-100/70 text-amber-900 p-2 rounded-md border border-amber-200/80 flex items-start gap-2"
+                        className="text-xs font-medium bg-amber-100/70 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 p-2 rounded-md border border-amber-200/80 dark:border-amber-800/50 flex items-start gap-2"
                       >
-                        <span className="font-bold shrink-0 text-amber-800">
+                        <span className="font-bold shrink-0 text-amber-800 dark:text-amber-300">
                           • {opp.replace(/_/g, " ").toUpperCase()}:
                         </span>
-                        <span className="text-amber-950 font-normal">{evidenceText}</span>
+                        <span className="text-amber-950 dark:text-amber-100 font-normal">{evidenceText}</span>
                       </div>
                     );
                   })}
@@ -578,10 +578,10 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
           </div>
 
           {/* Lead Scoring Intelligence Breakdown */}
-          <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
+          <div className="p-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <Layers className="h-4 w-4 text-amber-600" />
+              <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <Layers className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                 <span>Opportunity Scoring Intelligence</span>
               </h3>
               <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${scoreBadge.badgeClass}`}>
@@ -591,11 +591,11 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
             {/* Recommended Pitch Recommendation */}
             {(scoreObj?.score_breakdown as any)?.recommended_pitch && (
-              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-lg">
-                <p className="text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <div className="p-3 bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 rounded-lg">
+                <p className="text-[11px] font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <span>Strategic Freelance Pitch Angle:</span>
                 </p>
-                <p className="text-xs text-blue-950 font-medium">
+                <p className="text-xs text-blue-950 dark:text-blue-200 font-medium">
                   {(scoreObj?.score_breakdown as any)?.recommended_pitch}
                 </p>
               </div>
@@ -603,41 +603,41 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
             {/* Factor Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">No Website</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.no_website_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">No Website</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.no_website_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Site Offline/Error</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.website_unavailable_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Site Offline/Error</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.website_unavailable_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Mobile Deficiencies</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.mobile_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Mobile Deficiencies</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.mobile_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Missing Form/CTA</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.missing_contact_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Missing Form/CTA</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.missing_contact_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Performance/Speed</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.performance_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Performance/Speed</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.performance_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Missing Info</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.missing_info_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Missing Info</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.missing_info_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Identity Corroborated</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.authenticity_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Identity Corroborated</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.authenticity_score || 0} pts</span>
               </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <span className="text-[10px] text-slate-500 font-medium block">Public Email Found</span>
-                <span className="font-bold text-slate-800">+{scoreObj?.email_available_score || 0} pts</span>
+              <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">Public Email Found</span>
+                <span className="font-bold text-slate-800 dark:text-white">+{scoreObj?.email_available_score || 0} pts</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-400 italic">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 italic">
               Notice: Opportunity scores measure empirical technical need for freelance web services, completely distinct from data verification. They do not constitute guaranteed purchasing intent.
             </p>
           </div>
@@ -645,9 +645,9 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
           {/* CRM Notes & Task Reminders */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Notes Section */}
-            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
-              <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <FileText className="h-4 w-4 text-blue-600" />
+            <div className="p-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <span>CRM Communication Notes</span>
               </h3>
 
@@ -657,7 +657,7 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                   placeholder="Add a call outcome or discovery note..."
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
-                  className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
                 <button
                   type="submit"
@@ -670,12 +670,12 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
 
               <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
                 {notes.length === 0 ? (
-                  <p className="text-slate-400 text-[11px] italic">No notes logged yet.</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-[11px] italic">No notes logged yet.</p>
                 ) : (
                   notes.map((n) => (
-                    <div key={n.id} className="p-2 bg-white rounded border border-slate-200/80 text-[11px]">
-                      <p className="text-slate-800">{n.content}</p>
-                      <span className="text-[10px] text-slate-400 mt-0.5 block">
+                    <div key={n.id} className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200/80 dark:border-slate-700 text-[11px]">
+                      <p className="text-slate-800 dark:text-slate-200">{n.content}</p>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 block">
                         {n.created_at ? new Date(n.created_at).toLocaleDateString() : ""}
                       </span>
                     </div>
@@ -685,9 +685,9 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
             </div>
 
             {/* Follow-Up Task Section */}
-            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
-              <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <Calendar className="h-4 w-4 text-indigo-600" />
+            <div className="p-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Calendar className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                 <span>Schedule Follow-Up Task</span>
               </h3>
 
@@ -697,14 +697,14 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
                   placeholder="Task title (e.g. Call founder for feedback)"
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
                 <div className="flex gap-2">
                   <input
                     type="date"
                     value={taskDue}
                     onChange={(e) => setTaskDue(e.target.value)}
-                    className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none"
+                    className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-700 dark:text-slate-200 focus:outline-none"
                   />
                   <button
                     type="submit"
@@ -720,10 +720,10 @@ export function LeadModal({ business, onClose, onStatusUpdate, onRefresh }: Lead
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+        <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-800 transition-colors"
+            className="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-colors"
           >
             Close
           </button>

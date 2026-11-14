@@ -113,38 +113,38 @@ export default function SettingsPage() {
         {/* Title */}
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-slate-100 text-slate-700 rounded-lg">
+            <div className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg">
               <Settings className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Platform Settings & Compliance</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Platform Settings & Compliance</h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Manage global suppression records (Do-Not-Contact lists), authorized data registries, and privacy safeguards.
           </p>
         </div>
 
         {statusMessage && (
-          <div className="p-3 bg-blue-50 border border-blue-200 text-blue-800 text-xs rounded-lg flex items-center justify-between">
+          <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-800 dark:text-blue-300 text-xs rounded-lg flex items-center justify-between">
             <span>{statusMessage}</span>
-            <button onClick={() => setStatusMessage(null)} className="text-blue-600 hover:text-blue-800">
+            <button onClick={() => setStatusMessage(null)} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
               <X className="h-4 w-4" />
             </button>
           </div>
         )}
 
         {/* Suppression List Manager */}
-        <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                <ShieldAlert className="h-4 w-4 text-rose-600" />
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                 <span>Global Suppression List (Opt-Out Registry)</span>
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Any domain, business name, or email in this list is automatically suppressed and excluded from outreach.
               </p>
             </div>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-rose-50 text-rose-700 rounded-full border border-rose-200">
+            <span className="text-xs font-semibold px-2.5 py-1 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 rounded-full border border-rose-200 dark:border-rose-800/60">
               {suppressionList.length} Suppressed Records
             </span>
           </div>
@@ -155,12 +155,12 @@ export default function SettingsPage() {
               placeholder="e.g. competitor.com or contact@domain.com"
               value={newValue}
               onChange={(e) => setNewValue(e.target.value)}
-              className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
             <select
               value={newType}
               onChange={(e) => setNewType(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none"
+              className="px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
             >
               <option value="domain">Domain</option>
               <option value="email">Email</option>
@@ -172,12 +172,12 @@ export default function SettingsPage() {
               placeholder="Reason for suppression"
               value={newReason}
               onChange={(e) => setNewReason(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none w-48"
+              className="px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-200 focus:outline-none w-48"
             />
             <button
               type="submit"
               disabled={adding || !newValue.trim()}
-              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5"
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5 transition-colors"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>{adding ? "Adding..." : "Add to Suppression"}</span>
@@ -185,9 +185,9 @@ export default function SettingsPage() {
           </form>
 
           {/* List Table */}
-          <div className="border border-slate-200 rounded-xl overflow-hidden mt-3">
+          <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden mt-3">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="py-2.5 px-4">Suppressed Value</th>
                   <th className="py-2.5 px-4">Type</th>
@@ -196,28 +196,28 @@ export default function SettingsPage() {
                   <th className="py-2.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {suppressionList.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-slate-400">
+                    <td colSpan={5} className="py-8 text-center text-slate-400 dark:text-slate-500">
                       No records suppressed.
                     </td>
                   </tr>
                 ) : (
                   suppressionList.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50/70">
-                      <td className="py-2.5 px-4 font-mono font-medium text-slate-900">
+                    <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-2.5 px-4 font-mono font-medium text-slate-900 dark:text-white">
                         {item.value}
                       </td>
-                      <td className="py-2.5 px-4 capitalize text-slate-500">{item.suppression_type}</td>
-                      <td className="py-2.5 px-4 text-slate-600">{item.reason || "General suppression"}</td>
-                      <td className="py-2.5 px-4 text-slate-400 font-mono text-[11px]">
+                      <td className="py-2.5 px-4 capitalize text-slate-500 dark:text-slate-400">{item.suppression_type}</td>
+                      <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">{item.reason || "General suppression"}</td>
+                      <td className="py-2.5 px-4 text-slate-400 dark:text-slate-500 font-mono text-[11px]">
                         {item.requested_at ? new Date(item.requested_at).toLocaleDateString() : ""}
                       </td>
                       <td className="py-2.5 px-4 text-right">
                         <button
                           onClick={() => handleDeleteSuppression(item.id)}
-                          className="text-rose-600 hover:text-rose-800 p-1"
+                          className="text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 p-1"
                           title="Remove from suppression"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -232,32 +232,32 @@ export default function SettingsPage() {
         </div>
 
         {/* Authorized Discovery Sources Status */}
-        <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-            <Database className="h-4 w-4 text-blue-600" />
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+            <Database className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <span>Authorized Public Data Registries</span>
           </h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Compliant business directories and geospatial open data sources currently configured for extraction.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-2">
             {sources.map((src) => (
-              <div key={src.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div key={src.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-slate-900">{src.name}</span>
+                  <span className="font-bold text-xs text-slate-900 dark:text-white">{src.name}</span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       src.is_authorized
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-slate-200 text-slate-700"
+                        ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60"
+                        : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
                     }`}
                   >
                     {src.is_authorized ? "Active" : "Disabled"}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 line-clamp-2">{src.description}</p>
-                <div className="text-[10px] font-medium text-slate-400">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">{src.description}</p>
+                <div className="text-[10px] font-medium text-slate-400 dark:text-slate-500">
                   Reliability: {src.reliability_score * 100}%
                 </div>
               </div>

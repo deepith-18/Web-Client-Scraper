@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { useTheme } from "@/lib/theme-context";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -19,40 +20,73 @@ import {
   PhoneCall,
   Users,
   History,
-  ArrowRightLeft,
   WalletCards,
   LogOut,
-  Sparkles
+  Sun,
+  Moon,
+  ChevronRight,
+  Shield,
+  Headphones
 } from "lucide-react";
 
-const adminNavigationItems = [
-  { name: "Overview", href: "/", icon: LayoutDashboard },
-  { name: "Leads", href: "/leads", icon: Search },
-  { name: "Discovery", href: "/discover", icon: Compass },
-  { name: "Caller Desk", href: "/calling", icon: PhoneCall },
-  { name: "Call History", href: "/calling/history", icon: History },
-  { name: "Pipeline", href: "/pipeline", icon: FileCheck2 },
-  { name: "Site Audits", href: "/audits", icon: Activity },
-  { name: "Verification", href: "/verification", icon: ShieldCheck },
-  { name: "Scoring Engine", href: "/scoring", icon: Layers },
-  { name: "Outreach Studio", href: "/outreach", icon: Send },
-  { name: "Analytics", href: "/analytics", icon: BarChart3 },
-  { name: "Team", href: "/team", icon: Users },
-  { name: "Expenses", href: "/finance", icon: WalletCards },
-  { name: "Settings", href: "/settings", icon: Settings },
+interface NavSection {
+  title: string;
+  items: {
+    name: string;
+    href: string;
+    icon: any;
+    badge?: string;
+  }[];
+}
+
+const adminSections: NavSection[] = [
+  {
+    title: "Prospecting & Audits",
+    items: [
+      { name: "Overview", href: "/", icon: LayoutDashboard },
+      { name: "Leads Directory", href: "/leads", icon: Search },
+      { name: "Discovery Engine", href: "/discover", icon: Compass },
+      { name: "Website Audits", href: "/audits", icon: Activity },
+    ],
+  },
+  {
+    title: "Telephony & Deals",
+    items: [
+      { name: "Caller Desk", href: "/calling", icon: PhoneCall },
+      { name: "Call Logs & History", href: "/calling/history", icon: History },
+      { name: "Deals Pipeline", href: "/pipeline", icon: FileCheck2 },
+      { name: "Outreach Studio", href: "/outreach", icon: Send },
+    ],
+  },
+  {
+    title: "Operations & Admin",
+    items: [
+      { name: "Scoring Engine", href: "/scoring", icon: Layers },
+      { name: "Verification", href: "/verification", icon: ShieldCheck },
+      { name: "Analytics", href: "/analytics", icon: BarChart3 },
+      { name: "Team & Callers", href: "/team", icon: Users },
+      { name: "Company Spend", href: "/finance", icon: WalletCards },
+      { name: "Settings", href: "/settings", icon: Settings },
+    ],
+  },
 ];
 
-// Callers ONLY see caller tools: No admin modules, no spending, no overview dashboard
-const callerNavigationItems = [
-  { name: "Caller Desk", href: "/calling", icon: PhoneCall },
-  { name: "Call History", href: "/calling/history", icon: History },
-  { name: "Assigned Leads", href: "/leads", icon: Search },
+const callerSections: NavSection[] = [
+  {
+    title: "Caller Workspace",
+    items: [
+      { name: "Live Caller Desk", href: "/calling", icon: PhoneCall },
+      { name: "Call History & Logs", href: "/calling/history", icon: History },
+      { name: "Assigned Leads", href: "/leads", icon: Search },
+    ],
+  },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { logout, user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [portal, setPortal] = useState<"admin" | "caller">("admin");
 
   const handleSignOut = () => {
@@ -60,7 +94,6 @@ export function Sidebar() {
     localStorage.removeItem("demanex_token");
     localStorage.removeItem("demanex_user");
     localStorage.removeItem("demanex_portal_mode");
-    // Redirect based on current role
     if (user?.role === "caller") {
       router.push("/caller");
     } else {
@@ -69,7 +102,6 @@ export function Sidebar() {
   };
 
   useEffect(() => {
-    // Strictly sync portal mode from the actual logged-in user's role
     if (user) {
       const roleMode = user.role === "admin" ? "admin" : "caller";
       setPortal(roleMode);
@@ -81,144 +113,187 @@ export function Sidebar() {
   }, [user, pathname]);
 
   const switchPortal = (mode: "admin" | "caller") => {
-    // Only admins can switch portal view
     if (user?.role !== "admin") return;
     setPortal(mode);
     localStorage.setItem("demanex_portal_mode", mode);
+    if (mode === "caller" && pathname === "/") {
+      router.push("/calling");
+    }
   };
 
-  // If user is caller, enforce caller navigation items only
-  const currentNavItems = (user?.role === "caller" || portal === "caller")
-    ? callerNavigationItems
-    : adminNavigationItems;
+  const currentSections =
+    user?.role === "caller" || portal === "caller" ? callerSections : adminSections;
 
   return (
-    <aside className="w-64 bg-slate-950 dark:bg-[#070b14] text-slate-300 flex flex-col h-screen fixed left-0 top-0 border-r border-slate-800/90 dark:border-slate-800/60 z-30 select-none shadow-xl">
-      {/* Brand Header */}
-      <div className="p-4 flex items-center justify-between border-b border-slate-800/80">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/30">
-            <Globe2 className="h-4 w-4" />
+    <aside className="w-64 bg-white dark:bg-[#070b14] border-r border-slate-200 dark:border-slate-800/80 text-slate-700 dark:text-slate-300 flex flex-col h-screen fixed left-0 top-0 z-30 select-none shadow-sm transition-colors duration-200">
+      {/* ── Brand Header ─────────────────────────────────────── */}
+      <div className="p-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25 group-hover:scale-105 transition-transform">
+            <Globe2 className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-white tracking-tight text-base">Demanex</span>
+              <span className="font-bold text-slate-900 dark:text-white tracking-tight text-base leading-none">
+                Demanex
+              </span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" title="Engine Live" />
             </div>
-            <p className="text-[11px] text-slate-400 font-medium">B2B Outbound Engine</p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-0.5 leading-none">
+              B2B Outbound Engine
+            </p>
           </div>
-        </div>
+        </Link>
       </div>
 
-      {/* PORTAL SWITCHER TABS — only visible to Admins */}
+      {/* ── Admin / Caller Portal Segmented Slider (Admins Only) ── */}
       {user?.role === "admin" && (
-        <div className="mx-3 mt-3 p-1 bg-slate-900 border border-slate-800 rounded-lg flex items-center gap-1 text-xs">
-          <button
-            onClick={() => switchPortal("admin")}
-            className={`flex-1 py-1.5 px-2 rounded-md font-semibold text-center transition-all ${
-              portal === "admin"
-                ? "bg-blue-600 text-white shadow-xs"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Admin Portal
-          </button>
-          <button
-            onClick={() => switchPortal("caller")}
-            className={`flex-1 py-1.5 px-2 rounded-md font-semibold text-center transition-all ${
-              portal === "caller"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Caller Portal
-          </button>
-        </div>
-      )}
-
-      {/* Caller Mode Pill for Callers */}
-      {user?.role === "caller" && (
-        <div className="mx-3 mt-3 px-3 py-2 bg-emerald-950/40 border border-emerald-500/30 rounded-lg text-xs text-emerald-400 font-semibold flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <PhoneCall className="h-3.5 w-3.5 text-emerald-400 animate-pulse" />
-            <span>Caller Workspace</span>
-          </div>
-          <span className="text-[10px] text-emerald-300/80 bg-emerald-500/10 px-1.5 py-0.5 rounded">Active</span>
-        </div>
-      )}
-
-      {/* Navigation Links */}
-      <nav className="flex-1 px-3 space-y-1 overflow-y-auto pt-3">
-        <p className="px-3 text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-          {user?.role === "caller" || portal === "caller" ? "Workspace" : "Navigation"}
-        </p>
-        {currentNavItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-          const Icon = item.icon;
-
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
-                isActive
-                  ? portal === "caller" || user?.role === "caller"
-                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-600/30"
-                    : "bg-blue-600 text-white shadow-sm shadow-blue-600/30"
-                  : "text-slate-400 hover:text-slate-100 hover:bg-slate-900"
+        <div className="px-3 pt-3">
+          <div className="p-1 bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl flex items-center gap-1 text-xs">
+            <button
+              onClick={() => switchPortal("admin")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg font-semibold text-xs transition-all ${
+                portal === "admin"
+                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs border border-slate-200/60 dark:border-slate-700"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
-              <div className="flex items-center gap-2.5">
-                <Icon className={`h-4 w-4 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-slate-200"}`} />
-                <span>{item.name}</span>
-              </div>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* User / Workspace Footer */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/80 space-y-2">
-        {/* User identity card */}
-        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs text-white shrink-0 ${
-            user?.role === "admin"
-              ? "bg-gradient-to-br from-blue-600 to-indigo-600"
-              : "bg-gradient-to-br from-emerald-600 to-teal-600"
-          }`}>
-            {user?.full_name ? user.full_name.slice(0, 2).toUpperCase() : user?.email?.slice(0, 2).toUpperCase() ?? "DX"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-200 truncate">
-              {user?.full_name || user?.email?.split("@")[0] || "Demanex User"}
-            </p>
-            <p className={`text-[11px] font-medium truncate ${user?.role === "admin" ? "text-blue-400" : "text-emerald-400"}`}>
-              {user?.role === "admin" ? "Admin & Founder" : "Caller / Telecaller"}
-            </p>
-          </div>
-        </div>
-
-        {/* Admin Portal Toggle Link (Admins Only) */}
-        {user?.role === "admin" && (
-          <div className="p-1.5 rounded-lg bg-slate-900/40 border border-slate-800/60 flex items-center justify-between text-[11px]">
-            <span className="text-slate-400">View:</span>
+              <Shield className="h-3.5 w-3.5" />
+              <span>Admin</span>
+            </button>
             <button
-              onClick={() => switchPortal(portal === "admin" ? "caller" : "admin")}
-              className="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+              onClick={() => switchPortal("caller")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg font-semibold text-xs transition-all ${
+                portal === "caller"
+                  ? "bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/60 dark:border-slate-700"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+              }`}
             >
-              <span>{portal === "admin" ? "Admin Mode" : "Caller Mode"}</span>
-              <ArrowRightLeft className="h-3 w-3" />
+              <Headphones className="h-3.5 w-3.5" />
+              <span>Caller</span>
             </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Sign out */}
-        <button
-          onClick={handleSignOut}
-          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-slate-900/40 border border-slate-800/60 text-slate-400 hover:text-red-400 hover:border-red-500/30 hover:bg-red-500/10 transition-all text-xs font-medium"
-        >
-          <LogOut className="h-3.5 w-3.5" />
-          <span>Sign Out</span>
-        </button>
+      {/* Caller Role Pill (Callers Only) */}
+      {user?.role === "caller" && (
+        <div className="px-3 pt-3">
+          <div className="px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/20 rounded-xl text-xs text-emerald-700 dark:text-emerald-400 font-semibold flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <PhoneCall className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+              <span>Caller Telephony Desk</span>
+            </div>
+            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-500/20 px-1.5 py-0.5 rounded font-bold">
+              Dialer
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Categorized Navigation Links ─────────────────────── */}
+      <nav className="flex-1 px-3 space-y-4 overflow-y-auto py-3">
+        {currentSections.map((sec) => (
+          <div key={sec.title} className="space-y-1">
+            <div className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              {sec.title}
+            </div>
+            {sec.items.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(item.href));
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group ${
+                    isActive
+                      ? portal === "caller" || user?.role === "caller"
+                        ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold border-l-2 border-emerald-600 dark:border-emerald-500 shadow-2xs"
+                        : "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 font-semibold border-l-2 border-blue-600 dark:border-blue-500 shadow-2xs"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-900/60"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon
+                      className={`h-4 w-4 transition-colors ${
+                        isActive
+                          ? portal === "caller" || user?.role === "caller"
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-blue-600 dark:text-blue-400"
+                          : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300"
+                      }`}
+                    />
+                    <span>{item.name}</span>
+                  </div>
+                  {isActive && (
+                    <ChevronRight className="h-3 w-3 opacity-60 text-current" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
+      </nav>
+
+      {/* ── Executive Bottom Dock ────────────────────────────── */}
+      <div className="p-3 border-t border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-950/50 space-y-2">
+        {/* User Card */}
+        <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          <div
+            className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs text-white shrink-0 shadow-xs ${
+              user?.role === "admin"
+                ? "bg-gradient-to-tr from-blue-600 to-indigo-600"
+                : "bg-gradient-to-tr from-emerald-600 to-teal-600"
+            }`}
+          >
+            {user?.full_name
+              ? user.full_name.charAt(0).toUpperCase()
+              : user?.email?.charAt(0).toUpperCase() ?? "D"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate leading-none">
+              {user?.full_name || user?.email?.split("@")[0] || "Demanex User"}
+            </p>
+            <p
+              className={`text-[10px] font-medium mt-0.5 truncate leading-none ${
+                user?.role === "admin"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-emerald-600 dark:text-emerald-400"
+              }`}
+            >
+              {user?.role === "admin" ? "Founder & Admin" : "Caller / Telecaller"}
+            </p>
+          </div>
+
+          {/* Quick Theme Switcher Icon */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title={`Switch to ${theme === "dark" ? "Light" : "Dark"} mode`}
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-3.5 w-3.5 text-amber-400" />
+            ) : (
+              <Moon className="h-3.5 w-3.5 text-indigo-600" />
+            )}
+          </button>
+
+          {/* Quick Logout Button */}
+          <button
+            type="button"
+            onClick={handleSignOut}
+            aria-label="Sign out"
+            title="Sign out of Demanex"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-rose-600 hover:border-rose-300 dark:hover:border-rose-900/60 dark:hover:text-rose-400 transition-colors"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
     </aside>
   );

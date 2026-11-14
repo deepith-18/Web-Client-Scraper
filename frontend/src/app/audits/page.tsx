@@ -99,24 +99,24 @@ export default function WebsiteAuditsPage() {
         {/* Title */}
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+            <div className="p-2 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-lg">
               <Activity className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Website Opportunity Audits</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Website Opportunity Audits</h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Module D: Automated technical diagnostics identifying responsive, security, performance, and lead capture deficiencies.
           </p>
         </div>
 
         {/* Live URL Audit Tool */}
-        <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
           <div>
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <Zap className="h-4 w-4 text-blue-600" />
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               <span>On-Demand Website Opportunity Analyzer</span>
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Enter any business URL to run real-time SSRF-safe diagnostic inspection.
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function WebsiteAuditsPage() {
               placeholder="e.g. https://example-business.com"
               value={scanUrl}
               onChange={(e) => setScanUrl(e.target.value)}
-              className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              className="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800"
             />
             <button
               type="submit"
@@ -140,23 +140,23 @@ export default function WebsiteAuditsPage() {
           </form>
 
           {scanError && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-lg flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-rose-600 shrink-0" />
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 text-xs rounded-lg flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0" />
               <span>{scanError}</span>
             </div>
           )}
 
           {scanResult && (
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 mt-4">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-3 mt-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                   Target: {scanResult.final_url || scanResult.target_url}
                 </span>
                 <span
                   className={`text-xs font-bold px-2 py-0.5 rounded border ${
                     scanResult.is_reachable
-                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                      : "bg-rose-50 text-rose-800 border-rose-200"
+                      ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800"
+                      : "bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800"
                   }`}
                 >
                   {scanResult.is_reachable ? "Reachable" : "Unreachable / Error"}
@@ -164,54 +164,54 @@ export default function WebsiteAuditsPage() {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                  <span className="text-[11px] text-slate-400 block font-medium">SSL Security</span>
-                  <span className="font-semibold text-slate-800 mt-1 flex items-center gap-1">
+                <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 block font-medium">SSL Security</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 mt-1 flex items-center gap-1">
                     {scanResult.has_ssl ? (
-                      <span className="text-emerald-600 flex items-center gap-1">
+                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                         <CheckCircle2 className="h-3 w-3" /> Active HTTPS
                       </span>
                     ) : (
-                      <span className="text-rose-600 flex items-center gap-1">
+                      <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1">
                         <AlertTriangle className="h-3 w-3" /> Insecure HTTP
                       </span>
                     )}
                   </span>
                 </div>
 
-                <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                  <span className="text-[11px] text-slate-400 block font-medium">Mobile Viewport</span>
-                  <span className="font-semibold text-slate-800 mt-1 flex items-center gap-1">
+                <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 block font-medium">Mobile Viewport</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 mt-1 flex items-center gap-1">
                     {scanResult.is_mobile_friendly ? (
-                      <span className="text-emerald-600 flex items-center gap-1">
+                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                         <CheckCircle2 className="h-3 w-3" /> Responsive
                       </span>
                     ) : (
-                      <span className="text-rose-600 flex items-center gap-1">
+                      <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1">
                         <AlertTriangle className="h-3 w-3" /> Missing Viewport
                       </span>
                     )}
                   </span>
                 </div>
 
-                <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                  <span className="text-[11px] text-slate-400 block font-medium">Contact Form</span>
-                  <span className="font-semibold text-slate-800 mt-1 flex items-center gap-1">
+                <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 block font-medium">Contact Form</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 mt-1 flex items-center gap-1">
                     {scanResult.has_contact_form ? (
-                      <span className="text-emerald-600 flex items-center gap-1">
+                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                         <CheckCircle2 className="h-3 w-3" /> Present
                       </span>
                     ) : (
-                      <span className="text-amber-600 flex items-center gap-1">
+                      <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
                         <AlertTriangle className="h-3 w-3" /> Not Detected
                       </span>
                     )}
                   </span>
                 </div>
 
-                <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                  <span className="text-[11px] text-slate-400 block font-medium">Initial Latency</span>
-                  <span className="font-semibold text-slate-800 mt-1 block">
+                <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 block font-medium">Initial Latency</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 mt-1 block">
                     {scanResult.load_time_ms ? `${scanResult.load_time_ms} ms` : "N/A"}
                   </span>
                 </div>
@@ -219,14 +219,14 @@ export default function WebsiteAuditsPage() {
 
               {scanResult.opportunities_identified?.length > 0 && (
                 <div className="space-y-1">
-                  <span className="text-[11px] font-bold text-amber-900 block">
+                  <span className="text-[11px] font-bold text-amber-900 dark:text-amber-300 block">
                     Opportunities Identified:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {scanResult.opportunities_identified.map((opp: string) => (
                       <span
                         key={opp}
-                        className="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-100 text-amber-900 border border-amber-200"
+                        className="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
                       >
                         {opp.replace(/_/g, " ")}
                       </span>
@@ -239,13 +239,13 @@ export default function WebsiteAuditsPage() {
         </div>
 
         {/* Recent Website Audits Database */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+          <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div>
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                 Audited Businesses ({auditedBusinesses.length})
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Discovered businesses with complete technical audit records
               </p>
             </div>
@@ -253,7 +253,7 @@ export default function WebsiteAuditsPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3.5 px-6">Business</th>
                   <th className="py-3.5 px-4">Location</th>
@@ -265,10 +265,10 @@ export default function WebsiteAuditsPage() {
                   <th className="py-3.5 px-6 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {auditedBusinesses.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
+                    <td colSpan={8} className="py-12 text-center text-slate-400 dark:text-slate-500">
                       No businesses audited yet. Inspect any lead to run an audit.
                     </td>
                   </tr>
@@ -279,45 +279,45 @@ export default function WebsiteAuditsPage() {
                       <tr
                         key={biz.id}
                         onClick={() => setSelectedLead(biz)}
-                        className="hover:bg-slate-50/70 cursor-pointer transition-colors"
+                        className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
                       >
-                        <td className="py-3.5 px-6 font-semibold text-slate-900">
+                        <td className="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">
                           {biz.name}
                         </td>
-                        <td className="py-3.5 px-4 text-slate-500">
+                        <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">
                           {biz.city}, {biz.country}
                         </td>
-                        <td className="py-3.5 px-4 text-blue-600 truncate max-w-[160px]">
+                        <td className="py-3.5 px-4 text-blue-600 dark:text-blue-400 truncate max-w-[160px]">
                           {biz.official_website || "No Website"}
                         </td>
                         <td className="py-3.5 px-4">
                           {audit.has_ssl ? (
-                            <span className="text-emerald-600 font-medium">HTTPS</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-medium">HTTPS</span>
                           ) : (
-                            <span className="text-rose-600 font-semibold">Insecure</span>
+                            <span className="text-rose-600 dark:text-rose-400 font-semibold">Insecure</span>
                           )}
                         </td>
                         <td className="py-3.5 px-4">
                           {audit.is_mobile_friendly ? (
-                            <span className="text-emerald-600 font-medium">Responsive</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-medium">Responsive</span>
                           ) : (
-                            <span className="text-rose-600 font-semibold">Broken</span>
+                            <span className="text-rose-600 dark:text-rose-400 font-semibold">Broken</span>
                           )}
                         </td>
                         <td className="py-3.5 px-4">
                           {audit.has_contact_form ? (
-                            <span className="text-emerald-600 font-medium">Yes</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-medium">Yes</span>
                           ) : (
-                            <span className="text-amber-600 font-medium">None</span>
+                            <span className="text-amber-600 dark:text-amber-400 font-medium">None</span>
                           )}
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                          <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                             {audit.opportunities_identified?.length || 0} issues
                           </span>
                         </td>
                         <td className="py-3.5 px-6 text-right">
-                          <button className="text-blue-600 hover:text-blue-800 font-semibold text-xs">
+                          <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xs">
                             Inspect
                           </button>
                         </td>
