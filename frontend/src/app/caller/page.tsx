@@ -6,7 +6,6 @@ import { Globe2, PhoneCall, Eye, EyeOff, Mail, Lock, User, Chrome, ArrowRight, B
 import { loginJson, googleAuth, register } from "@/lib/api-client";
 import { signInWithGoogle } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth-context";
-import { ThemeToggle } from "@/lib/theme-context";
 
 type Tab = "login" | "signup";
 
@@ -99,7 +98,6 @@ export default function CallerPortalPage() {
               <p className="text-slate-400 text-xs font-medium">Caller Desk</p>
             </div>
           </div>
-          <ThemeToggle />
         </div>
 
         <div className="space-y-8">
@@ -160,10 +158,6 @@ export default function CallerPortalPage() {
 
       {/* ── Right auth panel ────────────────────────────── */}
       <div className="flex-1 flex items-center justify-center p-6 relative">
-        <div className="absolute top-6 right-6 lg:hidden">
-          <ThemeToggle />
-        </div>
-
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2 mb-8">

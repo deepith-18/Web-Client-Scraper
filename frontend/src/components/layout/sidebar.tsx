@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { ThemeToggle } from "@/lib/theme-context";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -108,9 +107,6 @@ export function Sidebar() {
             <p className="text-[11px] text-slate-400 font-medium">B2B Outbound Engine</p>
           </div>
         </div>
-
-        {/* Theme Toggle in Header */}
-        <ThemeToggle className="scale-90" />
       </div>
 
       {/* PORTAL SWITCHER TABS — only visible to Admins */}

@@ -262,24 +262,24 @@ export default function DashboardPage() {
 
         {/* Acceptance Analytics: Which Business Type Accepts Most? */}
         {acceptanceStats && (
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <Award className="h-5 w-5 text-indigo-600" />
-                  <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                  <Award className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                     Which Business Type Accepts Most? (Acceptance Rate by Category)
                   </h2>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Real-time conversion tracking showing which business types agree to websites the most.
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Top Converting:</span>
-                <span className="px-2.5 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-bold flex items-center gap-1">
-                  <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
+                <span className="text-xs text-slate-400 dark:text-slate-500">Top Converting:</span>
+                <span className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-bold flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5 text-indigo-500 dark:text-indigo-400" />
                   <span>{acceptanceStats.best_converting_category}</span>
                 </span>
               </div>
@@ -287,22 +287,22 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               {acceptanceStats.category_breakdown.slice(0, 4).map((cat) => (
-                <div key={cat.category} className="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                <div key={cat.category} className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-900 truncate">{cat.category}</span>
-                    <span className="font-bold text-indigo-600 font-mono text-sm">{cat.acceptance_rate_pct}%</span>
+                    <span className="font-bold text-slate-900 dark:text-white truncate">{cat.category}</span>
+                    <span className="font-bold text-indigo-600 dark:text-indigo-400 font-mono text-sm">{cat.acceptance_rate_pct}%</span>
                   </div>
 
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                      className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all duration-500"
                       style={{ width: `${Math.max(8, cat.acceptance_rate_pct)}%` }}
                     ></div>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-400">
-                    <span className="text-emerald-700 font-medium">{cat.accepted_count} agreed</span>
-                    <span className="text-rose-600 font-medium">{cat.rejected_count} declined</span>
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
+                    <span className="text-emerald-700 dark:text-emerald-400 font-medium">{cat.accepted_count} agreed</span>
+                    <span className="text-rose-600 dark:text-rose-400 font-medium">{cat.rejected_count} declined</span>
                     <span>{cat.total_called} called</span>
                   </div>
                 </div>
@@ -312,17 +312,17 @@ export default function DashboardPage() {
         )}
 
         {/* Leads Management Section */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden" id="leads">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden" id="leads">
           {/* Table Header & Controls */}
-          <div className="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                 <span>Qualified Business Prospects</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                   {filteredBusinesses.length} leads
                 </span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                 Evaluated with multi-metric opportunity scoring and public contact provenance
               </p>
             </div>
@@ -330,32 +330,32 @@ export default function DashboardPage() {
             {/* Filter Controls */}
             <div className="flex flex-wrap items-center gap-2.5">
               {/* Priority filter */}
-              <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
-                <span className="text-slate-400 font-medium">Priority:</span>
+              <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg">
+                <span className="text-slate-400 dark:text-slate-500 font-medium">Priority:</span>
                 <select
                   value={priorityFilter}
                   onChange={(e) => setPriorityFilter(e.target.value)}
-                  className="bg-transparent font-medium text-slate-800 focus:outline-none cursor-pointer"
+                  className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
                 >
-                  <option value="all">All Priorities</option>
-                  <option value="high">High (80-100)</option>
-                  <option value="good">Good (60-79)</option>
-                  <option value="medium">Medium (40-59)</option>
-                  <option value="low">Low (0-39)</option>
+                  <option value="all" className="dark:bg-slate-800">All Priorities</option>
+                  <option value="high" className="dark:bg-slate-800">High (80-100)</option>
+                  <option value="good" className="dark:bg-slate-800">Good (60-79)</option>
+                  <option value="medium" className="dark:bg-slate-800">Medium (40-59)</option>
+                  <option value="low" className="dark:bg-slate-800">Low (0-39)</option>
                 </select>
               </div>
 
               {/* Category filter */}
-              <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
-                <span className="text-slate-400 font-medium">Category:</span>
+              <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg">
+                <span className="text-slate-400 dark:text-slate-500 font-medium">Category:</span>
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-transparent font-medium text-slate-800 focus:outline-none cursor-pointer"
+                  className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
                 >
-                  <option value="all">All Categories</option>
+                  <option value="all" className="dark:bg-slate-800">All Categories</option>
                   {categories.map((c) => (
-                    <option key={c} value={c}>
+                    <option key={c} value={c} className="dark:bg-slate-800">
                       {c}
                     </option>
                   ))}
@@ -367,7 +367,7 @@ export default function DashboardPage() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+              <thead className="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3.5 px-6">Business & Location</th>
                   <th className="py-3.5 px-4">Category</th>
@@ -378,16 +378,16 @@ export default function DashboardPage() {
                   <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
+                    <td colSpan={7} className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">
                       Loading prospect records...
                     </td>
                   </tr>
                 ) : filteredBusinesses.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
+                    <td colSpan={7} className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">
                       No businesses matching criteria. Try adjusting your filters or launching a new Discovery Job.
                     </td>
                   </tr>
@@ -400,18 +400,18 @@ export default function DashboardPage() {
                     const phone = biz.contacts?.find((c) => c.contact_type === "phone");
 
                     return (
-                      <tr key={biz.id} className="hover:bg-slate-50/70 transition-colors">
+                      <tr key={biz.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
                         {/* Name & Location */}
                         <td className="py-4 px-6">
-                          <div className="font-semibold text-slate-900 text-sm">{biz.name}</div>
-                          <div className="text-[11px] text-slate-400 mt-0.5">
+                          <div className="font-semibold text-slate-900 dark:text-white text-sm">{biz.name}</div>
+                          <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
                             {biz.city}, {biz.country}
                           </div>
                         </td>
 
                         {/* Category */}
-                        <td className="py-4 px-4 font-medium text-slate-600">
-                          <span className="px-2 py-1 rounded bg-slate-100 border border-slate-200/80 text-[11px]">
+                        <td className="py-4 px-4 font-medium text-slate-600 dark:text-slate-400">
+                          <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300">
                             {biz.category}
                           </span>
                         </td>
@@ -423,13 +423,13 @@ export default function DashboardPage() {
                               href={biz.official_website}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium text-[11px] max-w-[180px] truncate"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1 font-medium text-[11px] max-w-[180px] truncate"
                             >
                               <span className="truncate">{biz.normalized_domain || biz.official_website}</span>
                               <ExternalLink className="h-3 w-3 shrink-0" />
                             </a>
                           ) : (
-                            <span className="text-rose-600 font-semibold text-[11px] bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                            <span className="text-rose-600 dark:text-rose-400 font-semibold text-[11px] bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800">
                               No Website (+30 pts)
                             </span>
                           )}
@@ -441,7 +441,7 @@ export default function DashboardPage() {
                             <span className={`px-2 py-1 rounded font-bold text-xs border ${tier.badgeClass}`}>
                               {totalScore}
                             </span>
-                            <span className="text-[11px] text-slate-500 font-medium">
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                               {tier.label.split(" ")[0]}
                             </span>
                           </div>
@@ -450,23 +450,23 @@ export default function DashboardPage() {
                         {/* Contacts */}
                         <td className="py-4 px-4 text-[11px]">
                           {email && (
-                            <div className="text-slate-800 font-medium truncate max-w-[150px]">
+                            <div className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[150px]">
                               {email.normalized_value}
                             </div>
                           )}
                           {phone && (
-                            <div className="text-slate-500 font-mono text-[10px]">
+                            <div className="text-slate-500 dark:text-slate-400 font-mono text-[10px]">
                               {phone.raw_value}
                             </div>
                           )}
                           {!email && !phone && (
-                            <span className="text-slate-400 italic">None found yet</span>
+                            <span className="text-slate-400 dark:text-slate-500 italic">None found yet</span>
                           )}
                         </td>
 
                         {/* CRM Status */}
                         <td className="py-4 px-4">
-                          <span className="capitalize px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                          <span className="capitalize px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                             {biz.crm_status.replace(/_/g, " ")}
                           </span>
                         </td>
@@ -475,7 +475,7 @@ export default function DashboardPage() {
                         <td className="py-4 px-6 text-right">
                           <button
                             onClick={() => setSelectedLead(biz)}
-                            className="inline-flex items-center gap-1 bg-slate-900 hover:bg-blue-600 text-white font-medium text-xs px-3 py-1.5 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1 bg-slate-900 hover:bg-blue-600 text-white font-medium text-xs px-3 py-1.5 rounded-lg transition-colors shadow-xs"
                           >
                             <span>Inspect & Audit</span>
                             <ChevronRight className="h-3.5 w-3.5" />
