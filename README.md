@@ -83,10 +83,15 @@ ProspectIQ is designed to acquire clients globally without geographical lock-in:
 Launch the full platform in two separate terminal windows without manual virtual environment or dependency setup:
 
 ### Terminal 1 — Backend API Server
+**macOS / Linux:**
+```bash
+./run-backend.sh
+```
+**Windows:**
 ```powershell
 .\run-backend.ps1
+# (Or run .\run-backend.bat in Command Prompt)
 ```
-*(Or run `.\run-backend.bat` in Command Prompt)*
 
 - Automatically initializes `.env` from `.env.example`.
 - Creates the Python virtual environment and installs dependencies.
@@ -95,10 +100,15 @@ Launch the full platform in two separate terminal windows without manual virtual
 - Interactive Swagger API Documentation: `http://localhost:8000/docs`.
 
 ### Terminal 2 — Frontend Next.js Dashboard
+**macOS / Linux:**
+```bash
+./run-frontend.sh
+```
+**Windows:**
 ```powershell
 .\run-frontend.ps1
+# (Or run .\run-frontend.bat in Command Prompt)
 ```
-*(Or run `.\run-frontend.bat` in Command Prompt)*
 
 - Automatically installs frontend packages if missing.
 - Cleans stale build caches to prevent development chunk conflicts.
